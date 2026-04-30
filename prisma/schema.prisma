@@ -7,6 +7,32 @@ datasource db {
   provider = "postgresql"
 }
 
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum BourbonCategory {
+  BOURBON
+  RYE
+  TENNESSEE
+  SCOTCH
+  IRISH
+  JAPANESE
+  OTHER
+}
+
+enum ModerationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum LikeTargetType {
+  POST
+  REVIEW
+  RECIPE
+}
+
+// ─── Auth models (required by NextAuth / @auth/prisma-adapter) ────────────────
+
 model User {
   id             String    @id @default(cuid())
   name           String?
@@ -23,6 +49,16 @@ model User {
 
   accounts Account[]
   sessions Session[]
+
+  // Ricked relations
+  whiskeysCreated Whiskey[]
+  reviews         Review[]
+  posts           Post[]
+  recipes         Recipe[]
+  likes           Like[]
+  comments        Comment[]
+  following       Follow[]  @relation("Follower")
+  followers       Follow[]  @relation("Following")
 }
 
 model Account {
@@ -58,4 +94,122 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// ─── Ricked content models ────────────────────────────────────────────────────
+
+model Whiskey {
+  id              String          @id @default(cuid())
+  name            String
+  brand           String
+  category        BourbonCategory @default(BOURBON)
+  distillery      String?
+  mashBill        String?
+  proof           Float?
+  ageYears        Int?
+  description     String?         @db.Text
+  // Default to placeholder SVG; swap for real image URL in production
+  imageUrl        String          @default("/images/bottle-placeholder.svg")
+  createdByUserId String?
+  createdAt       DateTime        @default(now())
+
+  createdByUser User?    @relation(fields: [createdByUserId], references: [id])
+  reviews       Review[]
+  posts         Post[]   @relation("TaggedWhiskey")
+
+  @@index([name])
+  @@index([brand])
+  @@index([category])
+}
+
+model Review {
+  id         String           @id @default(cuid())
+  userId     String
+  whiskeyId  String
+  rating     Int              // 1–5
+  body       String           @db.Text
+  mediaUrl   String?
+  status     ModerationStatus @default(APPROVED)
+  // Reserved for future expert/critic review phase — do not surface in MVP UI
+  isExpert   Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  whiskey Whiskey @relation(fields: [whiskeyId], references: [id], onDelete: Cascade)
+
+  @@index([whiskeyId])
+  @@index([userId])
+  @@index([status, createdAt])
+}
+
+model Post {
+  id               String           @id @default(cuid())
+  userId           String
+  body             String           @db.Text
+  mediaUrl         String?
+  taggedWhiskeyId  String?
+  status           ModerationStatus @default(APPROVED)
+  createdAt        DateTime         @default(now())
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taggedWhiskey Whiskey? @relation("TaggedWhiskey", fields: [taggedWhiskeyId], references: [id])
+
+  @@index([userId])
+  @@index([status, createdAt])
+}
+
+model Recipe {
+  id          String           @id @default(cuid())
+  userId      String
+  title       String
+  description String?          @db.Text
+  ingredients Json
+  steps       Json
+  mediaUrl    String?
+  status      ModerationStatus @default(APPROVED)
+  createdAt   DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// Polymorphic likes — targetType + targetId identify the liked entity.
+// No FK to the target is stored; joins are done in application code.
+model Like {
+  userId     String
+  targetType LikeTargetType
+  targetId   String
+  createdAt  DateTime       @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, targetType, targetId])
+  @@index([targetType, targetId])
+}
+
+// Polymorphic comments — same pattern as Like.
+model Comment {
+  id         String         @id @default(cuid())
+  userId     String
+  targetType LikeTargetType
+  targetId   String
+  body       String         @db.Text
+  createdAt  DateTime       @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([targetType, targetId])
+  @@index([userId])
+}
+
+model Follow {
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
 }
