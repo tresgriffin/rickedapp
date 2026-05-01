@@ -137,7 +137,7 @@ export default async function HomePage() {
           {posts.length === 0 ? (
             <EmptyState
               message="The feed's empty right now."
-              sub="Be the first — post what's in your glass."
+              sub="Be the first. Post what's in your glass."
             />
           ) : (
             posts.map((post) => <PostCard key={post.id} post={post} />)

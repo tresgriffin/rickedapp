@@ -52,7 +52,7 @@ export default function WhiskeyPageTabs({
           (reviews.length === 0 ? (
             <EmptyState
               message={`No reviews yet for ${whiskeyName}.`}
-              sub="You could be the first — what did you think?"
+              sub="You could be the first. What did you think?"
             />
           ) : (
             reviews.map((r) => <ReviewCard key={r.id} review={r} />)

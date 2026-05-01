@@ -113,7 +113,7 @@ export default function ProfileView({ user, isOwnProfile }: ProfileViewProps) {
                 type="button"
                 disabled
                 className="rounded-full bg-[#0d3c54] px-4 py-1.5 text-xs font-bold text-white opacity-50 cursor-not-allowed"
-                title="Follow — coming soon"
+                title="Follow (coming soon)"
               >
                 Follow
               </button>

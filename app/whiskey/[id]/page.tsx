@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
+import Link from "next/link";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { computeAvgRating } from "@/lib/format";
@@ -171,18 +172,13 @@ export default async function WhiskeyPage({
         )}
 
         {/* Write a Review CTA */}
-        <div className="px-4 py-4 border-b border-gray-100 flex flex-col gap-1">
-          {/* Phase 4 will make this button link to /review/[id] */}
-          <button
-            type="button"
-            disabled
-            className="w-full rounded-full bg-[#0d3c54] py-3.5 text-sm font-bold text-white opacity-40 cursor-not-allowed"
+        <div className="px-4 py-4 border-b border-gray-100">
+          <Link
+            href={`/review/new?whiskeyId=${whiskey.id}`}
+            className="block w-full rounded-full bg-[#0d3c54] py-3.5 text-sm font-bold text-white text-center hover:bg-[#0a2f42] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0d3c54] focus-visible:ring-offset-2"
           >
             Write a Review
-          </button>
-          <p className="text-center text-xs text-gray-400">
-            Hold that thought — coming soon.
-          </p>
+          </Link>
         </div>
 
         {/* Tabs: Reviews | Photos & Posts */}

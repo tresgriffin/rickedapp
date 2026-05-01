@@ -20,7 +20,7 @@ export default function SignupPage() {
     setError("");
 
     if (password !== confirm) {
-      setError("Passwords don't match — give it another look.");
+      setError("Passwords don't match. Give it another look.");
       return;
     }
     if (password.length < 8) {

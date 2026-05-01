@@ -14,7 +14,7 @@ interface ReviewCardProps {
       displayName: string | null;
       avatarUrl: string | null;
     };
-    // Optional — shown when reviewing from a profile (not a brand page)
+    // Optional: shown when displaying from a profile page, not a brand page
     whiskey?: { id: string; name: string; brand: string } | null;
   };
 }
@@ -24,15 +24,24 @@ export default function ReviewCard({ review }: ReviewCardProps) {
     <article className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Avatar
-          displayName={review.user.displayName}
-          avatarUrl={review.user.avatarUrl}
-          size="md"
-        />
+        <Link
+          href={review.user.handle ? `/profile/${review.user.handle}` : "#"}
+          className="flex-shrink-0"
+          tabIndex={review.user.handle ? 0 : -1}
+        >
+          <Avatar
+            displayName={review.user.displayName}
+            avatarUrl={review.user.avatarUrl}
+            size="md"
+          />
+        </Link>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-[#0d3c54] truncate">
+          <Link
+            href={review.user.handle ? `/profile/${review.user.handle}` : "#"}
+            className="text-sm font-bold text-[#0d3c54] truncate hover:underline block"
+          >
             {review.user.displayName ?? review.user.handle ?? "Someone"}
-          </p>
+          </Link>
           <p className="text-xs text-gray-400">
             @{review.user.handle} · {timeAgo(review.createdAt)}
           </p>

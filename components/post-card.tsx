@@ -25,15 +25,24 @@ export default function PostCard({ post }: PostCardProps) {
     <article className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Avatar
-          displayName={post.user.displayName}
-          avatarUrl={post.user.avatarUrl}
-          size="md"
-        />
+        <Link
+          href={post.user.handle ? `/profile/${post.user.handle}` : "#"}
+          className="flex-shrink-0"
+          tabIndex={post.user.handle ? 0 : -1}
+        >
+          <Avatar
+            displayName={post.user.displayName}
+            avatarUrl={post.user.avatarUrl}
+            size="md"
+          />
+        </Link>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-[#0d3c54] truncate">
+          <Link
+            href={post.user.handle ? `/profile/${post.user.handle}` : "#"}
+            className="text-sm font-bold text-[#0d3c54] truncate hover:underline block"
+          >
             {post.user.displayName ?? post.user.handle ?? "Someone"}
-          </p>
+          </Link>
           <p className="text-xs text-gray-400">
             @{post.user.handle} · {timeAgo(post.createdAt)}
           </p>

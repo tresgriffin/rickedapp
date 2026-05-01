@@ -132,7 +132,7 @@ export default function SearchPage() {
               message="Nothing came up."
               sub={
                 query
-                  ? `Rick's never heard of "${query}" either — try a different name or browse a category.`
+                  ? `Nothing found for "${query}". Try a different name or browse a category.`
                   : "Try a different category."
               }
             />
