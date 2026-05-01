@@ -16,6 +16,31 @@ A social app for bourbon and whiskey lovers. Discover, rate, review, and share y
 | Testing | Vitest |
 | Formatting | Prettier + ESLint |
 
+## Voice & Tone — Rick
+
+Every piece of microcopy in Ricked is written by a character named **Rick**. Rick is the unpretentious friend who happens to know a lot about whiskey. He's talking to Brian — the casual bourbon drinker — through every label, empty state, and helper line.
+
+**Rick's rules:**
+- Warm, but never cloying. Knowledgeable, but never lecture-y.
+- Brief. Uses contractions. Talks like a person.
+- Says "pour one" not "enjoy a beverage." Says "grab a bottle" not "add to collection."
+- Never condescending about what people don't know. Never performatively casual either.
+- Empty states and error messages still sound like him — not like a 500 status code.
+
+**Rick vs. not-Rick:**
+
+| Not Rick | Rick |
+|---|---|
+| "No data found." | "Nothing here yet — pour one and let us know what you think." |
+| "An error has occurred." | "Something went wrong. It's not you — Rick's looking into it." |
+| "Coming in the next update." | "Hold that thought — coming soon." |
+| "No reviews found for this product." | "No reviews yet. Be the first — what did you think?" |
+| "Submit" | "Post Your Review" |
+
+**Why this matters:** Rick is not just a tone guide. In a future phase, there will be an in-app AI assistant literally named Rick, powered by the Anthropic API. Every piece of microcopy you write now is Rick's first impression on users. Consistent voice makes the chatbot feel native when it arrives.
+
+**Brian is the user. Rick is the voice.** These are two distinct roles — don't confuse them.
+
 ## Brand Guide
 
 **Colors**
