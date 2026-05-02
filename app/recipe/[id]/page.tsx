@@ -9,6 +9,8 @@ import { timeAgo } from "@/lib/format";
 import AppBar from "@/components/app-bar";
 import BottomNav from "@/components/bottom-nav";
 import Avatar from "@/components/avatar";
+import LikeButton from "@/components/like-button";
+import CommentSection from "@/components/comment-section";
 
 interface Ingredient {
   amount: string;
@@ -25,14 +27,34 @@ export default async function RecipePage({
 
   const { id } = await params;
 
-  const recipe = await prisma.recipe.findUnique({
-    where: { id },
-    include: {
-      user: {
-        select: { handle: true, displayName: true, avatarUrl: true },
-      },
-    },
-  });
+  const [recipe, likeCount, commentCount, userLike, initialComments] =
+    await Promise.all([
+      prisma.recipe.findUnique({
+        where: { id },
+        include: {
+          user: { select: { handle: true, displayName: true, avatarUrl: true } },
+        },
+      }),
+      prisma.like.count({ where: { targetType: "RECIPE", targetId: id } }),
+      prisma.comment.count({ where: { targetType: "RECIPE", targetId: id } }),
+      prisma.like.findUnique({
+        where: {
+          userId_targetType_targetId: {
+            userId: session.user.id,
+            targetType: "RECIPE",
+            targetId: id,
+          },
+        },
+      }),
+      prisma.comment.findMany({
+        where: { targetType: "RECIPE", targetId: id },
+        orderBy: { createdAt: "asc" },
+        take: 5,
+        include: {
+          user: { select: { handle: true, displayName: true, avatarUrl: true } },
+        },
+      }),
+    ]);
 
   if (!recipe) notFound();
 
@@ -79,11 +101,25 @@ export default async function RecipePage({
               <p className="text-xs font-bold text-[#0d3c54]">
                 {recipe.user.displayName ?? recipe.user.handle}
               </p>
-              <p className="text-[11px] text-gray-400">
-                {timeAgo(recipe.createdAt)}
-              </p>
+              <p className="text-[11px] text-gray-400">{timeAgo(recipe.createdAt)}</p>
             </div>
           </Link>
+
+          {/* Social actions */}
+          <div className="flex items-center gap-5 pt-1 border-t border-gray-100">
+            <LikeButton
+              targetType="RECIPE"
+              targetId={recipe.id}
+              initialLiked={!!userLike}
+              initialCount={likeCount}
+            />
+            <CommentSection
+              targetType="RECIPE"
+              targetId={recipe.id}
+              initialComments={initialComments}
+              initialCount={commentCount}
+            />
+          </div>
         </div>
 
         {/* Photo */}

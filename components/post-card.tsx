@@ -1,8 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, MessageCircle, Share2 } from "lucide-react";
+import { Share2 } from "lucide-react";
 import Avatar from "@/components/avatar";
+import LikeButton from "@/components/like-button";
+import CommentSection from "@/components/comment-section";
 import { timeAgo } from "@/lib/format";
+import type { CommentWithUser } from "@/lib/actions/comment";
 
 interface PostCardProps {
   post: {
@@ -19,9 +22,11 @@ interface PostCardProps {
     likeCount: number;
     commentCount: number;
   };
+  isLiked: boolean;
+  initialComments: CommentWithUser[];
 }
 
-export default function PostCard({ post }: PostCardProps) {
+export default function PostCard({ post, isLiked, initialComments }: PostCardProps) {
   return (
     <article className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3">
       {/* Header */}
@@ -53,6 +58,7 @@ export default function PostCard({ post }: PostCardProps) {
       {/* Body */}
       <p className="text-sm text-black leading-relaxed">{post.body}</p>
 
+      {/* Photo */}
       {post.mediaUrl && (
         <div className="rounded-xl overflow-hidden relative aspect-[4/3] bg-gray-100">
           <Image
@@ -75,24 +81,21 @@ export default function PostCard({ post }: PostCardProps) {
         </Link>
       )}
 
-      {/* Actions row — wired in Phase 5 */}
+      {/* Actions */}
       <div className="flex items-center gap-5 pt-1 border-t border-gray-50">
-        <button
-          type="button"
-          className="flex items-center gap-1.5 text-gray-400 hover:text-[#551904] transition-colors"
-          aria-label={`${post.likeCount} likes`}
-        >
-          <Heart size={16} strokeWidth={1.5} />
-          <span className="text-xs font-medium">{post.likeCount}</span>
-        </button>
-        <button
-          type="button"
-          className="flex items-center gap-1.5 text-gray-400 hover:text-[#0d3c54] transition-colors"
-          aria-label={`${post.commentCount} comments`}
-        >
-          <MessageCircle size={16} strokeWidth={1.5} />
-          <span className="text-xs font-medium">{post.commentCount}</span>
-        </button>
+        <LikeButton
+          targetType="POST"
+          targetId={post.id}
+          initialLiked={isLiked}
+          initialCount={post.likeCount}
+        />
+        <CommentSection
+          targetType="POST"
+          targetId={post.id}
+          initialComments={initialComments}
+          initialCount={post.commentCount}
+        />
+        {/* Share — wired in a future phase */}
         <button
           type="button"
           className="flex items-center gap-1.5 text-gray-400 hover:text-[#0d3c54] transition-colors ml-auto"

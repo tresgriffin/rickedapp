@@ -189,6 +189,10 @@ model Like {
 }
 
 // Polymorphic comments — same pattern as Like.
+// FUTURE: one-level reply threading (Instagram/YouTube style) is a candidate
+//   for post-launch v1.1. Keep the schema flat for now — comments are children
+//   of posts/reviews/recipes only, no parent comments. To add threading, add
+//   an optional `parentId String? @relation(...)` self-relation on this model.
 model Comment {
   id         String         @id @default(cuid())
   userId     String

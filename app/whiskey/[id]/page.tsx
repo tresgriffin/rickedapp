@@ -9,6 +9,8 @@ import AppBar from "@/components/app-bar";
 import BottomNav from "@/components/bottom-nav";
 import StarRating from "@/components/star-rating";
 import WhiskeyPageTabs from "@/components/whiskey-page-tabs";
+import { fetchInitialComments } from "@/lib/batch-comments";
+import type { CommentWithUser } from "@/lib/actions/comment";
 
 const CATEGORY_LABELS: Record<string, string> = {
   BOURBON: "Bourbon",
@@ -55,42 +57,71 @@ export default async function WhiskeyPage({
 
   const avgRating = computeAvgRating(whiskey.reviews);
 
-  // Attach like/comment counts to posts
+  const reviewIds = whiskey.reviews.map((r) => r.id);
   const postIds = whiskey.posts.map((p) => p.id);
-  const [likeCounts, commentCounts] = await Promise.all(
-    postIds.length > 0
-      ? [
+
+  const allOrClauses = [
+    ...(reviewIds.length ? [{ targetType: "REVIEW" as const, targetId: { in: reviewIds } }] : []),
+    ...(postIds.length ? [{ targetType: "POST" as const, targetId: { in: postIds } }] : []),
+  ];
+
+  const commentTargets = [
+    ...reviewIds.map((id) => ({ targetType: "REVIEW" as const, targetId: id })),
+    ...postIds.map((id) => ({ targetType: "POST" as const, targetId: id })),
+  ];
+
+  const [likeCounts, commentCounts, userLikes, initialCommentsMap] =
+    allOrClauses.length > 0
+      ? await Promise.all([
           prisma.like.groupBy({
-            by: ["targetId"],
-            where: { targetType: "POST", targetId: { in: postIds } },
+            by: ["targetType", "targetId"],
+            where: { OR: allOrClauses },
             _count: { userId: true },
           }),
           prisma.comment.groupBy({
-            by: ["targetId"],
-            where: { targetType: "POST", targetId: { in: postIds } },
+            by: ["targetType", "targetId"],
+            where: { OR: allOrClauses },
             _count: { id: true },
           }),
-        ]
-      : [Promise.resolve([]), Promise.resolve([])]
-  );
+          prisma.like.findMany({
+            where: { userId: session.user.id, OR: allOrClauses },
+            select: { targetType: true, targetId: true },
+          }),
+          fetchInitialComments(commentTargets),
+        ])
+      : [[], [], [], new Map()];
 
-  const likeMap = Object.fromEntries(
-    (likeCounts as { targetId: string; _count: { userId: number } }[]).map((l) => [
-      l.targetId,
-      l._count.userId,
-    ])
+  const likeMap = new Map(
+    (likeCounts as { targetType: string; targetId: string; _count: { userId: number } }[]).map(
+      (l) => [`${l.targetType}:${l.targetId}`, l._count.userId]
+    )
   );
-  const commentMap = Object.fromEntries(
-    (commentCounts as { targetId: string; _count: { id: number } }[]).map((c) => [
-      c.targetId,
-      c._count.id,
-    ])
+  const commentMap = new Map(
+    (commentCounts as { targetType: string; targetId: string; _count: { id: number } }[]).map(
+      (c) => [`${c.targetType}:${c.targetId}`, c._count.id]
+    )
   );
+  const likedSet = new Set(
+    (userLikes as { targetType: string; targetId: string }[]).map(
+      (l) => `${l.targetType}:${l.targetId}`
+    )
+  );
+  const commentsMap = initialCommentsMap as Map<string, CommentWithUser[]>;
 
-  const postsWithCounts = whiskey.posts.map((p) => ({
+  const reviewsWithSocial = whiskey.reviews.map((r) => ({
+    ...r,
+    likeCount: likeMap.get(`REVIEW:${r.id}`) ?? 0,
+    commentCount: commentMap.get(`REVIEW:${r.id}`) ?? 0,
+    isLiked: likedSet.has(`REVIEW:${r.id}`),
+    initialComments: commentsMap.get(`REVIEW:${r.id}`) ?? [],
+  }));
+
+  const postsWithSocial = whiskey.posts.map((p) => ({
     ...p,
-    likeCount: likeMap[p.id] ?? 0,
-    commentCount: commentMap[p.id] ?? 0,
+    likeCount: likeMap.get(`POST:${p.id}`) ?? 0,
+    commentCount: commentMap.get(`POST:${p.id}`) ?? 0,
+    isLiked: likedSet.has(`POST:${p.id}`),
+    initialComments: commentsMap.get(`POST:${p.id}`) ?? [],
   }));
 
   const categoryLabel = CATEGORY_LABELS[whiskey.category] ?? "Whiskey";
@@ -183,8 +214,8 @@ export default async function WhiskeyPage({
 
         {/* Tabs: Reviews | Photos & Posts */}
         <WhiskeyPageTabs
-          reviews={whiskey.reviews}
-          posts={postsWithCounts}
+          reviews={reviewsWithSocial}
+          posts={postsWithSocial}
           whiskeyName={whiskey.name}
         />
       </main>

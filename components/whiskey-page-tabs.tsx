@@ -5,6 +5,7 @@ import TabBar from "@/components/tab-bar";
 import ReviewCard from "@/components/review-card";
 import PostCard from "@/components/post-card";
 import EmptyState from "@/components/empty-state";
+import type { CommentWithUser } from "@/lib/actions/comment";
 
 interface Review {
   id: string;
@@ -13,6 +14,10 @@ interface Review {
   mediaUrl: string | null;
   createdAt: Date;
   user: { handle: string | null; displayName: string | null; avatarUrl: string | null };
+  likeCount: number;
+  commentCount: number;
+  isLiked: boolean;
+  initialComments: CommentWithUser[];
 }
 
 interface Post {
@@ -24,6 +29,8 @@ interface Post {
   taggedWhiskey: { id: string; name: string; brand: string } | null;
   likeCount: number;
   commentCount: number;
+  isLiked: boolean;
+  initialComments: CommentWithUser[];
 }
 
 interface WhiskeyPageTabsProps {
@@ -56,7 +63,14 @@ export default function WhiskeyPageTabs({
               sub="You could be the first. What did you think?"
             />
           ) : (
-            reviews.map((r) => <ReviewCard key={r.id} review={r} />)
+            reviews.map((r) => (
+              <ReviewCard
+                key={r.id}
+                review={r}
+                isLiked={r.isLiked}
+                initialComments={r.initialComments}
+              />
+            ))
           ))}
 
         {activeTab === "posts" &&
@@ -66,7 +80,14 @@ export default function WhiskeyPageTabs({
               sub="Pour some and tell people about it."
             />
           ) : (
-            posts.map((p) => <PostCard key={p.id} post={p} />)
+            posts.map((p) => (
+              <PostCard
+                key={p.id}
+                post={p}
+                isLiked={p.isLiked}
+                initialComments={p.initialComments}
+              />
+            ))
           ))}
       </div>
     </div>

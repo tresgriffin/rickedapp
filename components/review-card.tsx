@@ -2,7 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import Avatar from "@/components/avatar";
 import StarRating from "@/components/star-rating";
+import LikeButton from "@/components/like-button";
+import CommentSection from "@/components/comment-section";
 import { timeAgo } from "@/lib/format";
+import type { CommentWithUser } from "@/lib/actions/comment";
 
 interface ReviewCardProps {
   review: {
@@ -18,10 +21,14 @@ interface ReviewCardProps {
     };
     // Optional: shown when displaying from a profile page, not a brand page
     whiskey?: { id: string; name: string; brand: string } | null;
+    likeCount: number;
+    commentCount: number;
   };
+  isLiked: boolean;
+  initialComments: CommentWithUser[];
 }
 
-export default function ReviewCard({ review }: ReviewCardProps) {
+export default function ReviewCard({ review, isLiked, initialComments }: ReviewCardProps) {
   return (
     <article className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3">
       {/* Header */}
@@ -51,7 +58,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
         <StarRating rating={review.rating} size="sm" />
       </div>
 
-      {/* Optional whiskey link (shown on profile, not on brand page) */}
+      {/* Optional whiskey link (shown on profile and feed, not on brand page) */}
       {review.whiskey && (
         <Link
           href={`/whiskey/${review.whiskey.id}`}
@@ -77,6 +84,22 @@ export default function ReviewCard({ review }: ReviewCardProps) {
           />
         </div>
       )}
+
+      {/* Actions */}
+      <div className="flex items-center gap-5 pt-1 border-t border-gray-50">
+        <LikeButton
+          targetType="REVIEW"
+          targetId={review.id}
+          initialLiked={isLiked}
+          initialCount={review.likeCount}
+        />
+        <CommentSection
+          targetType="REVIEW"
+          targetId={review.id}
+          initialComments={initialComments}
+          initialCount={review.commentCount}
+        />
+      </div>
     </article>
   );
 }

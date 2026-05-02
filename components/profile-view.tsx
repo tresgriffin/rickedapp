@@ -6,7 +6,9 @@ import TabBar from "@/components/tab-bar";
 import Avatar from "@/components/avatar";
 import ReviewCard from "@/components/review-card";
 import PostCard from "@/components/post-card";
+import FollowButton from "@/components/follow-button";
 import EmptyState from "@/components/empty-state";
+import type { CommentWithUser } from "@/lib/actions/comment";
 
 interface Review {
   id: string;
@@ -16,6 +18,10 @@ interface Review {
   createdAt: Date;
   user: { handle: string | null; displayName: string | null; avatarUrl: string | null };
   whiskey: { id: string; name: string; brand: string } | null;
+  likeCount: number;
+  commentCount: number;
+  isLiked: boolean;
+  initialComments: CommentWithUser[];
 }
 
 interface Post {
@@ -27,6 +33,8 @@ interface Post {
   taggedWhiskey: { id: string; name: string; brand: string } | null;
   likeCount: number;
   commentCount: number;
+  isLiked: boolean;
+  initialComments: CommentWithUser[];
 }
 
 interface Recipe {
@@ -52,6 +60,7 @@ interface ProfileUser {
 interface ProfileViewProps {
   user: ProfileUser;
   isOwnProfile: boolean;
+  isFollowing: boolean;
 }
 
 const TABS = [
@@ -61,7 +70,7 @@ const TABS = [
   { id: "saved", label: "Saved" },
 ];
 
-export default function ProfileView({ user, isOwnProfile }: ProfileViewProps) {
+export default function ProfileView({ user, isOwnProfile, isFollowing }: ProfileViewProps) {
   const [activeTab, setActiveTab] = useState("reviews");
 
   return (
@@ -111,14 +120,10 @@ export default function ProfileView({ user, isOwnProfile }: ProfileViewProps) {
                 Edit profile
               </button>
             ) : (
-              <button
-                type="button"
-                disabled
-                className="rounded-full bg-[#0d3c54] px-4 py-1.5 text-xs font-bold text-white opacity-50 cursor-not-allowed"
-                title="Follow (coming soon)"
-              >
-                Follow
-              </button>
+              <FollowButton
+                targetUserId={user.id}
+                initialFollowing={isFollowing}
+              />
             )}
           </div>
         </div>
@@ -142,12 +147,19 @@ export default function ProfileView({ user, isOwnProfile }: ProfileViewProps) {
               }
               sub={
                 isOwnProfile
-                  ? "Find a bottle you like and let Rick know what you think."
+                  ? "Find a bottle you've had. Tell us what you think."
                   : "Check back later."
               }
             />
           ) : (
-            user.reviews.map((r) => <ReviewCard key={r.id} review={r} />)
+            user.reviews.map((r) => (
+              <ReviewCard
+                key={r.id}
+                review={r}
+                isLiked={r.isLiked}
+                initialComments={r.initialComments}
+              />
+            ))
           ))}
 
         {activeTab === "posts" &&
@@ -157,7 +169,14 @@ export default function ProfileView({ user, isOwnProfile }: ProfileViewProps) {
               sub={isOwnProfile ? "Pour one and tell us about it." : "Check back later."}
             />
           ) : (
-            user.posts.map((p) => <PostCard key={p.id} post={p} />)
+            user.posts.map((p) => (
+              <PostCard
+                key={p.id}
+                post={p}
+                isLiked={p.isLiked}
+                initialComments={p.initialComments}
+              />
+            ))
           ))}
 
         {activeTab === "recipes" &&
