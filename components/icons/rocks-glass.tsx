@@ -5,9 +5,9 @@ interface RocksGlassProps {
 
 /**
  * A simple rocks glass (old fashioned glass) icon — short, wide, ~1:1 aspect.
- * Glass outline follows currentColor. Liquid is always oak brown (#551904)
- * since it represents whiskey. Used in the Add overlay, and reserved for
- * future use in chatbot avatar and empty states.
+ * Glass outline follows currentColor. Liquid fill is white/translucent so it
+ * reads clearly against the navy circle in the Add overlay. Reserved for future
+ * use in the chatbot avatar and empty states.
  */
 export default function RocksGlass({ size = 24, className = "" }: RocksGlassProps) {
   return (
@@ -28,11 +28,11 @@ export default function RocksGlass({ size = 24, className = "" }: RocksGlassProp
         strokeLinejoin="round"
         fill="none"
       />
-      {/* Liquid fill at bottom ~38% — always oak brown */}
+      {/* Liquid fill at bottom ~38% — white so it reads against the navy circle */}
       <path
         d="M5.1 14.25 L18.9 14.25 L18.5 20 L5.5 20 Z"
-        fill="#551904"
-        opacity="0.85"
+        fill="white"
+        opacity="0.7"
       />
     </svg>
   );

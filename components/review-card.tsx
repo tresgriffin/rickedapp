@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import Avatar from "@/components/avatar";
 import StarRating from "@/components/star-rating";
 import { timeAgo } from "@/lib/format";
@@ -8,6 +9,7 @@ interface ReviewCardProps {
     id: string;
     rating: number;
     body: string;
+    mediaUrl?: string | null;
     createdAt: Date;
     user: {
       handle: string | null;
@@ -62,6 +64,19 @@ export default function ReviewCard({ review }: ReviewCardProps) {
 
       {/* Body */}
       <p className="text-sm text-black leading-relaxed">{review.body}</p>
+
+      {/* Review photo */}
+      {review.mediaUrl && (
+        <div className="rounded-xl overflow-hidden relative aspect-[4/3] bg-gray-100">
+          <Image
+            src={review.mediaUrl}
+            alt="Review photo"
+            fill
+            sizes="(max-width: 640px) 100vw, 600px"
+            className="object-cover"
+          />
+        </div>
+      )}
     </article>
   );
 }

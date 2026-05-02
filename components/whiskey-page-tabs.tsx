@@ -10,6 +10,7 @@ interface Review {
   id: string;
   rating: number;
   body: string;
+  mediaUrl: string | null;
   createdAt: Date;
   user: { handle: string | null; displayName: string | null; avatarUrl: string | null };
 }

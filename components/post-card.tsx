@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Heart, MessageCircle, Share2 } from "lucide-react";
 import Avatar from "@/components/avatar";
 import { timeAgo } from "@/lib/format";
@@ -52,13 +53,15 @@ export default function PostCard({ post }: PostCardProps) {
       {/* Body */}
       <p className="text-sm text-black leading-relaxed">{post.body}</p>
 
-      {/* Optional image placeholder */}
       {post.mediaUrl && (
-        <div className="rounded-xl overflow-hidden bg-gray-100 aspect-video">
-          {/* Phase 4: swap for real <Image> once uploads land */}
-          <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-            Photo
-          </div>
+        <div className="rounded-xl overflow-hidden relative aspect-[4/3] bg-gray-100">
+          <Image
+            src={post.mediaUrl}
+            alt="Post photo"
+            fill
+            sizes="(max-width: 640px) 100vw, 600px"
+            className="object-cover"
+          />
         </div>
       )}
 

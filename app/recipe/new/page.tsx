@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, ImagePlus, Plus, X } from "lucide-react";
 import Link from "next/link";
 import AppBar from "@/components/app-bar";
+import LoadingDots from "@/components/loading-dots";
 import SuccessOverlay from "@/components/success-overlay";
 import { createRecipe } from "@/lib/actions/recipe";
 
@@ -210,7 +211,7 @@ export default function NewRecipePage() {
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="flex items-center gap-2 rounded-xl border border-dashed border-gray-300 px-4 py-3 text-sm text-gray-400 hover:border-[#0d3c54]/40 transition-colors w-fit"
+                className="flex items-center gap-2 rounded-xl border-2 border-[#0d3c54] px-4 py-2.5 text-sm font-bold text-[#0d3c54] hover:bg-[#0d3c54]/5 transition-colors w-fit"
               >
                 <ImagePlus size={16} />
                 Upload a photo
@@ -236,7 +237,11 @@ export default function NewRecipePage() {
             disabled={submitting}
             className="w-full rounded-full bg-[#0d3c54] py-3.5 text-sm font-bold text-white hover:bg-[#0a2f42] transition-colors disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0d3c54] focus-visible:ring-offset-2"
           >
-            {submitting ? "Sharing..." : "Share this recipe"}
+            {submitting ? (
+              <span className="flex items-center justify-center gap-2">
+                Sharing <LoadingDots />
+              </span>
+            ) : "Share this recipe"}
           </button>
         </form>
       </main>

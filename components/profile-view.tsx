@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import TabBar from "@/components/tab-bar";
 import Avatar from "@/components/avatar";
 import ReviewCard from "@/components/review-card";
@@ -11,6 +12,7 @@ interface Review {
   id: string;
   rating: number;
   body: string;
+  mediaUrl: string | null;
   createdAt: Date;
   user: { handle: string | null; displayName: string | null; avatarUrl: string | null };
   whiskey: { id: string; name: string; brand: string } | null;
@@ -170,9 +172,10 @@ export default function ProfileView({ user, isOwnProfile }: ProfileViewProps) {
             />
           ) : (
             user.recipes.map((r) => (
-              <div
+              <Link
                 key={r.id}
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-1"
+                href={`/recipe/${r.id}`}
+                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-1 hover:border-[#0d3c54]/20 transition-colors active:scale-[0.98]"
               >
                 <p className="text-sm font-bold text-[#0d3c54]">{r.title}</p>
                 {r.description && (
@@ -183,7 +186,7 @@ export default function ProfileView({ user, isOwnProfile }: ProfileViewProps) {
                 <p className="text-xs text-gray-400 mt-1">
                   {Array.isArray(r.ingredients) ? r.ingredients.length : 0} ingredients
                 </p>
-              </div>
+              </Link>
             ))
           ))}
 
