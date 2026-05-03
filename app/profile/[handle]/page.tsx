@@ -21,6 +21,10 @@ export default async function UserProfilePage({
 
   const isOwnProfile = session.user.id === result.user.id;
 
+  // Tapping the Profile nav icon should always go to /profile (own profile).
+  // If someone navigates to /profile/[theirOwnHandle], redirect canonically.
+  if (isOwnProfile) redirect("/profile");
+
   return (
     <div className="flex flex-col min-h-screen bg-[#fffbfa]">
       <AppBar />

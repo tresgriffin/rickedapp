@@ -19,5 +19,6 @@ export const config = {
     "/welcome",
     "/rick/:path*",
     "/rick",
+    "/more",
   ],
 };

@@ -28,6 +28,9 @@ export async function fetchProfileData(
       recipes: {
         where: { status: "APPROVED" },
         orderBy: { createdAt: "desc" },
+        include: {
+          taggedWhiskey: { select: { id: true, name: true, brand: true } },
+        },
       },
       _count: { select: { followers: true, following: true } },
     },

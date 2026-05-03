@@ -19,6 +19,18 @@ export async function GET(request: Request) {
   const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
   const pageSize = Math.min(50, Math.max(1, parseInt(searchParams.get("pageSize") ?? "20", 10)));
 
+  // When a query is present, also find recipes tagged to whiskeys whose names match.
+  // Ingredient-text matching is intentionally excluded (too fragile) — tagged-only only.
+  let taggedWhiskeyIds: string[] = [];
+  if (q) {
+    const matchingWhiskeys = await prisma.whiskey.findMany({
+      where: { name: { contains: q, mode: "insensitive" } },
+      select: { id: true },
+      take: 10,
+    });
+    taggedWhiskeyIds = matchingWhiskeys.map((w) => w.id);
+  }
+
   const where = {
     status: "APPROVED" as const,
     isPublished: true,
@@ -26,6 +38,9 @@ export async function GET(request: Request) {
       OR: [
         { title: { contains: q, mode: "insensitive" as const } },
         { description: { contains: q, mode: "insensitive" as const } },
+        ...(taggedWhiskeyIds.length > 0
+          ? [{ taggedWhiskeyId: { in: taggedWhiskeyIds } }]
+          : []),
       ],
     }),
     ...(whiskeyId && { taggedWhiskeyId: whiskeyId }),

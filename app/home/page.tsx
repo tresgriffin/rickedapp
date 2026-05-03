@@ -1,10 +1,7 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { computeAvgRating } from "@/lib/format";
 import { fetchInitialComments } from "@/lib/batch-comments";
 import { fetchRecipeRatingStats, type RecipeRatingStats } from "@/lib/recipe-rating-stats";
 import AppBar from "@/components/app-bar";
@@ -12,28 +9,7 @@ import BottomNav from "@/components/bottom-nav";
 import PostCard from "@/components/post-card";
 import RecipeCard from "@/components/recipe-card";
 import RickCard from "@/components/rick-card";
-import StarRating from "@/components/star-rating";
 import EmptyState from "@/components/empty-state";
-
-async function getTopRatedWhiskeys() {
-  const whiskeys = await prisma.whiskey.findMany({
-    include: {
-      reviews: { where: { status: "APPROVED" }, select: { rating: true } },
-    },
-  });
-  return whiskeys
-    .map((w) => ({
-      id: w.id,
-      name: w.name,
-      brand: w.brand,
-      imageUrl: w.imageUrl,
-      avgRating: computeAvgRating(w.reviews),
-      reviewCount: w.reviews.length,
-    }))
-    .filter((w) => w.avgRating !== null)
-    .sort((a, b) => (b.avgRating ?? 0) - (a.avgRating ?? 0))
-    .slice(0, 10);
-}
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -47,7 +23,7 @@ export default async function HomePage() {
   if (!currentUser?.hasSeenRickOnboarding) redirect("/welcome");
 
   // ── Fetch posts and recipes only (reviews demoted from feed) ──────────────
-  const [rawPosts, rawRecipes, topWhiskeys] = await Promise.all([
+  const [rawPosts, rawRecipes] = await Promise.all([
     prisma.post.findMany({
       where: { status: "APPROVED" },
       orderBy: { createdAt: "desc" },
@@ -63,9 +39,9 @@ export default async function HomePage() {
       take: 20,
       include: {
         user: { select: { handle: true, displayName: true, avatarUrl: true } },
+        taggedWhiskey: { select: { id: true, name: true, brand: true } },
       },
     }),
-    getTopRatedWhiskeys(),
   ]);
 
   // ── Merge and sort ────────────────────────────────────────────────────────
@@ -139,40 +115,9 @@ export default async function HomePage() {
       <AppBar />
 
       <main className="flex-1 pb-20">
-        {/* ── Top Rated discovery strip ─────────────────────────────────────────
-            PHASE 4 TODO: When photo uploads land at scale, consider augmenting
-            this strip with user-submitted photos. The "Top Rated" strip should
-            remain as a permanent discovery element even after photos exist.
-        ──────────────────────────────────────────────────────────────────────── */}
-        {topWhiskeys.length > 0 && (
-          <section className="pt-4 pb-2">
-            <div className="flex items-baseline justify-between px-4 mb-2">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-[#0d3c54]">
-                Top Rated
-              </h2>
-              <Link href="/search" className="text-xs font-bold text-[#551904] hover:underline">
-                See all
-              </Link>
-            </div>
-            <div className="flex gap-3 overflow-x-auto no-scrollbar px-4 pb-1">
-              {topWhiskeys.map((w) => (
-                <Link
-                  key={w.id}
-                  href={`/whiskey/${w.id}`}
-                  className="flex-shrink-0 w-28 flex flex-col items-center gap-1.5 bg-white rounded-2xl border border-gray-100 shadow-sm p-3 hover:border-[#0d3c54]/20 transition-colors active:scale-95"
-                >
-                  <div className="w-14 h-20 flex items-center justify-center">
-                    <Image src={w.imageUrl} alt={w.name} width={40} height={72} className="object-contain" />
-                  </div>
-                  <p className="text-[11px] font-bold text-[#0d3c54] text-center line-clamp-2 leading-tight">
-                    {w.name}
-                  </p>
-                  {w.avgRating && <StarRating rating={w.avgRating} size="sm" showValue />}
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
+        {/* FUTURE: surface a "Top Rated Recipes" strip here once recipes accumulate
+            rating data; consider an adaptive fallback that switches between top
+            recipes and top whiskeys based on data availability. */}
 
         {/* ── Rick card (per-session dismissible) ──────────────────────────── */}
         <div className="pt-4 pb-2">

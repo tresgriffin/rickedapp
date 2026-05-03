@@ -18,7 +18,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/search", icon: Search, label: "Search" },
   { href: null, icon: Plus, label: "Add", isAdd: true },
   { href: "/profile", icon: User, label: "Profile" },
-  { href: "/menu", icon: Menu, label: "More" },
+  { href: "/more", icon: Menu, label: "More" },
 ];
 
 const ADD_OPTIONS = [
@@ -110,7 +110,13 @@ export default function BottomNav() {
       {/* ── Nav bar ──────────────────────────────────────────────────────── */}
       <nav className="fixed bottom-0 left-0 right-0 z-20 bg-[#0d3c54] flex items-center justify-around h-16 px-1">
         {NAV_ITEMS.map(({ href, icon: Icon, label, isAdd }) => {
-          const isActive = href ? pathname.startsWith(href) : false;
+          // /profile only highlights on the user's own profile (/profile exactly),
+          // not on /profile/[handle] pages which belong to other users.
+          const isActive = href
+            ? href === "/profile"
+              ? pathname === "/profile"
+              : pathname.startsWith(href)
+            : false;
 
           if (isAdd) {
             return (

@@ -35,6 +35,7 @@ export default async function RecipePage({
         where: { id },
         include: {
           user: { select: { handle: true, displayName: true, avatarUrl: true } },
+          taggedWhiskey: { select: { id: true, name: true, brand: true } },
         },
       }),
       prisma.like.count({ where: { targetType: "RECIPE", targetId: id } }),
@@ -155,6 +156,16 @@ export default async function RecipePage({
         )}
 
         <div className="px-4 pt-5 pb-2 flex flex-col gap-6">
+          {/* Featured whiskey chip */}
+          {recipe.taggedWhiskey && (
+            <Link
+              href={`/whiskey/${recipe.taggedWhiskey.id}`}
+              className="self-start inline-flex items-center gap-1.5 rounded-full bg-[#fffbfa] border border-[#551904]/20 px-3 py-1.5 text-sm font-bold text-[#551904] hover:bg-[#551904]/5 transition-colors"
+            >
+              🥃 Made with {recipe.taggedWhiskey.name}
+            </Link>
+          )}
+
           {/* Ingredients */}
           <section>
             <h2 className="text-xs font-bold uppercase tracking-widest text-[#0d3c54] mb-3">

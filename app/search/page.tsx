@@ -41,6 +41,7 @@ interface RecipeResult {
   avgStars: number | null;
   ratingCount: number;
   user: { handle: string | null; displayName: string | null; avatarUrl: string | null };
+  taggedWhiskey: { id: string; name: string; brand: string } | null;
 }
 
 interface UserResult {
@@ -110,7 +111,26 @@ export default function SearchPage() {
     <div className="flex flex-col min-h-screen bg-[#fffbfa]">
       <AppBar />
 
-      <main className="flex-1 pb-20">
+      {/* ── Sticky Rick affordance — fixed above bottom nav when query is active ── */}
+      {query && (
+        <div className="fixed bottom-16 left-0 right-0 z-10 px-4 py-2">
+          <div className="bg-[#0d3c54] rounded-2xl px-4 py-3 flex items-center justify-between gap-3 shadow-lg">
+            <div>
+              <p className="text-xs font-bold text-white">Not finding it?</p>
+              <p className="text-xs text-white/60">Rick can suggest something.</p>
+            </div>
+            <Link
+              href={`/rick?prompt=${encodeURIComponent(query)}`}
+              className="flex-shrink-0 flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-[#0d3c54] hover:bg-white/90 transition-colors"
+            >
+              <Sparkles size={12} />
+              Ask Rick
+            </Link>
+          </div>
+        </div>
+      )}
+
+      <main className="flex-1 pb-36">
         {/* ── Search bar + category chips ───────────────────────────────── */}
         <div className="sticky top-[52px] z-10 bg-[#fffbfa] px-4 pt-3 pb-2 border-b border-gray-100">
           <div className="relative">
@@ -160,20 +180,6 @@ export default function SearchPage() {
             />
           )}
 
-          {/* ── Whiskeys section ─────────────────────────────────────────── */}
-          {!loading && whiskeys.length > 0 && (
-            <section className="flex flex-col gap-3">
-              {query && (
-                <h2 className="text-xs font-bold uppercase tracking-widest text-[#0d3c54]">
-                  Whiskeys
-                </h2>
-              )}
-              {whiskeys.map((w) => (
-                <WhiskeyCard key={w.id} whiskey={w} />
-              ))}
-            </section>
-          )}
-
           {/* ── Recipes section ──────────────────────────────────────────── */}
           {!loading && recipes.length > 0 && (
             <section className="flex flex-col gap-3">
@@ -186,6 +192,11 @@ export default function SearchPage() {
                   href={`/recipe/${r.id}`}
                   className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-1.5 hover:border-[#0d3c54]/20 transition-colors active:scale-[0.98]"
                 >
+                  {r.taggedWhiskey && (
+                    <span className="self-start inline-flex items-center gap-1 text-[11px] font-bold text-[#551904] bg-[#551904]/8 rounded-full px-2 py-0.5">
+                      🥃 {r.taggedWhiskey.name}
+                    </span>
+                  )}
                   <p className="text-sm font-bold text-[#0d3c54]">{r.title}</p>
                   {r.description && (
                     <p className="text-xs text-gray-500 line-clamp-1">{r.description}</p>
@@ -202,6 +213,20 @@ export default function SearchPage() {
                     </span>
                   </div>
                 </Link>
+              ))}
+            </section>
+          )}
+
+          {/* ── Whiskeys section ─────────────────────────────────────────── */}
+          {!loading && whiskeys.length > 0 && (
+            <section className="flex flex-col gap-3">
+              {query && (
+                <h2 className="text-xs font-bold uppercase tracking-widest text-[#0d3c54]">
+                  Whiskeys
+                </h2>
+              )}
+              {whiskeys.map((w) => (
+                <WhiskeyCard key={w.id} whiskey={w} />
               ))}
             </section>
           )}
@@ -234,22 +259,6 @@ export default function SearchPage() {
             </section>
           )}
 
-          {/* ── Rick affordance ──────────────────────────────────────────── */}
-          {query && !loading && (
-            <div className="bg-[#0d3c54] rounded-2xl p-4 flex items-center justify-between gap-3">
-              <div>
-                <p className="text-xs font-bold text-white">Not finding it?</p>
-                <p className="text-xs text-white/60">Rick can suggest something.</p>
-              </div>
-              <Link
-                href={`/rick?prompt=${encodeURIComponent(query)}`}
-                className="flex-shrink-0 flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-[#0d3c54] hover:bg-white/90 transition-colors"
-              >
-                <Sparkles size={12} />
-                Ask Rick
-              </Link>
-            </div>
-          )}
         </div>
       </main>
 

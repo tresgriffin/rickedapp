@@ -19,15 +19,18 @@ interface RecipeCardProps {
       displayName: string | null;
       avatarUrl: string | null;
     };
+    taggedWhiskey?: { id: string; name: string; brand: string } | null;
     likeCount: number;
     commentCount: number;
   };
   isLiked: boolean;
   initialComments: CommentWithUser[];
   ratingStats?: RecipeRatingStats | null;
+  /** When true, omits the tagged whiskey chip (e.g. on the brand page where context is already clear). */
+  hideWhiskeyChip?: boolean;
 }
 
-export default function RecipeCard({ recipe, isLiked, initialComments, ratingStats }: RecipeCardProps) {
+export default function RecipeCard({ recipe, isLiked, initialComments, ratingStats, hideWhiskeyChip }: RecipeCardProps) {
   const ingredientCount = Array.isArray(recipe.ingredients)
     ? recipe.ingredients.length
     : 0;
@@ -73,6 +76,16 @@ export default function RecipeCard({ recipe, isLiked, initialComments, ratingSta
             </p>
           </div>
         </div>
+
+        {/* Tagged whiskey chip */}
+        {!hideWhiskeyChip && recipe.taggedWhiskey && (
+          <Link
+            href={`/whiskey/${recipe.taggedWhiskey.id}`}
+            className="self-start inline-flex items-center gap-1.5 rounded-full bg-[#fffbfa] border border-[#551904]/20 px-3 py-1 text-xs font-bold text-[#551904] hover:bg-[#551904]/5 transition-colors"
+          >
+            🥃 {recipe.taggedWhiskey.name}
+          </Link>
+        )}
 
         {/* Title + ingredient count */}
         <Link href={`/recipe/${recipe.id}`} className="block group">
