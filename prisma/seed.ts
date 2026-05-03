@@ -274,6 +274,8 @@ async function main() {
         handle: u.handle,
         bio: u.bio,
         hashedPassword,
+        // Demo users skip onboarding so the feed is reachable immediately in dev
+        hasSeenRickOnboarding: true,
       },
     });
     createdUsers.push({ id: user.id, handle: user.handle! });
@@ -422,6 +424,7 @@ async function main() {
     data: {
       userId: tresUser.id,
       title: "Classic Old Fashioned",
+      taggedWhiskeyId: find("Knob Creek 9 Year"),
       description:
         "The original cocktail — bourbon, bitters, a little sugar, a big piece of orange peel. Nothing else. Don't let anyone put muddled fruit in yours.",
       ingredients: [
@@ -447,6 +450,7 @@ async function main() {
     data: {
       userId: brianUser.id,
       title: "Whiskey Sour",
+      taggedWhiskeyId: find("Bulleit Bourbon"),
       description:
         "Tart, a little sweet, and actually really refreshing. Adding an egg white makes it silky and gives you that foam on top — it sounds weird but trust the process.",
       ingredients: [

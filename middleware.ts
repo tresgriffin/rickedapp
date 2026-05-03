@@ -15,5 +15,9 @@ export const config = {
     "/review/:path*",
     "/post/:path*",
     "/recipe/:path*",
+    "/welcome/:path*",
+    "/welcome",
+    "/rick/:path*",
+    "/rick",
   ],
 };

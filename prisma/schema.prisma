@@ -40,12 +40,13 @@ model User {
   emailVerified  DateTime?
   image          String?
   // Ricked-specific fields
-  hashedPassword String?
-  handle         String?   @unique
-  displayName    String?
-  bio            String?
-  avatarUrl      String?
-  createdAt      DateTime  @default(now())
+  hashedPassword        String?
+  handle                String?   @unique
+  displayName           String?
+  bio                   String?
+  avatarUrl             String?
+  createdAt             DateTime  @default(now())
+  hasSeenRickOnboarding Boolean   @default(false)
 
   accounts Account[]
   sessions Session[]
@@ -55,6 +56,7 @@ model User {
   reviews         Review[]
   posts           Post[]
   recipes         Recipe[]
+  recipeRatings   RecipeRating[]
   likes           Like[]
   comments        Comment[]
   following       Follow[]  @relation("Follower")
@@ -116,6 +118,7 @@ model Whiskey {
   createdByUser User?    @relation(fields: [createdByUserId], references: [id])
   reviews       Review[]
   posts         Post[]   @relation("TaggedWhiskey")
+  taggedRecipes Recipe[] @relation("RecipeWhiskey")
 
   @@index([name])
   @@index([brand])
@@ -159,19 +162,48 @@ model Post {
 }
 
 model Recipe {
-  id          String           @id @default(cuid())
-  userId      String
-  title       String
-  description String?          @db.Text
-  ingredients Json
-  steps       Json
-  mediaUrl    String?
-  status      ModerationStatus @default(APPROVED)
-  createdAt   DateTime         @default(now())
+  id                   String           @id @default(cuid())
+  userId               String
+  title                String
+  description          String?          @db.Text
+  ingredients          Json
+  steps                Json
+  mediaUrl             String?
+  status               ModerationStatus @default(APPROVED)
+  taggedWhiskeyId      String?
+  // Phase 7: AI-generated recipes start unpublished; user sets isPublished via "I made this" flow
+  isAiGenerated        Boolean          @default(false)
+  isPublished          Boolean          @default(true)
+  // Phase 7: links this recipe to the Rick conversation that generated it (FK added when Conversation table exists)
+  // FUTURE: remix functionality — allow users to fork and remix recipes in v1.1
+  sourceConversationId String?
+  createdAt            DateTime         @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taggedWhiskey Whiskey?      @relation("RecipeWhiskey", fields: [taggedWhiskeyId], references: [id])
+  ratings       RecipeRating[]
 
   @@index([userId])
+  @@index([taggedWhiskeyId])
+  @@index([status, createdAt])
+}
+
+// Letterboxd-style dual rating: stars (quality) + wouldMakeAgain (preference).
+// At least one must be non-null to count as a rating.
+// Both are nullable so users can express either signal independently.
+model RecipeRating {
+  userId         String
+  recipeId       String
+  stars          Int?      // 1–5, nullable — how good is this recipe?
+  wouldMakeAgain Boolean?  // nullable — would I make this again?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, recipeId])
+  @@index([recipeId])
 }
 
 // Polymorphic likes — targetType + targetId identify the liked entity.

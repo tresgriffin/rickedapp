@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ImagePlus, Plus, X } from "lucide-react";
 import Link from "next/link";
 import AppBar from "@/components/app-bar";
 import LoadingDots from "@/components/loading-dots";
 import SuccessOverlay from "@/components/success-overlay";
+import WhiskeyPicker from "@/components/whiskey-picker";
 import { createRecipe } from "@/lib/actions/recipe";
 
 interface Ingredient {
@@ -14,10 +15,20 @@ interface Ingredient {
   item: string;
 }
 
+interface WhiskeyResult {
+  id: string;
+  name: string;
+  brand: string;
+}
+
 export default function NewRecipePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const prefilledWhiskeyId = searchParams.get("whiskeyId");
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [taggedWhiskey, setTaggedWhiskey] = useState<WhiskeyResult | null>(null);
   const [ingredients, setIngredients] = useState<Ingredient[]>([{ amount: "", item: "" }]);
   const [steps, setSteps] = useState<string[]>(["", ""]);
   const [mediaFile, setMediaFile] = useState<File | null>(null);
@@ -26,8 +37,21 @@ export default function NewRecipePage() {
   const [success, setSuccess] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  // Pre-populate whiskey picker when launched from a brand page
+  useEffect(() => {
+    if (!prefilledWhiskeyId) return;
+    fetch(`/api/whiskeys/${prefilledWhiskeyId}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.id) setTaggedWhiskey({ id: d.id, name: d.name, brand: d.brand });
+      })
+      .catch(() => {});
+  }, [prefilledWhiskeyId]);
+
   function updateIngredient(i: number, field: keyof Ingredient, value: string) {
-    setIngredients((prev) => prev.map((ing, idx) => idx === i ? { ...ing, [field]: value } : ing));
+    setIngredients((prev) =>
+      prev.map((ing, idx) => (idx === i ? { ...ing, [field]: value } : ing))
+    );
   }
 
   function removeIngredient(i: number) {
@@ -35,7 +59,7 @@ export default function NewRecipePage() {
   }
 
   function updateStep(i: number, value: string) {
-    setSteps((prev) => prev.map((s, idx) => idx === i ? value : s));
+    setSteps((prev) => prev.map((s, idx) => (idx === i ? value : s)));
   }
 
   function removeStep(i: number) {
@@ -51,6 +75,7 @@ export default function NewRecipePage() {
     fd.append("description", description.trim());
     fd.append("ingredients", JSON.stringify(ingredients));
     fd.append("steps", JSON.stringify(steps));
+    if (taggedWhiskey) fd.append("taggedWhiskeyId", taggedWhiskey.id);
     if (mediaFile) fd.append("media", mediaFile);
 
     setSubmitting(true);
@@ -110,6 +135,18 @@ export default function NewRecipePage() {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="One line about this recipe."
               className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+            />
+          </div>
+
+          {/* Featured whiskey */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-bold text-[#0d3c54]">
+              Featured whiskey <span className="font-normal text-gray-400">(optional)</span>
+            </label>
+            <WhiskeyPicker
+              value={taggedWhiskey}
+              onChange={setTaggedWhiskey}
+              placeholder="Search for the main spirit..."
             />
           </div>
 
@@ -201,7 +238,10 @@ export default function NewRecipePage() {
                 <span className="text-sm text-gray-700 truncate flex-1">{mediaFile.name}</span>
                 <button
                   type="button"
-                  onClick={() => { setMediaFile(null); if (fileRef.current) fileRef.current.value = ""; }}
+                  onClick={() => {
+                    setMediaFile(null);
+                    if (fileRef.current) fileRef.current.value = "";
+                  }}
                   className="text-xs text-[#551904] font-bold"
                 >
                   Remove
@@ -241,7 +281,9 @@ export default function NewRecipePage() {
               <span className="flex items-center justify-center gap-2">
                 Sharing <LoadingDots />
               </span>
-            ) : "Share this recipe"}
+            ) : (
+              "Share this recipe"
+            )}
           </button>
         </form>
       </main>

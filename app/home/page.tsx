@@ -6,11 +6,12 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { computeAvgRating } from "@/lib/format";
 import { fetchInitialComments } from "@/lib/batch-comments";
+import { fetchRecipeRatingStats, type RecipeRatingStats } from "@/lib/recipe-rating-stats";
 import AppBar from "@/components/app-bar";
 import BottomNav from "@/components/bottom-nav";
 import PostCard from "@/components/post-card";
-import ReviewCard from "@/components/review-card";
 import RecipeCard from "@/components/recipe-card";
+import RickCard from "@/components/rick-card";
 import StarRating from "@/components/star-rating";
 import EmptyState from "@/components/empty-state";
 
@@ -38,8 +39,15 @@ export default async function HomePage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
-  // ── Fetch all three content types in parallel ──────────────────────────────
-  const [rawPosts, rawReviews, rawRecipes, topWhiskeys] = await Promise.all([
+  // Onboarding gate — redirect new users to the Rick handshake
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { hasSeenRickOnboarding: true },
+  });
+  if (!currentUser?.hasSeenRickOnboarding) redirect("/welcome");
+
+  // ── Fetch posts and recipes only (reviews demoted from feed) ──────────────
+  const [rawPosts, rawRecipes, topWhiskeys] = await Promise.all([
     prisma.post.findMany({
       where: { status: "APPROVED" },
       orderBy: { createdAt: "desc" },
@@ -49,17 +57,8 @@ export default async function HomePage() {
         taggedWhiskey: { select: { id: true, name: true, brand: true } },
       },
     }),
-    prisma.review.findMany({
-      where: { status: "APPROVED" },
-      orderBy: { createdAt: "desc" },
-      take: 20,
-      include: {
-        user: { select: { handle: true, displayName: true, avatarUrl: true } },
-        whiskey: { select: { id: true, name: true, brand: true } },
-      },
-    }),
     prisma.recipe.findMany({
-      where: { status: "APPROVED" },
+      where: { status: "APPROVED", isPublished: true },
       orderBy: { createdAt: "desc" },
       take: 20,
       include: {
@@ -69,37 +68,32 @@ export default async function HomePage() {
     getTopRatedWhiskeys(),
   ]);
 
-  // ── Merge and sort, take top 30 ─────────────────────────────────────────────
+  // ── Merge and sort ────────────────────────────────────────────────────────
   type FeedItem =
     | { kind: "post"; item: (typeof rawPosts)[number] }
-    | { kind: "review"; item: (typeof rawReviews)[number] }
     | { kind: "recipe"; item: (typeof rawRecipes)[number] };
 
   const merged: FeedItem[] = [
     ...rawPosts.map((item) => ({ kind: "post" as const, item })),
-    ...rawReviews.map((item) => ({ kind: "review" as const, item })),
     ...rawRecipes.map((item) => ({ kind: "recipe" as const, item })),
   ]
     .sort((a, b) => b.item.createdAt.getTime() - a.item.createdAt.getTime())
     .slice(0, 30);
 
   const postIds = merged.filter((f) => f.kind === "post").map((f) => f.item.id);
-  const reviewIds = merged.filter((f) => f.kind === "review").map((f) => f.item.id);
   const recipeIds = merged.filter((f) => f.kind === "recipe").map((f) => f.item.id);
 
   const allOrClauses = [
     ...(postIds.length ? [{ targetType: "POST" as const, targetId: { in: postIds } }] : []),
-    ...(reviewIds.length ? [{ targetType: "REVIEW" as const, targetId: { in: reviewIds } }] : []),
     ...(recipeIds.length ? [{ targetType: "RECIPE" as const, targetId: { in: recipeIds } }] : []),
   ];
 
-  // ── Batch social metadata ───────────────────────────────────────────────────
   const commentTargets = merged.map((f) => ({
-    targetType: f.kind.toUpperCase() as "POST" | "REVIEW" | "RECIPE",
+    targetType: f.kind.toUpperCase() as "POST" | "RECIPE",
     targetId: f.item.id,
   }));
 
-  const [likeCounts, commentCounts, userLikes, initialCommentsMap] =
+  const [likeCounts, commentCounts, userLikes, initialCommentsMap, recipeRatings] =
     allOrClauses.length > 0
       ? await Promise.all([
           prisma.like.groupBy({
@@ -117,8 +111,9 @@ export default async function HomePage() {
             select: { targetType: true, targetId: true },
           }),
           fetchInitialComments(commentTargets),
+          fetchRecipeRatingStats(recipeIds),
         ])
-      : [[], [], [], new Map()];
+      : [[], [], [], new Map(), new Map()];
 
   const likeMap = new Map(
     (likeCounts as { targetType: string; targetId: string; _count: { userId: number } }[]).map(
@@ -136,9 +131,8 @@ export default async function HomePage() {
     )
   );
 
-  // PHASE 6: Personalize feed order by following graph. Currently sorted purely
-  //   by recency. To prioritize followed users, fetch the viewer's following list
-  //   and boost those items to the top before slicing to 30.
+  // PHASE 6: feed personalization by following graph would slot in here
+  // PHASE 6: Personalize feed order by following graph — sort followed users' content first.
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fffbfa]">
@@ -180,8 +174,13 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* ── Feed ─────────────────────────────────────────────────────────── */}
-        <section className="px-4 pt-4 flex flex-col gap-3">
+        {/* ── Rick card (per-session dismissible) ──────────────────────────── */}
+        <div className="pt-4 pb-2">
+          <RickCard />
+        </div>
+
+        {/* ── Feed (posts + recipes only; reviews are on brand pages) ──────── */}
+        <section className="px-4 pt-2 flex flex-col gap-3">
           <h2 className="text-xs font-bold uppercase tracking-widest text-[#0d3c54]">
             What&apos;s pouring
           </h2>
@@ -193,12 +192,13 @@ export default async function HomePage() {
             />
           ) : (
             merged.map((entry) => {
-              const typeKey = entry.kind.toUpperCase() as "POST" | "REVIEW" | "RECIPE";
+              const typeKey = entry.kind.toUpperCase() as "POST" | "RECIPE";
               const mapKey = `${typeKey}:${entry.item.id}`;
               const likeCount = likeMap.get(mapKey) ?? 0;
               const commentCount = commentMap.get(mapKey) ?? 0;
               const isLiked = likedSet.has(mapKey);
-              const initialComments = (initialCommentsMap as Map<string, unknown[]>).get(mapKey) ?? [];
+              const initialComments =
+                (initialCommentsMap as Map<string, unknown[]>).get(mapKey) ?? [];
 
               if (entry.kind === "post") {
                 return (
@@ -206,26 +206,24 @@ export default async function HomePage() {
                     key={mapKey}
                     post={{ ...entry.item, likeCount, commentCount }}
                     isLiked={isLiked}
-                    initialComments={initialComments as Parameters<typeof PostCard>[0]["initialComments"]}
+                    initialComments={
+                      initialComments as Parameters<typeof PostCard>[0]["initialComments"]
+                    }
                   />
                 );
               }
-              if (entry.kind === "review") {
-                return (
-                  <ReviewCard
-                    key={mapKey}
-                    review={{ ...entry.item, likeCount, commentCount }}
-                    isLiked={isLiked}
-                    initialComments={initialComments as Parameters<typeof ReviewCard>[0]["initialComments"]}
-                  />
-                );
-              }
+
+              const ratingStats = (recipeRatings as Map<string, RecipeRatingStats>).get(entry.item.id);
+
               return (
                 <RecipeCard
                   key={mapKey}
                   recipe={{ ...entry.item, likeCount, commentCount }}
                   isLiked={isLiked}
-                  initialComments={initialComments as Parameters<typeof RecipeCard>[0]["initialComments"]}
+                  initialComments={
+                    initialComments as Parameters<typeof RecipeCard>[0]["initialComments"]
+                  }
+                  ratingStats={ratingStats}
                 />
               );
             })

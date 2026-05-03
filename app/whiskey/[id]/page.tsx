@@ -212,11 +212,12 @@ export default async function WhiskeyPage({
           </Link>
         </div>
 
-        {/* Tabs: Reviews | Photos & Posts */}
+        {/* Tabs: Recipes (primary) | Reviews | Photos & Posts */}
         <WhiskeyPageTabs
+          whiskeyId={whiskey.id}
+          whiskeyName={whiskey.name}
           reviews={reviewsWithSocial}
           posts={postsWithSocial}
-          whiskeyName={whiskey.name}
         />
       </main>
 

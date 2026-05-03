@@ -56,7 +56,8 @@ export default function SignupPage() {
       setError("Account created! Head to login to sign in.");
       router.replace("/login");
     } else {
-      router.replace("/home");
+      // New users see the Rick handshake before the feed
+      router.replace("/welcome");
     }
   }
 

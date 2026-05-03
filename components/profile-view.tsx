@@ -64,14 +64,14 @@ interface ProfileViewProps {
 }
 
 const TABS = [
-  { id: "reviews", label: "Reviews" },
-  { id: "posts", label: "Posts" },
   { id: "recipes", label: "Recipes" },
+  { id: "posts", label: "Posts" },
+  { id: "reviews", label: "Reviews" },
   { id: "saved", label: "Saved" },
 ];
 
 export default function ProfileView({ user, isOwnProfile, isFollowing }: ProfileViewProps) {
-  const [activeTab, setActiveTab] = useState("reviews");
+  const [activeTab, setActiveTab] = useState("recipes");
 
   return (
     <div>

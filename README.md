@@ -1,6 +1,16 @@
 # Ricked
 
-A social app for bourbon and whiskey lovers. Discover, rate, review, and share your favorite spirits — no pretension, just good pours and good company.
+A recipe-first whiskey community app with an AI mixology assistant at its center. Whiskey is the foundation. Cocktails and Rick are the experience.
+
+## Product Vision
+
+Ricked is not a review app that happens to have a chatbot. It's a cocktail discovery platform built around a community of whiskey drinkers and an AI character named Rick.
+
+**What Ricked is:** A place to find cocktail recipes using what's in your cabinet, share what you're making, and talk to Rick when you need ideas. Whiskey-first but cocktail-savvy. Unpretentious by design.
+
+**What Ricked isn't:** A competitor to Distiller or NEAT. We're not trying to be the authority on whiskey. We're trying to be the friend who helps you make something good tonight.
+
+**Rick** is the AI mixology assistant. Warm, plainspoken, never lecture-y. "No snobbery. Fish sauce welcome." Rick lives in `/rick` and eventually surfaces across the app. In Phase 7, Rick is powered by the Anthropic API. Reviews stay in the product as a personal-logging feature but are no longer the social centrepiece.
 
 ## Tech Stack
 
@@ -39,7 +49,7 @@ Every piece of microcopy in Ricked is written by a character named **Rick**. Ric
 
 **Why this matters:** Rick is not just a tone guide. In a future phase, there will be an in-app AI assistant literally named Rick, powered by the Anthropic API. Every piece of microcopy you write now is Rick's first impression on users. Consistent voice makes the chatbot feel native when it arrives.
 
-**Brian is the user. Rick is the voice.** These are two distinct roles — don't confuse them.
+**Brian is the user. Rick is the voice.** These are two distinct roles. In Phase 7, Rick also becomes an interactive AI character — but every piece of microcopy you see before then is still Rick talking to Brian. Consistency now makes the chatbot feel native when it arrives.
 
 ## Brand Guide
 
@@ -154,6 +164,19 @@ Open [http://localhost:3000](http://localhost:3000). The splash screen redirects
 - Push notifications
 - Direct messaging
 
-### Future (not scaffolded)
-- **Rick** — an in-app AI assistant powered by the Anthropic API, named to play on "Ricked." Will help users with bourbon recommendations, plain-language tasting note explanations, and recipe suggestions. Planned after the core social app is stable.
+### Phase 7 — Rick AI chat (next)
+- Anthropic API integration, chat UI, system prompt
+- Rate limiting: 5 conversations/day free
+- AI recipe generation, "I made this" publish flow
+- Conversation logging (for future training data)
+
+### Phase 8 — Pro tier + pre-launch
+- Pro tier ($5/mo): unlimited Rick, recipe collections, "my home bar" smart filtering, recipe export
+- Expanded seed catalog (~50 classic cocktail recipes, ~200+ whiskeys)
+- Real bottle imagery, Vercel deployment, final accessibility pass
+
+### Out of scope for MVP
+- E-commerce / "where to buy" — cut due to interstate liquor-sale legal complexity
+- Push notifications
+- Direct messaging
 - Facebook and Apple OAuth (buttons stubbed in UI with TODO comments)

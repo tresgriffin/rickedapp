@@ -18,6 +18,7 @@ export async function createRecipe(
 
   const title = ((formData.get("title") as string | null) ?? "").trim();
   const description = ((formData.get("description") as string | null) ?? "").trim() || null;
+  const taggedWhiskeyId = (formData.get("taggedWhiskeyId") as string | null)?.trim() || null;
   const mediaFile = formData.get("media") as File | null;
 
   let ingredients: Ingredient[] = [];
@@ -50,6 +51,7 @@ export async function createRecipe(
       userId: session.user.id,
       title,
       description,
+      taggedWhiskeyId,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ingredients: validIngredients as any,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

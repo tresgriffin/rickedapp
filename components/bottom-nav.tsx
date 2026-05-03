@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Home, Search, Plus, User, Menu, Star, Pencil, X } from "lucide-react";
+import { Home, Search, Plus, User, Menu, Pencil, Sparkles, X } from "lucide-react";
 import RocksGlass from "@/components/icons/rocks-glass";
 
 interface NavItem {
@@ -23,22 +23,19 @@ const NAV_ITEMS: NavItem[] = [
 
 const ADD_OPTIONS = [
   {
-    href: "/review/new",
-    icon: Star,
-    label: "Review",
-    description: "Rate a whiskey",
-  },
-  {
     href: "/post/new",
     icon: Pencil,
     label: "Post",
-    description: "Share what's in your glass",
   },
   {
     href: "/recipe/new",
     Icon: RocksGlass,
     label: "Recipe",
-    description: "Share a cocktail recipe",
+  },
+  {
+    href: "/rick",
+    icon: Sparkles,
+    label: "Ask Rick",
   },
 ] as const;
 

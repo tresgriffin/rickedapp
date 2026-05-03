@@ -11,6 +11,8 @@ import BottomNav from "@/components/bottom-nav";
 import Avatar from "@/components/avatar";
 import LikeButton from "@/components/like-button";
 import CommentSection from "@/components/comment-section";
+import RecipeRatingSection from "@/components/recipe-rating-section";
+import { fetchRecipeRatingStats } from "@/lib/recipe-rating-stats";
 
 interface Ingredient {
   amount: string;
@@ -27,7 +29,7 @@ export default async function RecipePage({
 
   const { id } = await params;
 
-  const [recipe, likeCount, commentCount, userLike, initialComments] =
+  const [recipe, likeCount, commentCount, userLike, initialComments, ratingStatsMap, myRating] =
     await Promise.all([
       prisma.recipe.findUnique({
         where: { id },
@@ -54,15 +56,23 @@ export default async function RecipePage({
           user: { select: { handle: true, displayName: true, avatarUrl: true } },
         },
       }),
+      fetchRecipeRatingStats([id]),
+      prisma.recipeRating.findUnique({
+        where: { userId_recipeId: { userId: session.user.id, recipeId: id } },
+        select: { stars: true, wouldMakeAgain: true },
+      }),
     ]);
 
   if (!recipe) notFound();
 
   const ingredients = recipe.ingredients as unknown as Ingredient[];
   const steps = recipe.steps as unknown as string[];
-  const backHref = recipe.user.handle
-    ? `/profile/${recipe.user.handle}`
-    : "/profile";
+  const backHref = recipe.user.handle ? `/profile/${recipe.user.handle}` : "/profile";
+  const ratingStats = (ratingStatsMap as Map<string, import("@/lib/recipe-rating-stats").RecipeRatingStats>).get(id) ?? {
+    avgStars: null,
+    wouldMakeAgainPct: null,
+    ratingCount: 0,
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fffbfa]">
@@ -118,6 +128,15 @@ export default async function RecipePage({
               targetId={recipe.id}
               initialComments={initialComments}
               initialCount={commentCount}
+            />
+          </div>
+
+          {/* Ratings */}
+          <div className="border-t border-gray-100 pt-3">
+            <RecipeRatingSection
+              recipeId={recipe.id}
+              stats={ratingStats}
+              myRating={myRating ?? null}
             />
           </div>
         </div>

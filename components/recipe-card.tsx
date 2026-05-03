@@ -5,6 +5,7 @@ import LikeButton from "@/components/like-button";
 import CommentSection from "@/components/comment-section";
 import { timeAgo } from "@/lib/format";
 import type { CommentWithUser } from "@/lib/actions/comment";
+import type { RecipeRatingStats } from "@/lib/recipe-rating-stats";
 
 interface RecipeCardProps {
   recipe: {
@@ -23,9 +24,10 @@ interface RecipeCardProps {
   };
   isLiked: boolean;
   initialComments: CommentWithUser[];
+  ratingStats?: RecipeRatingStats | null;
 }
 
-export default function RecipeCard({ recipe, isLiked, initialComments }: RecipeCardProps) {
+export default function RecipeCard({ recipe, isLiked, initialComments, ratingStats }: RecipeCardProps) {
   const ingredientCount = Array.isArray(recipe.ingredients)
     ? recipe.ingredients.length
     : 0;
@@ -81,6 +83,21 @@ export default function RecipeCard({ recipe, isLiked, initialComments }: RecipeC
             {ingredientCount} ingredient{ingredientCount === 1 ? "" : "s"}
           </span>
         </Link>
+
+        {/* Compact rating stats */}
+        {ratingStats && ratingStats.ratingCount > 0 && (
+          <div className="flex items-center gap-3 text-xs text-gray-500">
+            {ratingStats.avgStars != null && (
+              <span className="font-bold text-[#0d3c54]">{ratingStats.avgStars}★</span>
+            )}
+            {ratingStats.wouldMakeAgainPct != null && (
+              <span>{ratingStats.wouldMakeAgainPct}% 👍</span>
+            )}
+            <span className="text-gray-400">
+              {ratingStats.ratingCount} {ratingStats.ratingCount === 1 ? "rating" : "ratings"}
+            </span>
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex items-center gap-5 pt-1 border-t border-gray-50">
