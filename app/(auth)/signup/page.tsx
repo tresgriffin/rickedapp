@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AppBar from "@/components/app-bar";
+import LoadingDots from "@/components/loading-dots";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -156,7 +157,7 @@ export default function SignupPage() {
               disabled={loading}
               className="mt-2 w-full rounded-full bg-[#0d3c54] py-3.5 text-sm font-bold text-white transition hover:bg-[#0a2f42] focus:outline-none focus:ring-2 focus:ring-[#0d3c54] focus:ring-offset-2 disabled:opacity-60"
             >
-              {loading ? "Creating account…" : "Create Account"}
+              {loading ? <span className="flex items-center justify-center gap-2">Creating account <LoadingDots /></span> : "Create Account"}
             </button>
           </form>
 

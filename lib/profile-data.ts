@@ -4,7 +4,8 @@ import type { CommentWithUser } from "@/lib/actions/comment";
 
 export async function fetchProfileData(
   where: { id: string } | { handle: string },
-  viewerUserId: string
+  viewerUserId: string,
+  isOwnProfile = false
 ) {
   const user = await prisma.user.findUnique({
     where,
@@ -26,7 +27,9 @@ export async function fetchProfileData(
         },
       },
       recipes: {
-        where: { status: "APPROVED" },
+        where: isOwnProfile
+          ? { status: "APPROVED" }
+          : { status: "APPROVED", isPublished: true },
         orderBy: { createdAt: "desc" },
         include: {
           taggedWhiskey: { select: { id: true, name: true, brand: true } },

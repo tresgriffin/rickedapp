@@ -43,6 +43,7 @@ interface RecipeResult {
   description: string | null;
   mediaUrl: string | null;
   ingredientCount: number;
+  isAiGenerated: boolean;
   createdAt: Date;
   avgStars: number | null;
   wouldMakeAgainPct: number | null;
@@ -154,6 +155,11 @@ export default function WhiskeyPageTabs({
                       <span className="text-xs text-gray-400">
                         {r.user.displayName ?? r.user.handle} · {timeAgo(r.createdAt)}
                       </span>
+                      {r.isAiGenerated && (
+                        <span className="ml-auto inline-flex items-center gap-1 text-[11px] font-bold text-[#0d3c54] bg-[#0d3c54]/8 rounded-full px-2 py-0.5">
+                          ✦ by Rick
+                        </span>
+                      )}
                     </div>
                     <p className="text-sm font-bold text-[#0d3c54]">{r.title}</p>
                     {r.description && (

@@ -38,6 +38,7 @@ interface RecipeResult {
   title: string;
   description: string | null;
   ingredientCount: number;
+  isAiGenerated: boolean;
   avgStars: number | null;
   ratingCount: number;
   user: { handle: string | null; displayName: string | null; avatarUrl: string | null };
@@ -192,11 +193,18 @@ export default function SearchPage() {
                   href={`/recipe/${r.id}`}
                   className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-1.5 hover:border-[#0d3c54]/20 transition-colors active:scale-[0.98]"
                 >
-                  {r.taggedWhiskey && (
-                    <span className="self-start inline-flex items-center gap-1 text-[11px] font-bold text-[#551904] bg-[#551904]/8 rounded-full px-2 py-0.5">
-                      🥃 {r.taggedWhiskey.name}
-                    </span>
-                  )}
+                  <div className="flex flex-wrap gap-1.5">
+                    {r.taggedWhiskey && (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#551904] bg-[#551904]/8 rounded-full px-2 py-0.5">
+                        🥃 {r.taggedWhiskey.name}
+                      </span>
+                    )}
+                    {r.isAiGenerated && (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0d3c54] bg-[#0d3c54]/8 rounded-full px-2 py-0.5">
+                        ✦ by Rick
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm font-bold text-[#0d3c54]">{r.title}</p>
                   {r.description && (
                     <p className="text-xs text-gray-500 line-clamp-1">{r.description}</p>

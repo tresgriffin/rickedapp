@@ -31,6 +31,21 @@ enum LikeTargetType {
   RECIPE
 }
 
+enum DietaryRestriction {
+  DAIRY_FREE
+  NUT_FREE
+  EGG_FREE
+  GLUTEN_FREE
+  SULFITE_FREE
+  VEGAN
+  VEGETARIAN
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
 // ─── Auth models (required by NextAuth / @auth/prisma-adapter) ────────────────
 
 model User {
@@ -47,6 +62,11 @@ model User {
   avatarUrl             String?
   createdAt             DateTime  @default(now())
   hasSeenRickOnboarding Boolean   @default(false)
+  dietaryRestrictions   DietaryRestriction[]
+  dietaryNotes          String?
+  dietaryPreferencesSet Boolean              @default(false)
+  rickConversationsToday Int                 @default(0)
+  rickLastResetAt        DateTime?
 
   accounts Account[]
   sessions Session[]
@@ -59,8 +79,9 @@ model User {
   recipeRatings   RecipeRating[]
   likes           Like[]
   comments        Comment[]
-  following       Follow[]  @relation("Follower")
-  followers       Follow[]  @relation("Following")
+  following       Follow[]       @relation("Follower")
+  followers       Follow[]       @relation("Following")
+  conversations   Conversation[]
 }
 
 model Account {
@@ -174,14 +195,14 @@ model Recipe {
   // Phase 7: AI-generated recipes start unpublished; user sets isPublished via "I made this" flow
   isAiGenerated        Boolean          @default(false)
   isPublished          Boolean          @default(true)
-  // Phase 7: links this recipe to the Rick conversation that generated it (FK added when Conversation table exists)
   // FUTURE: remix functionality — allow users to fork and remix recipes in v1.1
   sourceConversationId String?
   createdAt            DateTime         @default(now())
 
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  taggedWhiskey Whiskey?      @relation("RecipeWhiskey", fields: [taggedWhiskeyId], references: [id])
-  ratings       RecipeRating[]
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taggedWhiskey      Whiskey?      @relation("RecipeWhiskey", fields: [taggedWhiskeyId], references: [id])
+  sourceConversation Conversation? @relation("ConversationRecipes", fields: [sourceConversationId], references: [id])
+  ratings            RecipeRating[]
 
   @@index([userId])
   @@index([taggedWhiskeyId])
@@ -248,4 +269,30 @@ model Follow {
   following User @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
 
   @@id([followerId, followingId])
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages ConversationMessage[]
+  recipes  Recipe[]              @relation("ConversationRecipes")
+
+  @@index([userId, updatedAt])
+}
+
+model ConversationMessage {
+  id             String      @id @default(cuid())
+  conversationId String
+  role           MessageRole
+  content        String      @db.Text
+  recipeJson     Json?
+  createdAt      DateTime    @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
 }

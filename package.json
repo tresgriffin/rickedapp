@@ -17,6 +17,7 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.93.0",
     "@auth/prisma-adapter": "^2.11.2",
     "@base-ui/react": "^1.4.1",
     "@prisma/adapter-pg": "^7.8.0",
@@ -38,7 +39,8 @@
     "onlyBuiltDependencies": [
       "@prisma/engines",
       "prisma",
-      "msw"
+      "msw",
+      "esbuild"
     ]
   },
   "devDependencies": {

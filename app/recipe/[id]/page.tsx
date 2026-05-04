@@ -98,6 +98,13 @@ export default async function RecipePage({
             <p className="text-sm text-gray-600 leading-relaxed">{recipe.description}</p>
           )}
 
+          {/* AI attribution badge */}
+          {recipe.isAiGenerated && (
+            <span className="self-start inline-flex items-center gap-1 text-[11px] font-bold text-[#0d3c54] bg-[#0d3c54]/8 rounded-full px-2 py-0.5">
+              ✦ by Rick
+            </span>
+          )}
+
           {/* Author */}
           <Link
             href={recipe.user.handle ? `/profile/${recipe.user.handle}` : "#"}

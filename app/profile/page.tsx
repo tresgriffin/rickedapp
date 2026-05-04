@@ -10,7 +10,7 @@ export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
-  const result = await fetchProfileData({ id: session.user.id }, session.user.id);
+  const result = await fetchProfileData({ id: session.user.id }, session.user.id, true);
   if (!result) redirect("/login");
 
   return (

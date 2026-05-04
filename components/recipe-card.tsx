@@ -14,6 +14,7 @@ interface RecipeCardProps {
     mediaUrl: string | null;
     ingredients: unknown;
     createdAt: Date;
+    isAiGenerated?: boolean;
     user: {
       handle: string | null;
       displayName: string | null;
@@ -77,15 +78,22 @@ export default function RecipeCard({ recipe, isLiked, initialComments, ratingSta
           </div>
         </div>
 
-        {/* Tagged whiskey chip */}
-        {!hideWhiskeyChip && recipe.taggedWhiskey && (
-          <Link
-            href={`/whiskey/${recipe.taggedWhiskey.id}`}
-            className="self-start inline-flex items-center gap-1.5 rounded-full bg-[#fffbfa] border border-[#551904]/20 px-3 py-1 text-xs font-bold text-[#551904] hover:bg-[#551904]/5 transition-colors"
-          >
-            🥃 {recipe.taggedWhiskey.name}
-          </Link>
-        )}
+        {/* Tagged whiskey chip + AI attribution */}
+        <div className="flex flex-wrap gap-2">
+          {!hideWhiskeyChip && recipe.taggedWhiskey && (
+            <Link
+              href={`/whiskey/${recipe.taggedWhiskey.id}`}
+              className="self-start inline-flex items-center gap-1.5 rounded-full bg-[#fffbfa] border border-[#551904]/20 px-3 py-1 text-xs font-bold text-[#551904] hover:bg-[#551904]/5 transition-colors"
+            >
+              🥃 {recipe.taggedWhiskey.name}
+            </Link>
+          )}
+          {recipe.isAiGenerated && (
+            <span className="self-start inline-flex items-center gap-1 text-[11px] font-bold text-[#0d3c54] bg-[#0d3c54]/8 rounded-full px-2 py-0.5">
+              ✦ by Rick
+            </span>
+          )}
+        </div>
 
         {/* Title + ingredient count */}
         <Link href={`/recipe/${recipe.id}`} className="block group">

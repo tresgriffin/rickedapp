@@ -20,5 +20,7 @@ export const config = {
     "/rick/:path*",
     "/rick",
     "/more",
+    "/preferences/:path*",
+    "/settings/:path*",
   ],
 };

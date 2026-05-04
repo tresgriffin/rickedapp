@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AppBar from "@/components/app-bar";
+import LoadingDots from "@/components/loading-dots";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -103,7 +104,7 @@ export default function LoginPage() {
               disabled={loading}
               className="mt-2 w-full rounded-full bg-[#0d3c54] py-3.5 text-sm font-bold text-white transition hover:bg-[#0a2f42] focus:outline-none focus:ring-2 focus:ring-[#0d3c54] focus:ring-offset-2 disabled:opacity-60"
             >
-              {loading ? "Signing in…" : "Login"}
+              {loading ? <span className="flex items-center justify-center gap-2">Signing in <LoadingDots /></span> : "Login"}
             </button>
           </form>
 

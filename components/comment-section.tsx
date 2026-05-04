@@ -128,7 +128,7 @@ export default function CommentSection({
               disabled={loadingMore}
               className="text-xs font-bold text-[#551904] text-left w-fit"
             >
-              {loadingMore ? "Loading..." : "Load more comments"}
+              {loadingMore ? <span className="flex items-center gap-1.5">Loading <LoadingDots /></span> : "Load more comments"}
             </button>
           )}
 
