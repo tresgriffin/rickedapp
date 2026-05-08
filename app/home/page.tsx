@@ -116,7 +116,7 @@ export default async function HomePage() {
       <AppBar />
       <VerificationBannerServer />
 
-      <main className="flex-1 pb-20">
+      <main className="flex-1 pb-nav">
         {/* FUTURE: surface a "Top Rated Recipes" strip here once recipes accumulate
             rating data; consider an adaptive fallback that switches between top
             recipes and top whiskeys based on data availability. */}

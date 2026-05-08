@@ -25,6 +25,32 @@ body {
   color: var(--foreground);
   font-family: var(--font-inter, system-ui, sans-serif);
   -webkit-font-smoothing: antialiased;
+  /* Prevent iOS bounce scroll on the body itself */
+  overscroll-behavior: none;
+}
+
+/* iOS safe area: push bottom nav above the home indicator */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Smooth scrolling for in-page content, disabled for users who prefer reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Prevent iOS tap highlight flash on interactive elements */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Safe bottom padding for pages with a fixed bottom nav.
+   Accounts for the iOS home indicator via env(safe-area-inset-bottom).
+   Use pb-nav class on <main> instead of pb-20. */
+.pb-nav {
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom) + 1rem);
 }
 
 @keyframes dot-pulse {

@@ -130,7 +130,7 @@ export default async function WhiskeyPage({
     <div className="flex flex-col min-h-screen bg-[#fffbfa]">
       <AppBar />
 
-      <main className="flex-1 pb-20">
+      <main className="flex-1 pb-nav">
         {/* Hero section */}
         <div className="bg-white border-b border-gray-100 px-4 pt-6 pb-5 flex gap-5">
           {/* Bottle image */}

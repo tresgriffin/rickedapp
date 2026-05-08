@@ -108,7 +108,7 @@ export default function BottomNav() {
       )}
 
       {/* ── Nav bar ──────────────────────────────────────────────────────── */}
-      <nav className="fixed bottom-0 left-0 right-0 z-20 bg-[#0d3c54] flex items-center justify-around h-16 px-1">
+      <nav className="fixed bottom-0 left-0 right-0 z-20 bg-[#0d3c54] flex items-center justify-around px-1 pb-[env(safe-area-inset-bottom)] h-[calc(4rem+env(safe-area-inset-bottom))]">
         {NAV_ITEMS.map(({ href, icon: Icon, label, isAdd }) => {
           // /profile only highlights on the user's own profile (/profile exactly),
           // not on /profile/[handle] pages which belong to other users.

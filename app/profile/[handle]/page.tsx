@@ -28,7 +28,7 @@ export default async function UserProfilePage({
   return (
     <div className="flex flex-col min-h-screen bg-[#fffbfa]">
       <AppBar />
-      <main className="flex-1 pb-20">
+      <main className="flex-1 pb-nav">
         <ProfileView
           user={result.user}
           isOwnProfile={isOwnProfile}

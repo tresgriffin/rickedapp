@@ -20,7 +20,7 @@ export default async function ProfilePage() {
       <AppBar />
       <VerificationBannerServer />
       <CompleteProfileNudgeServer />
-      <main className="flex-1 pb-20">
+      <main className="flex-1 pb-nav">
         <ProfileView
           user={result.user}
           isOwnProfile={true}

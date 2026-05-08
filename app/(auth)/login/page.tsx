@@ -8,6 +8,9 @@ import AppBar from "@/components/app-bar";
 import LoadingDots from "@/components/loading-dots";
 import PasswordInput from "@/components/password-input";
 
+// TODO Phase 8b: enable Google OAuth — set NEXT_PUBLIC_ENABLE_SOCIAL_AUTH=true in Vercel
+const ENABLE_SOCIAL_AUTH = process.env.NEXT_PUBLIC_ENABLE_SOCIAL_AUTH === "true";
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -111,47 +114,47 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="my-6 flex items-center gap-3">
-            <div className="flex-1 h-px bg-gray-200" />
-            <span className="text-xs text-gray-400 uppercase tracking-wide">or</span>
-            <div className="flex-1 h-px bg-gray-200" />
-          </div>
+          {/* Social sign-in — hidden during closed beta; enable via NEXT_PUBLIC_ENABLE_SOCIAL_AUTH */}
+          {ENABLE_SOCIAL_AUTH && (
+            <>
+              <div className="my-6 flex items-center gap-3">
+                <div className="flex-1 h-px bg-gray-200" />
+                <span className="text-xs text-gray-400 uppercase tracking-wide">or</span>
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
 
-          {/* Social sign-in */}
-          <div className="flex flex-col gap-3">
-            {/* Google — wired */}
-            <button
-              type="button"
-              onClick={handleGoogle}
-              className="flex w-full items-center justify-center gap-3 rounded-full border border-gray-200 bg-white py-3 text-sm font-bold text-black transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0d3c54]"
-            >
-              <GoogleIcon />
-              Continue with Google
-            </button>
+              <div className="flex flex-col gap-3">
+                <button
+                  type="button"
+                  onClick={handleGoogle}
+                  className="flex w-full items-center justify-center gap-3 rounded-full border border-gray-200 bg-white py-3 text-sm font-bold text-black transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0d3c54]"
+                >
+                  <GoogleIcon />
+                  Continue with Google
+                </button>
 
-            {/* Facebook — stub */}
-            <button
-              type="button"
-              disabled
-              title="Coming soon"
-              className="flex w-full items-center justify-center gap-3 rounded-full border border-gray-200 bg-white py-3 text-sm font-bold text-gray-400 cursor-not-allowed"
-            >
-              <FacebookIcon />
-              Continue with Facebook
-            </button>
+                <button
+                  type="button"
+                  disabled
+                  title="Coming soon"
+                  className="flex w-full items-center justify-center gap-3 rounded-full border border-gray-200 bg-white py-3 text-sm font-bold text-gray-400 cursor-not-allowed"
+                >
+                  <FacebookIcon />
+                  Continue with Facebook
+                </button>
 
-            {/* Apple — stub */}
-            <button
-              type="button"
-              disabled
-              title="Coming soon"
-              className="flex w-full items-center justify-center gap-3 rounded-full border border-gray-200 bg-white py-3 text-sm font-bold text-gray-400 cursor-not-allowed"
-            >
-              <AppleIcon />
-              Continue with Apple
-            </button>
-          </div>
+                <button
+                  type="button"
+                  disabled
+                  title="Coming soon"
+                  className="flex w-full items-center justify-center gap-3 rounded-full border border-gray-200 bg-white py-3 text-sm font-bold text-gray-400 cursor-not-allowed"
+                >
+                  <AppleIcon />
+                  Continue with Apple
+                </button>
+              </div>
+            </>
+          )}
 
           {/* Sign up link */}
           <p className="mt-8 text-center text-sm text-gray-500">

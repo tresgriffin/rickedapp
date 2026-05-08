@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Abhaya_Libre, Inter } from "next/font/google";
 import Providers from "./providers";
 import "./globals.css";
@@ -19,7 +19,25 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Ricked",
-  description: "Discover, rate, and share your favorite bourbons and whiskeys.",
+  description: "Discover, rate, and share your favorite whiskeys and cocktails.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Ricked",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#0d3c54",
 };
 
 export default function RootLayout({

@@ -79,7 +79,7 @@ export default async function RecipePage({
     <div className="flex flex-col min-h-screen bg-[#fffbfa]">
       <AppBar />
 
-      <main className="flex-1 pb-20">
+      <main className="flex-1 pb-nav">
         {/* Header */}
         <div className="bg-white border-b border-gray-100 px-4 pt-5 pb-5 flex flex-col gap-4">
           <Link
