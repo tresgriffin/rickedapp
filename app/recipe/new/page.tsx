@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ImagePlus, Plus, X } from "lucide-react";
 import Link from "next/link";
@@ -22,6 +22,14 @@ interface WhiskeyResult {
 }
 
 export default function NewRecipePage() {
+  return (
+    <Suspense>
+      <NewRecipeForm />
+    </Suspense>
+  );
+}
+
+function NewRecipeForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const prefilledWhiskeyId = searchParams.get("whiskeyId");
@@ -290,3 +298,4 @@ export default function NewRecipePage() {
     </div>
   );
 }
+

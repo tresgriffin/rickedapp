@@ -67,8 +67,6 @@ export async function submitAgeVerification(
 
 // ─── Handle picker ────────────────────────────────────────────────────────
 
-export { validateHandleFormat } from "@/lib/handle-validation";
-
 export async function submitHandle(
   formData: FormData
 ): Promise<{ error: string } | never> {

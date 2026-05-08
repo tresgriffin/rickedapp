@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { ChevronLeft, ImagePlus } from "lucide-react";
 import Link from "next/link";
 import StarSelector from "@/components/star-selector";
@@ -18,6 +17,14 @@ interface WhiskeySummary {
 }
 
 export default function NewReviewPage() {
+  return (
+    <Suspense>
+      <NewReviewForm />
+    </Suspense>
+  );
+}
+
+function NewReviewForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const whiskeyId = searchParams.get("whiskeyId") ?? "";
