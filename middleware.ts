@@ -17,23 +17,15 @@ export default withAuth(
     if (!token) return; // withAuth handles unauthenticated
 
     const isExempt = ONBOARDING_EXEMPT.some((p) => pathname.startsWith(p));
-
-    // Diagnostic — remove once redirect loop is confirmed fixed in production
-    console.log(
-      `[mw] ${pathname} | age=${token.ageVerified} handle=${token.handleSet} exempt=${isExempt}`
-    );
-
     if (isExempt) return;
 
     // Gate 1: age verification — must complete /verify-age before anything else
     if (!token.ageVerified) {
-      console.log(`[mw] → /verify-age`);
       return NextResponse.redirect(new URL("/verify-age", req.url));
     }
 
     // Gate 2: handle picker — must complete /onboarding/handle before reaching the app
     if (!token.handleSet) {
-      console.log(`[mw] → /onboarding/handle`);
       return NextResponse.redirect(new URL("/onboarding/handle", req.url));
     }
   },
