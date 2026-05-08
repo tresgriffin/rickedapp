@@ -40,9 +40,9 @@ function calculateAge(dob: Date): number {
 
 export async function submitAgeVerification(
   formData: FormData
-): Promise<{ error: string } | never> {
+): Promise<{ error: string } | { ok: true }> {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/login");
+  if (!session?.user?.id) return { error: "Not signed in." };
 
   const dob = formData.get("dateOfBirth") as string | null;
   if (!dob) return { error: "Please enter your date of birth." };
@@ -62,16 +62,17 @@ export async function submitAgeVerification(
     data: { dateOfBirth: parsed },
   });
 
-  redirect("/onboarding/handle");
+  // Client calls update() then router.push() — redirect() here prevents update() from running
+  return { ok: true };
 }
 
 // ─── Handle picker ────────────────────────────────────────────────────────
 
 export async function submitHandle(
   formData: FormData
-): Promise<{ error: string } | never> {
+): Promise<{ error: string } | { ok: true }> {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/login");
+  if (!session?.user?.id) return { error: "Not signed in." };
 
   const raw = (formData.get("handle") as string | null) ?? "";
   const handle = raw.trim().toLowerCase();
@@ -97,7 +98,8 @@ export async function submitHandle(
   // FUTURE: Phase 8b — when users change handles post-onboarding, audit all
   // profile URLs and social graph links that reference the old handle.
 
-  redirect("/onboarding/interests");
+  // Client calls update() then router.push() — redirect() here prevents update() from running
+  return { ok: true };
 }
 
 // ─── Whiskey interest ─────────────────────────────────────────────────────
@@ -108,9 +110,9 @@ const VALID_INTERESTS: WhiskeyInterest[] = [
 
 export async function submitWhiskeyInterest(
   formData: FormData
-): Promise<{ error: string } | never> {
+): Promise<{ ok: true }> {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) redirect("/login");
+  if (!session?.user?.id) return { ok: true }; // silently pass — gate already enforced by middleware
 
   const raw = formData.get("interest") as string | null;
 
@@ -121,7 +123,8 @@ export async function submitWhiskeyInterest(
     });
   }
 
-  redirect("/welcome");
+  // Client calls update() then router.push() — redirect() here prevents update() from running
+  return { ok: true };
 }
 
 /** Settings-context version — saves whiskey interest without redirecting. */

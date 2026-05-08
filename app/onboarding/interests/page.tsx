@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import AppBar from "@/components/app-bar";
 import LoadingDots from "@/components/loading-dots";
 import { submitWhiskeyInterest } from "@/lib/actions/onboarding";
@@ -17,6 +19,8 @@ const CHIPS = [
 type Interest = (typeof CHIPS)[number]["id"];
 
 export default function InterestsPage() {
+  const router = useRouter();
+  const { update } = useSession();
   const [selected, setSelected] = useState<Interest | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -25,6 +29,12 @@ export default function InterestsPage() {
     const formData = new FormData();
     if (interest) formData.set("interest", interest);
     await submitWhiskeyInterest(formData);
+
+    // update() refreshes the JWT cookie — no-op here since handleSet was
+    // already set on the handle page, but ensures token is fully current
+    // before entering the app proper.
+    await update();
+    router.push("/welcome");
   }
 
   return (

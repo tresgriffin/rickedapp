@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { CheckCircle, XCircle } from "lucide-react";
 import AppBar from "@/components/app-bar";
@@ -10,6 +11,7 @@ import { submitHandle } from "@/lib/actions/onboarding";
 type CheckState = "idle" | "checking" | "available" | "taken" | "invalid";
 
 export default function HandlePage() {
+  const router = useRouter();
   const { update } = useSession();
   const [handle, setHandle] = useState("");
   const [checkState, setCheckState] = useState<CheckState>("idle");
@@ -69,12 +71,10 @@ export default function HandlePage() {
       return;
     }
 
-    // Refresh session token so middleware sees handleSet = true.
-    // WATCH: After update() resolves, there's a theoretical race where middleware
-    // could see stale token state and redirect back to /onboarding/handle. Synchronous
-    // in practice, but flag for investigation if beta testers report being sent back
-    // to the handle picker after a successful submit.
+    // update() refreshes the JWT cookie so middleware sees handleSet=true
+    // before we navigate. redirect() in server actions throws and prevents this.
     await update();
+    router.push("/onboarding/interests");
   }
 
   return (

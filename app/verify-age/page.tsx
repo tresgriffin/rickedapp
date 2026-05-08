@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import AppBar from "@/components/app-bar";
 import LoadingDots from "@/components/loading-dots";
 import { submitAgeVerification } from "@/lib/actions/onboarding";
 
 export default function VerifyAgePage() {
+  const router = useRouter();
   const { update } = useSession();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
@@ -19,14 +21,16 @@ export default function VerifyAgePage() {
     const formData = new FormData(e.currentTarget);
     const result = await submitAgeVerification(formData);
 
-    if (result && "error" in result) {
+    if ("error" in result) {
       setError(result.error);
       setPending(false);
       return;
     }
 
-    // Refresh session token so middleware picks up ageVerified = true
+    // update() refreshes the JWT cookie so middleware sees ageVerified=true
+    // before we navigate. redirect() in server actions throws and prevents this.
     await update();
+    router.push("/onboarding/handle");
   }
 
   return (
