@@ -5,6 +5,11 @@ import { prisma } from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(req: Request) {
+  // Log DB target so Vercel function logs confirm which database is receiving writes
+  const dbUrl = process.env.DATABASE_URL ?? "MISSING";
+  const dbTarget = dbUrl === "MISSING" ? "MISSING" : dbUrl.split("@")[1]?.split("/")[0] ?? "unparseable";
+  console.log(`[register] DB target: ${dbTarget}`);
+
   const { name, email, password } = await req.json();
 
   if (!name || !email || !password) {
@@ -23,35 +28,44 @@ export async function POST(req: Request) {
 
   const normalizedEmail = email.toLowerCase().trim();
 
-  const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
-  if (existing) {
+  try {
+    const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+    if (existing) {
+      return NextResponse.json(
+        { error: "An account with that email already exists." },
+        { status: 409 }
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const baseHandle = name.toLowerCase().replace(/\s+/g, "").slice(0, 20);
+    const random = Math.floor(Math.random() * 9000) + 1000;
+    const handle = `${baseHandle}${random}`;
+
+    await prisma.user.create({
+      data: {
+        name,
+        displayName: name,
+        email: normalizedEmail,
+        hashedPassword,
+        handle,
+      },
+    });
+
+    console.log(`[register] User created: ${normalizedEmail}`);
+  } catch (err) {
+    console.error("[register] DB write failed:", err);
     return NextResponse.json(
-      { error: "An account with that email already exists." },
-      { status: 409 }
+      { error: "Something went wrong creating your account. Please try again." },
+      { status: 500 }
     );
   }
-
-  const hashedPassword = await bcrypt.hash(password, 12);
-
-  // Derive a unique handle from the name
-  const baseHandle = name.toLowerCase().replace(/\s+/g, "").slice(0, 20);
-  const random = Math.floor(Math.random() * 9000) + 1000;
-  const handle = `${baseHandle}${random}`;
-
-  await prisma.user.create({
-    data: {
-      name,
-      displayName: name,
-      email: normalizedEmail,
-      hashedPassword,
-      handle,
-    },
-  });
 
   // Send verification email (fire-and-forget — don't block signup on email failure)
   try {
     const token = randomBytes(32).toString("hex");
-    const expires = new Date(Date.now() + 1000 * 60 * 60 * 24); // 24 hours
+    const expires = new Date(Date.now() + 1000 * 60 * 60 * 24);
 
     await prisma.verificationToken.create({
       data: {
@@ -63,8 +77,7 @@ export async function POST(req: Request) {
 
     await sendVerificationEmail(normalizedEmail, token);
   } catch (err) {
-    // Log but don't fail the signup — user can resend from banner
-    console.error("Verification email failed to send:", err);
+    console.error("[register] Verification email failed to send:", err);
   }
 
   return NextResponse.json({ ok: true }, { status: 201 });
