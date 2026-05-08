@@ -6,9 +6,9 @@
  * Idempotent: skips everything if whiskey data already exists.
  * Safe to re-run after wiping the DB.
  *
- * PRODUCTION TODO: Remove or disable this seed before deploying to production.
- *   These demo accounts and passwords must NOT exist in a live environment.
- *   grep for "PRODUCTION TODO" to find all relevant lines.
+ * DEFER TO Phase 8a.4 (deploy): Disable or gate this seed for production.
+ *   Demo accounts must not exist in the live environment.
+ *   Run only against the dev/staging DB; never against production Neon.
  */
 
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -21,19 +21,21 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({ adapter });
 
 // ─── Demo user credentials ────────────────────────────────────────────────────
-// PRODUCTION TODO: These demo users and their plaintext passwords must be
+// PRODUCTION TODO: These demo users and their passwords must be
 //   removed before going live. They exist solely for local dev and QA.
+// Credentials rotated 2026-05-07 (Phase 8a.3). Plaintext stored in .env.local
+// under the # DEMO ACCOUNTS section — never commit plaintext to git.
 const DEMO_USERS = [
   {
     email: "tres@ricked.app",
-    password: "ricked-tres", // PRODUCTION TODO: rotate / remove
+    password: "GpRtKaD5Cl95NWU5", // rotated 2026-05-07 — plaintext in .env.local
     handle: "tres",
     displayName: "Tres",
     bio: "Builder of Ricked. Occasional Old Fashioned enthusiast.",
   },
   {
     email: "brian@ricked.app",
-    password: "ricked-brian", // PRODUCTION TODO: rotate / remove
+    password: "3R3Veov3bvpHzVuj", // rotated 2026-05-07 — plaintext in .env.local
     handle: "brian",
     displayName: "Brian",
     bio: "Just trying to figure out what I actually like. No shame in that.",
@@ -41,10 +43,9 @@ const DEMO_USERS = [
 ] as const;
 
 // ─── 15 whiskeys ─────────────────────────────────────────────────────────────
-// PRODUCTION TODO: Replace imageUrl placeholders with licensed product photos
-//   before going live. See /public/images/bottle-placeholder.svg for the
-//   current stand-in. A good source for licensed imagery is the brand's
-//   official press kit or a stock photo service.
+// DEFER TO Phase 8b (content sprint): Replace imageUrl placeholders with licensed
+//   product photos. Placeholder SVG ships with closed beta — acceptable for QA.
+//   Source: official brand press kits or licensed stock. See /public/images/bottle-placeholder.svg.
 const WHISKEYS = [
   {
     name: "Buffalo Trace",
@@ -477,8 +478,8 @@ async function main() {
 
   console.log("\n✓ Seed complete.");
   console.log("  Demo credentials:");
-  console.log("    @tres  — tres@ricked.app  / ricked-tres");
-  console.log("    @brian — brian@ricked.app / ricked-brian");
+  console.log("    @tres  — tres@ricked.app  / (see .env.local # DEMO ACCOUNTS)");
+  console.log("    @brian — brian@ricked.app / (see .env.local # DEMO ACCOUNTS)");
 }
 
 main()

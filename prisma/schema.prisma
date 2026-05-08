@@ -46,6 +46,15 @@ enum MessageRole {
   ASSISTANT
 }
 
+enum WhiskeyInterest {
+  BOURBON
+  SCOTCH
+  RYE
+  JAPANESE
+  IRISH
+  NOT_SURE
+}
+
 // ─── Auth models (required by NextAuth / @auth/prisma-adapter) ────────────────
 
 model User {
@@ -62,9 +71,12 @@ model User {
   avatarUrl             String?
   createdAt             DateTime  @default(now())
   hasSeenRickOnboarding Boolean   @default(false)
+  dateOfBirth            DateTime?
+  hasPickedHandle        Boolean   @default(false)
   dietaryRestrictions   DietaryRestriction[]
   dietaryNotes          String?
   dietaryPreferencesSet Boolean              @default(false)
+  whiskeyInterest       WhiskeyInterest?
   rickConversationsToday Int                 @default(0)
   rickLastResetAt        DateTime?
 
@@ -117,6 +129,16 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
 }
 
 // ─── Ricked content models ────────────────────────────────────────────────────

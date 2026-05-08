@@ -1,15 +1,14 @@
 "use server";
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { uploadFile } from "@/lib/upload";
+import { requireVerifiedUser } from "@/lib/require-verified";
 
 export async function createReview(
   formData: FormData
 ): Promise<{ ok: true; whiskeyId: string } | { error: string }> {
-  const session = await getServerSession(authOptions);
-  if (!session) return { error: "You need to be signed in to leave a review." };
+  const auth = await requireVerifiedUser();
+  if ("error" in auth) return auth;
 
   const whiskeyId = (formData.get("whiskeyId") as string | null)?.trim();
   const ratingRaw = formData.get("rating") as string | null;
@@ -36,7 +35,7 @@ export async function createReview(
 
   await prisma.review.create({
     data: {
-      userId: session.user.id,
+      userId: auth.userId,
       whiskeyId,
       rating,
       body,

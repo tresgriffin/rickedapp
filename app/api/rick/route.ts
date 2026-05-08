@@ -6,8 +6,7 @@ import { prisma } from "@/lib/db";
 import { buildSystemPrompt, RICK_SYSTEM_PROMPT } from "@/lib/rick-prompt";
 import type { MessageRole } from "@/app/generated/prisma/client";
 
-// TODO before launch: flip back to 5 for free tier (locked Phase 7 decision); set to 20 for testing only
-const DAILY_LIMIT = 20;
+const DAILY_LIMIT = 5; // free tier — locked Phase 7 spec; was 20 during dev testing
 // Sonnet 4.6 is the default: capable of JSON schema compliance and cocktail recipe quality
 // at meaningfully lower cost than Opus. Tiered routing (Haiku for Q&A, Sonnet for recipes)
 // was rejected — you can't predict recipe-vs-conversation turns client-side without a second
@@ -36,6 +35,7 @@ export async function POST(request: Request) {
       dietaryPreferencesSet: true,
       dietaryRestrictions: true,
       dietaryNotes: true,
+      whiskeyInterest: true,
       _count: { select: { recipes: true } },
     },
   });
@@ -117,6 +117,7 @@ export async function POST(request: Request) {
     dietaryPreferencesSet: user.dietaryPreferencesSet,
     dietaryRestrictions: user.dietaryRestrictions,
     dietaryNotes: user.dietaryNotes,
+    whiskeyInterest: user.whiskeyInterest,
   };
 
   // Dynamic profile block (not cached — changes per user)

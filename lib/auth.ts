@@ -51,15 +51,28 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
+      }
+      // Refresh onboarding flags on sign-in or explicit session update
+      if (user || trigger === "update") {
+        const userId = (token.id as string | undefined) ?? user?.id;
+        if (userId) {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { dateOfBirth: true, hasPickedHandle: true },
+          });
+          token.ageVerified = !!dbUser?.dateOfBirth;
+          token.handleSet = !!dbUser?.hasPickedHandle;
+        }
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.ageVerified = token.ageVerified as boolean | undefined;
       }
       return session;
     },

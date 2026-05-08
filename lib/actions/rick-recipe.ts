@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { requireVerifiedUser } from "@/lib/require-verified";
 
 interface RickRecipeIngredient {
   name: string;
@@ -86,17 +87,17 @@ export async function saveRickRecipe(
 }
 
 // Called from the "I made this" publish flow.
-// Requires at least a star rating before publishing.
+// Requires at least a star rating and a verified email before publishing.
 export async function publishRickRecipe(
   recipeId: string,
   stars: number,
   wouldMakeAgain: boolean | null
 ): Promise<{ ok: true } | { error: string }> {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return { error: "Unauthorized" };
+  const auth = await requireVerifiedUser();
+  if ("error" in auth) return auth;
 
   const recipe = await prisma.recipe.findFirst({
-    where: { id: recipeId, userId: session.user.id, isAiGenerated: true, isPublished: false },
+    where: { id: recipeId, userId: auth.userId, isAiGenerated: true, isPublished: false },
   });
   if (!recipe) return { error: "Recipe not found or already published" };
 
@@ -108,9 +109,9 @@ export async function publishRickRecipe(
       data: { isPublished: true },
     }),
     prisma.recipeRating.upsert({
-      where: { userId_recipeId: { userId: session.user.id, recipeId } },
+      where: { userId_recipeId: { userId: auth.userId, recipeId } },
       create: {
-        userId: session.user.id,
+        userId: auth.userId,
         recipeId,
         stars,
         wouldMakeAgain,

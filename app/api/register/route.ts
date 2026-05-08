@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
+import { randomBytes } from "crypto";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
+import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(req: Request) {
   const { name, email, password } = await req.json();
@@ -19,7 +21,9 @@ export async function POST(req: Request) {
     );
   }
 
-  const existing = await prisma.user.findUnique({ where: { email } });
+  const normalizedEmail = email.toLowerCase().trim();
+
+  const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
   if (existing) {
     return NextResponse.json(
       { error: "An account with that email already exists." },
@@ -38,11 +42,30 @@ export async function POST(req: Request) {
     data: {
       name,
       displayName: name,
-      email,
+      email: normalizedEmail,
       hashedPassword,
       handle,
     },
   });
+
+  // Send verification email (fire-and-forget — don't block signup on email failure)
+  try {
+    const token = randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 1000 * 60 * 60 * 24); // 24 hours
+
+    await prisma.verificationToken.create({
+      data: {
+        identifier: `email-verify:${normalizedEmail}`,
+        token,
+        expires,
+      },
+    });
+
+    await sendVerificationEmail(normalizedEmail, token);
+  } catch (err) {
+    // Log but don't fail the signup — user can resend from banner
+    console.error("Verification email failed to send:", err);
+  }
 
   return NextResponse.json({ ok: true }, { status: 201 });
 }

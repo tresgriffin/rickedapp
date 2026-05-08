@@ -10,6 +10,7 @@ import PostCard from "@/components/post-card";
 import RecipeCard from "@/components/recipe-card";
 import RickCard from "@/components/rick-card";
 import EmptyState from "@/components/empty-state";
+import VerificationBannerServer from "@/components/verification-banner-server";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -113,6 +114,7 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-[#fffbfa]">
       <AppBar />
+      <VerificationBannerServer />
 
       <main className="flex-1 pb-20">
         {/* FUTURE: surface a "Top Rated Recipes" strip here once recipes accumulate

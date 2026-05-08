@@ -1,15 +1,14 @@
 "use server";
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { uploadFile } from "@/lib/upload";
+import { requireVerifiedUser } from "@/lib/require-verified";
 
 export async function createPost(
   formData: FormData
 ): Promise<{ ok: true } | { error: string }> {
-  const session = await getServerSession(authOptions);
-  if (!session) return { error: "You need to be signed in to post." };
+  const auth = await requireVerifiedUser();
+  if ("error" in auth) return auth;
 
   const body = ((formData.get("body") as string | null) ?? "").trim();
   const taggedWhiskeyId = (formData.get("taggedWhiskeyId") as string | null)?.trim() || null;
@@ -24,7 +23,7 @@ export async function createPost(
 
   await prisma.post.create({
     data: {
-      userId: session.user.id,
+      userId: auth.userId,
       body,
       taggedWhiskeyId,
       mediaUrl,

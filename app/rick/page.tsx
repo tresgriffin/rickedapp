@@ -6,8 +6,7 @@ import { prisma } from "@/lib/db";
 import BottomNav from "@/components/bottom-nav";
 import RickChat from "@/components/rick-chat";
 
-// TODO before launch: flip back to 5 for free tier (locked Phase 7 decision); set to 20 for testing only
-const DAILY_LIMIT = 20;
+const DAILY_LIMIT = 5; // free tier — must match constant in app/api/rick/route.ts
 
 async function getRickData(userId: string) {
   const [user, conversation] = await Promise.all([

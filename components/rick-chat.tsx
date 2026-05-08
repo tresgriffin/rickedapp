@@ -459,7 +459,7 @@ export default function RickChat({
             <Send size={14} className="text-white" />
           </button>
         </div>
-        {!isRateLimited && remaining <= 5 && (
+        {!isRateLimited && remaining <= 2 && (
           <p className="text-[10px] text-gray-400 mt-1 text-right">
             {remaining} message{remaining === 1 ? "" : "s"} left today
           </p>

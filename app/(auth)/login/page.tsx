@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AppBar from "@/components/app-bar";
 import LoadingDots from "@/components/loading-dots";
+import PasswordInput from "@/components/password-input";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -81,21 +82,23 @@ export default function LoginPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label
-                htmlFor="password"
-                className="text-sm font-bold text-[#0d3c54]"
-              >
-                Password
-              </label>
-              <input
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="text-sm font-bold text-[#0d3c54]">
+                  Password
+                </label>
+                <Link
+                  href="/forgot-password"
+                  className="text-xs font-bold text-[#551904] hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+              <PasswordInput
                 id="password"
-                type="password"
+                value={password}
+                onChange={setPassword}
                 autoComplete="current-password"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
               />
             </div>
 

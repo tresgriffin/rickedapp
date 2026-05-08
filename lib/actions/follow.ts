@@ -1,18 +1,17 @@
 "use server";
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { requireVerifiedUser } from "@/lib/require-verified";
 
 export async function toggleFollow({
   targetUserId,
 }: {
   targetUserId: string;
 }): Promise<{ following: boolean } | { error: string }> {
-  const session = await getServerSession(authOptions);
-  if (!session) return { error: "Not signed in." };
+  const auth = await requireVerifiedUser();
+  if ("error" in auth) return auth;
 
-  const followerId = session.user.id;
+  const followerId = auth.userId;
   const followingId = targetUserId;
 
   const existing = await prisma.follow.findUnique({

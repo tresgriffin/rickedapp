@@ -1,9 +1,8 @@
 "use server";
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { uploadFile } from "@/lib/upload";
+import { requireVerifiedUser } from "@/lib/require-verified";
 
 interface Ingredient {
   amount: string;
@@ -13,8 +12,8 @@ interface Ingredient {
 export async function createRecipe(
   formData: FormData
 ): Promise<{ ok: true } | { error: string }> {
-  const session = await getServerSession(authOptions);
-  if (!session) return { error: "You need to be signed in to share a recipe." };
+  const auth = await requireVerifiedUser();
+  if ("error" in auth) return auth;
 
   const title = ((formData.get("title") as string | null) ?? "").trim();
   const description = ((formData.get("description") as string | null) ?? "").trim() || null;
@@ -48,7 +47,7 @@ export async function createRecipe(
 
   await prisma.recipe.create({
     data: {
-      userId: session.user.id,
+      userId: auth.userId,
       title,
       description,
       taggedWhiskeyId,

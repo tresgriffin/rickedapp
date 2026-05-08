@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AppBar from "@/components/app-bar";
 import LoadingDots from "@/components/loading-dots";
+import PasswordInput from "@/components/password-input";
+import PasswordStrength from "@/components/password-strength";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -121,34 +123,28 @@ export default function SignupPage() {
               <label htmlFor="password" className="text-sm font-bold text-[#0d3c54]">
                 Password
               </label>
-              <input
+              <PasswordInput
                 id="password"
-                type="password"
-                autoComplete="new-password"
-                required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={setPassword}
+                autoComplete="new-password"
                 placeholder="At least 8 characters"
-                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+                required
               />
+              <PasswordStrength password={password} />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label
-                htmlFor="confirm"
-                className="text-sm font-bold text-[#0d3c54]"
-              >
+              <label htmlFor="confirm" className="text-sm font-bold text-[#0d3c54]">
                 Confirm password
               </label>
-              <input
+              <PasswordInput
                 id="confirm"
-                type="password"
-                autoComplete="new-password"
-                required
                 value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
+                onChange={setConfirm}
+                autoComplete="new-password"
                 placeholder="Same as above"
-                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+                required
               />
             </div>
 

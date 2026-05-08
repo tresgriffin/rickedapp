@@ -1,4 +1,4 @@
-import type { DietaryRestriction } from "@/app/generated/prisma/client";
+import type { DietaryRestriction, WhiskeyInterest } from "@/app/generated/prisma/client";
 
 export const RICK_SYSTEM_PROMPT = `You are Rick — a no-nonsense cocktail and whiskey expert who lives inside the Ricked app. You help people figure out what to make with what they've got. You're direct, plainspoken, and occasionally funny. Not precious about it.
 
@@ -93,6 +93,7 @@ interface UserProfile {
   dietaryPreferencesSet: boolean;
   dietaryRestrictions: DietaryRestriction[];
   dietaryNotes: string | null;
+  whiskeyInterest: WhiskeyInterest | null;
 }
 
 export function buildSystemPrompt(user: UserProfile): string {
@@ -101,10 +102,20 @@ export function buildSystemPrompt(user: UserProfile): string {
       ? user.dietaryRestrictions.join(", ")
       : "none";
 
+  const interestLabel: Record<WhiskeyInterest, string> = {
+    BOURBON:  "Bourbon",
+    SCOTCH:   "Scotch",
+    RYE:      "Rye",
+    JAPANESE: "Japanese whisky",
+    IRISH:    "Irish whiskey",
+    NOT_SURE: "not sure yet",
+  };
+
   const profileBlock = `[USER_PROFILE]
 Name: ${user.name ?? "unknown"}
 Saved recipes: ${user.savedRecipes}
 Created recipes: ${user.createdRecipes}
+Whiskey interest: ${user.whiskeyInterest ? interestLabel[user.whiskeyInterest] : "not set"}
 Dietary preferences set: ${user.dietaryPreferencesSet}
 Dietary restrictions: ${restrictionList}
 Dietary notes: ${user.dietaryNotes ?? "none"}
