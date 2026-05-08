@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validateHandleFormat } from "./actions/onboarding";
+import { validateHandleFormat } from "./handle-validation";
 
 // ---------------------------------------------------------------------------
 // These tests cover Phase 8a.2 onboarding logic in isolation.

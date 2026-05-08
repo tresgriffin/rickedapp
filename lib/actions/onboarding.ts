@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import type { WhiskeyInterest } from "@/app/generated/prisma/client";
+import { validateHandleFormat } from "@/lib/handle-validation";
 
 async function markSeen() {
   const session = await getServerSession(authOptions);
@@ -61,33 +62,12 @@ export async function submitAgeVerification(
     data: { dateOfBirth: parsed },
   });
 
-  // Redirect to handle picker — session token will refresh on next request
   redirect("/onboarding/handle");
 }
 
 // ─── Handle picker ────────────────────────────────────────────────────────
 
-const RESERVED_HANDLES = new Set([
-  // Brand / team
-  "admin", "support", "help", "team", "ricked", "rick", "tres", "brian",
-  // Common abuse vectors
-  "abuse", "billing", "contact", "info", "mail", "moderator", "mod",
-  "official", "postmaster", "root", "security", "staff", "sys", "webmaster",
-  "bot", "api", "null", "undefined", "anonymous", "guest", "test",
-]);
-
-export function validateHandleFormat(handle: string): string | null {
-  if (handle.length < 3) return "Must be at least 3 characters.";
-  if (handle.length > 20) return "Must be 20 characters or fewer.";
-  if (!/^[a-z][a-z0-9_]*$/.test(handle)) {
-    if (/[A-Z]/.test(handle)) return "Lowercase only.";
-    if (/^\d/.test(handle)) return "Can't start with a number.";
-    if (/^_/.test(handle)) return "Can't start with an underscore.";
-    return "Letters, numbers, and underscores only.";
-  }
-  if (RESERVED_HANDLES.has(handle)) return "That handle is reserved.";
-  return null;
-}
+export { validateHandleFormat } from "@/lib/handle-validation";
 
 export async function submitHandle(
   formData: FormData
@@ -142,9 +122,21 @@ export async function submitWhiskeyInterest(
       data: { whiskeyInterest: raw as WhiskeyInterest },
     });
   }
-  // If skipped (null or invalid), just proceed without saving
 
   redirect("/welcome");
+}
+
+/** Settings-context version — saves whiskey interest without redirecting. */
+export async function updateWhiskeyInterest(
+  interest: WhiskeyInterest | null
+): Promise<void> {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return;
+
+  await prisma.user.update({
+    where: { id: session.user.id },
+    data: { whiskeyInterest: interest },
+  });
 }
 
 // ─── Profile edit ─────────────────────────────────────────────────────────

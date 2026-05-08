@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import type { WhiskeyInterest } from "@/app/generated/prisma/client";
+import { updateWhiskeyInterest } from "@/lib/actions/onboarding";
 import LoadingDots from "@/components/loading-dots";
 
 const CHIPS: { id: WhiskeyInterest; label: string }[] = [
@@ -19,12 +20,8 @@ export default function WhiskeyInterestForm({ current }: { current: WhiskeyInter
   const [saved, setSaved] = useState(false);
 
   function handleSave() {
-    const formData = new FormData();
-    if (selected) formData.set("interest", selected);
     startTransition(async () => {
-      // submitWhiskeyInterest redirects to /welcome — for settings we want to stay here.
-      // Call the underlying DB update directly via a dedicated action.
-      await saveInterestOnly(selected);
+      await updateWhiskeyInterest(selected);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     });
@@ -62,23 +59,4 @@ export default function WhiskeyInterestForm({ current }: { current: WhiskeyInter
       </button>
     </div>
   );
-}
-
-// Inline action — saves interest without redirecting (settings context only)
-async function saveInterestOnly(interest: WhiskeyInterest | null) {
-  "use server";
-  // This thin wrapper calls the shared action but suppresses the redirect.
-  // The redirect in submitWhiskeyInterest only fires server-side during onboarding;
-  // calling it from a client-component useTransition bypasses the redirect in settings.
-  const { getServerSession } = await import("next-auth");
-  const { authOptions } = await import("@/lib/auth");
-  const { prisma } = await import("@/lib/db");
-
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return;
-
-  await prisma.user.update({
-    where: { id: session.user.id },
-    data: { whiskeyInterest: interest ?? null },
-  });
 }
