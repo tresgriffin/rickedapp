@@ -28,6 +28,15 @@ export async function goToHome() {
   redirect("/home");
 }
 
+/**
+ * Marks the Rick handshake as seen without redirecting.
+ * Used by the /welcome client component so update() can run before navigation,
+ * ensuring the JWT cookie is current when middleware checks the destination route.
+ */
+export async function markRickHandshakeSeen(): Promise<void> {
+  await markSeen();
+}
+
 // ─── Age verification ─────────────────────────────────────────────────────
 
 function calculateAge(dob: Date): number {

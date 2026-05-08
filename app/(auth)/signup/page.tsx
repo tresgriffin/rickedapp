@@ -59,8 +59,9 @@ export default function SignupPage() {
       setError("Account created! Head to login to sign in.");
       router.replace("/login");
     } else {
-      // New users see the Rick handshake before the feed
-      router.replace("/welcome");
+      // Send to a gated route so middleware directs unverified users to /verify-age
+      // (sending directly to /welcome bypassed the age gate because /welcome is exempt)
+      router.replace("/home");
     }
   }
 

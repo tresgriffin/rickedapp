@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
-import { goToRick, goToHome } from "@/lib/actions/onboarding";
 import RocksGlass from "@/components/icons/rocks-glass";
+import WelcomeCTAs from "./client";
 
 export default async function WelcomePage() {
   const session = await getServerSession(authOptions);
@@ -39,25 +39,8 @@ export default async function WelcomePage() {
         </div>
       </div>
 
-      {/* CTAs — form actions so redirect() fires atomically server-side */}
-      <div className="flex flex-col gap-3 w-full max-w-sm">
-        <form action={goToRick}>
-          <button
-            type="submit"
-            className="w-full rounded-full bg-white py-3.5 text-sm font-bold text-[#0d3c54] hover:bg-white/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d3c54]"
-          >
-            Say hi to Rick
-          </button>
-        </form>
-        <form action={goToHome}>
-          <button
-            type="submit"
-            className="w-full rounded-full border border-white/30 py-3.5 text-sm font-bold text-white/80 hover:border-white/60 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
-          >
-            I&apos;ll find you
-          </button>
-        </form>
-      </div>
+      {/* Client component handles update() before navigating to avoid stale JWT */}
+      <WelcomeCTAs />
     </main>
   );
 }
