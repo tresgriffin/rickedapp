@@ -1,0 +1,550 @@
+[
+  {
+    "name": "Old Fashioned",
+    "description": "A bourbon-forward cocktail built on sugar, bitters, and citrus oils. The original definition of a 'cocktail' from the early 1800s, and still the benchmark by which whiskey cocktails are judged.",
+    "rickNote": "The drink that taught a generation of bartenders the rule: if you can't make a great Old Fashioned, you can't make great cocktails. Use a bourbon you'd drink neat.",
+    "glassware": "rocks glass",
+    "methods": ["STIR", "BUILD"],
+    "baseSpirit": "bourbon",
+    "difficulty": "EASY",
+    "prepTime": 3,
+    "abvEstimate": "HIGH",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "bourbon", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "simple syrup", "amount": 0.25, "unit": "oz", "optional": false, "order": 2},
+      {"name": "Angostura bitters", "amount": 2, "unit": "dash", "optional": false, "order": 3},
+      {"name": "orange peel", "amount": 1, "unit": null, "optional": false, "order": 4}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add simple syrup and Angostura bitters to a rocks glass.", "tip": null, "duration": null},
+      {"order": 2, "text": "Add bourbon and a large ice cube. Stir until well-chilled, about 30 seconds.", "tip": "A large cube melts slower and keeps the drink from getting watery. Smaller cubes will work but you'll want to drink it faster.", "duration": 30},
+      {"order": 3, "text": "Express the orange peel over the glass by pinching it skin-side-down to release the oils, then drop it in.", "tip": "The oils on the peel are the point. Skip this step and the cocktail loses half its character.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "boozy", "bitter", "classic", "pre-prohibition", "stirred", "built", "vegan"]
+  },
+  {
+    "name": "Manhattan",
+    "description": "A stirred rye whiskey cocktail with sweet vermouth and Angostura bitters, served up in a coupe with a brandied cherry. One of the founding members of the cocktail canon, dating to the 1880s.",
+    "rickNote": "Rye is the traditional call, and there's a reason. Bourbon makes a fine Manhattan, but it's a softer drink. The rye spice is what cuts through the vermouth and makes the cocktail snap.",
+    "glassware": "coupe",
+    "methods": ["STIR"],
+    "baseSpirit": "rye",
+    "difficulty": "EASY",
+    "prepTime": 3,
+    "abvEstimate": "HIGH",
+    "status": "DRAFT",
+    "safetyFlags": ["CONTAINS_SULFITES"],
+    "ingredients": [
+      {"name": "rye whiskey", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "sweet vermouth", "amount": 1, "unit": "oz", "optional": false, "order": 2},
+      {"name": "Angostura bitters", "amount": 2, "unit": "dash", "optional": false, "order": 3},
+      {"name": "brandied cherry", "amount": 1, "unit": null, "optional": false, "order": 4},
+      {"name": "orange peel", "amount": 1, "unit": null, "optional": true, "order": 5}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add rye, sweet vermouth, and Angostura bitters to a mixing glass with ice.", "tip": null, "duration": null},
+      {"order": 2, "text": "Stir until well-chilled, about 30 seconds.", "tip": "Stir, don't shake. Shaking aerates the cocktail and clouds it. A Manhattan should be silky and clear.", "duration": 30},
+      {"order": 3, "text": "Strain into a chilled coupe.", "tip": null, "duration": null},
+      {"order": 4, "text": "Garnish with a brandied cherry. If using an orange peel, express it over the glass first to release the oils, then drop it in or discard.", "tip": "A real brandied cherry, not a neon maraschino. Luxardo or Fabbri amarena work, and a homemade version is even better.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "boozy", "bitter", "classic", "pre-prohibition", "stirred", "vegan"]
+  },
+  {
+    "name": "Whiskey Sour",
+    "description": "A classic shaken cocktail of bourbon, lemon juice, and simple syrup, served on the rocks or up. The optional egg white version produces a silky foam on top and rounds out the texture. Dates to the mid-1800s.",
+    "rickNote": "Egg white is optional but it's the thing that turns a good Whiskey Sour into a great one. If you've never tried one with egg white, this is the one to start with. Aquafaba works as a vegan substitute.",
+    "glassware": "rocks glass",
+    "methods": ["SHAKE"],
+    "baseSpirit": "bourbon",
+    "difficulty": "EASY",
+    "prepTime": 4,
+    "abvEstimate": "MEDIUM",
+    "status": "DRAFT",
+    "safetyFlags": ["CONTAINS_EGGS"],
+    "ingredients": [
+      {"name": "bourbon", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "lemon juice (fresh)", "amount": 0.75, "unit": "oz", "optional": false, "order": 2},
+      {"name": "simple syrup", "amount": 0.75, "unit": "oz", "optional": false, "order": 3},
+      {"name": "egg white", "amount": 1, "unit": null, "optional": true, "order": 4},
+      {"name": "Angostura bitters", "amount": 2, "unit": "dash", "optional": true, "order": 5},
+      {"name": "brandied cherry", "amount": 1, "unit": null, "optional": false, "order": 6}
+    ],
+    "steps": [
+      {"order": 1, "text": "If using egg white, add it to a shaker with the bourbon, lemon juice, and simple syrup. Shake hard without ice for about 15 seconds to build the foam.", "tip": "This is called a dry shake. Skipping it means a thinner, less stable foam. The dry shake is non-negotiable if you want the texture.", "duration": 15},
+      {"order": 2, "text": "Add ice to the shaker and shake again until well-chilled, about 15 seconds.", "tip": null, "duration": 15},
+      {"order": 3, "text": "Strain into a rocks glass over fresh ice. If skipping egg white, just shake once with ice and strain.", "tip": null, "duration": null},
+      {"order": 4, "text": "Garnish with a brandied cherry. If using egg white, dot a few drops of Angostura on the foam.", "tip": "The bitters dots aren't just decoration. They add a small bitter aroma on the nose that balances the sweet-sour palate.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "citrus-forward", "sour", "classic", "pre-prohibition", "shaken"]
+  },
+  {
+    "name": "Sazerac",
+    "description": "A New Orleans rye whiskey cocktail built on Peychaud's bitters, sugar, and an absinthe-rinsed glass. The official cocktail of New Orleans, dating to the mid-1800s, and one of the few classics that keeps the absinthe step.",
+    "rickNote": "The absinthe rinse is the move. It coats the glass with anise aromatics that hit you on the first sip and disappear by the third. Without it, you have a Manhattan-adjacent rye drink. With it, you have a Sazerac.",
+    "glassware": "rocks glass",
+    "methods": ["STIR", "RINSE"],
+    "baseSpirit": "rye",
+    "difficulty": "MEDIUM",
+    "prepTime": 4,
+    "abvEstimate": "HIGH",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "rye whiskey", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "sugar cube", "amount": 1, "unit": null, "optional": false, "order": 2},
+      {"name": "Peychaud's bitters", "amount": 3, "unit": "dash", "optional": false, "order": 3},
+      {"name": "Angostura bitters", "amount": 1, "unit": "dash", "optional": false, "order": 4},
+      {"name": "absinthe", "amount": 0.25, "unit": "oz", "optional": false, "order": 5},
+      {"name": "lemon peel", "amount": 1, "unit": null, "optional": false, "order": 6}
+    ],
+    "steps": [
+      {"order": 1, "text": "Chill a rocks glass with ice while you prepare the cocktail. This will hold the absinthe rinse later.", "tip": null, "duration": null},
+      {"order": 2, "text": "In a separate mixing glass, muddle the sugar cube with the Peychaud's and Angostura bitters until the sugar is mostly dissolved. Skip the muddling if using simple syrup.", "tip": "A sugar cube takes more work than simple syrup but produces a slightly different texture. Either approach works.", "duration": null},
+      {"order": 3, "text": "Add rye and ice to the mixing glass. Stir until well-chilled, about 30 seconds.", "tip": null, "duration": 30},
+      {"order": 4, "text": "Empty the chilled rocks glass and add the absinthe. Swirl to coat the inside of the glass, then discard the excess.", "tip": "Don't pour out the absinthe. Discard means dump it. The point is a thin coating, not a measured pour.", "duration": null},
+      {"order": 5, "text": "Strain the rye mixture into the absinthe-rinsed glass. Serve without ice.", "tip": null, "duration": null},
+      {"order": 6, "text": "Express the lemon peel over the glass by pinching it skin-side-down to release the oils, then discard the peel.", "tip": "Discard, not drop in. The Sazerac uses the lemon oils for aroma but doesn't want the peel sitting in the drink.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "boozy", "bitter", "classic", "pre-prohibition", "stirred", "new-orleans", "vegan"]
+  },
+  {
+    "name": "Mint Julep",
+    "description": "A bourbon cocktail built on muddled mint and sugar, served over crushed ice in a chilled silver or pewter julep cup. The official drink of the Kentucky Derby and a Southern summer staple since the 1700s.",
+    "rickNote": "The frost on the julep cup is the point. The mint and sugar matter, but the cold metal in your hand is what makes the drink feel like a Mint Julep. Hold it by the rim, not the body, or you'll melt the frost in seconds.",
+    "glassware": "julep cup",
+    "methods": ["MUDDLE", "BUILD"],
+    "baseSpirit": "bourbon",
+    "difficulty": "MEDIUM",
+    "prepTime": 4,
+    "abvEstimate": "HIGH",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "bourbon", "amount": 2.5, "unit": "oz", "optional": false, "order": 1},
+      {"name": "mint leaves (fresh)", "amount": 8, "unit": null, "optional": false, "order": 2},
+      {"name": "simple syrup", "amount": 0.5, "unit": "oz", "optional": false, "order": 3},
+      {"name": "crushed ice", "amount": null, "unit": "to fill", "optional": false, "order": 4},
+      {"name": "mint sprig", "amount": 1, "unit": null, "optional": false, "order": 5}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add the mint leaves and simple syrup to a chilled julep cup.", "tip": null, "duration": null},
+      {"order": 2, "text": "Gently press the mint leaves with a muddler or the back of a barspoon to release the oils. Don't pulverize them.", "tip": "Bruising the leaves releases the aromatic oils. Tearing them releases bitter chlorophyll. A few firm presses, not a grind.", "duration": null},
+      {"order": 3, "text": "Add bourbon and fill the cup halfway with crushed ice. Stir briefly to combine.", "tip": null, "duration": null},
+      {"order": 4, "text": "Top with more crushed ice, mounded above the rim.", "tip": null, "duration": null},
+      {"order": 5, "text": "Garnish with a mint sprig, slapped between your hands first to release the aroma.", "tip": "Slap the mint, don't just lay it on top. The aroma is what hits you on every sip, and unslapped mint is just decoration.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "herbaceous", "sweet", "classic", "pre-prohibition", "muddled", "summer", "kentucky", "vegan"]
+  },
+  {
+    "name": "Boulevardier",
+    "description": "A whiskey cocktail of bourbon, Campari, and sweet vermouth in equal parts, named after a 1920s Paris magazine. The Negroni's whiskey cousin: bitter, complex, and built for slow sipping.",
+    "rickNote": "This is what a Negroni drinker reaches for when they want something with more weight in the glass. The bourbon adds vanilla and oak underneath the Campari's bitterness, which softens the whole drink without sweetening it.",
+    "glassware": "rocks glass",
+    "methods": ["STIR"],
+    "baseSpirit": "bourbon",
+    "difficulty": "EASY",
+    "prepTime": 3,
+    "abvEstimate": "HIGH",
+    "status": "DRAFT",
+    "safetyFlags": ["CONTAINS_SULFITES"],
+    "ingredients": [
+      {"name": "bourbon", "amount": 1.5, "unit": "oz", "optional": false, "order": 1},
+      {"name": "Campari", "amount": 1, "unit": "oz", "optional": false, "order": 2},
+      {"name": "sweet vermouth", "amount": 1, "unit": "oz", "optional": false, "order": 3},
+      {"name": "orange peel", "amount": 1, "unit": null, "optional": false, "order": 4}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add bourbon, Campari, and sweet vermouth to a mixing glass with ice.", "tip": null, "duration": null},
+      {"order": 2, "text": "Stir until well-chilled, about 30 seconds.", "tip": null, "duration": 30},
+      {"order": 3, "text": "Strain into a rocks glass over a large ice cube.", "tip": null, "duration": null},
+      {"order": 4, "text": "Express the orange peel over the glass by pinching it skin-side-down to release the oils, then drop it in.", "tip": null, "duration": null}
+    ],
+    "tags": ["whiskey-forward", "bitter", "boozy", "classic", "pre-prohibition", "stirred", "vegan"]
+  },
+  {
+    "name": "Vieux Carré",
+    "description": "A New Orleans cocktail of rye, cognac, sweet vermouth, and Bénédictine, balanced with two kinds of bitters. Created at the Hotel Monteleone's Carousel Bar in the 1930s and named for the French Quarter.",
+    "rickNote": "A complicated drink that doesn't taste complicated. The rye and cognac split the base, the vermouth and Bénédictine handle the sweetness, and the two bitters tie everything together. Every ingredient earns its place.",
+    "glassware": "rocks glass",
+    "methods": ["STIR"],
+    "baseSpirit": "rye",
+    "difficulty": "MEDIUM",
+    "prepTime": 4,
+    "abvEstimate": "HIGH",
+    "status": "DRAFT",
+    "safetyFlags": ["CONTAINS_SULFITES"],
+    "ingredients": [
+      {"name": "rye whiskey", "amount": 1, "unit": "oz", "optional": false, "order": 1},
+      {"name": "cognac", "amount": 1, "unit": "oz", "optional": false, "order": 2},
+      {"name": "sweet vermouth", "amount": 1, "unit": "oz", "optional": false, "order": 3},
+      {"name": "Bénédictine", "amount": 0.25, "unit": "oz", "optional": false, "order": 4},
+      {"name": "Peychaud's bitters", "amount": 2, "unit": "dash", "optional": false, "order": 5},
+      {"name": "Angostura bitters", "amount": 2, "unit": "dash", "optional": false, "order": 6},
+      {"name": "lemon peel", "amount": 1, "unit": null, "optional": false, "order": 7}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add rye, cognac, sweet vermouth, Bénédictine, Peychaud's, and Angostura to a mixing glass with ice.", "tip": null, "duration": null},
+      {"order": 2, "text": "Stir until well-chilled, about 30 seconds.", "tip": null, "duration": 30},
+      {"order": 3, "text": "Strain into a rocks glass over a large ice cube.", "tip": null, "duration": null},
+      {"order": 4, "text": "Express the lemon peel over the glass by pinching it skin-side-down to release the oils, then drop it in.", "tip": "The lemon oils are what brighten the drink against all that sweet and bitter. Don't skip the express.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "bitter", "boozy", "classic", "pre-prohibition", "stirred", "new-orleans", "vegan"]
+  },
+  {
+    "name": "Whiskey Smash",
+    "description": "A bourbon, lemon, and muddled mint cocktail served over crushed ice. A 19th-century American classic that sits halfway between a Mint Julep and a Whiskey Sour.",
+    "rickNote": "Less ceremony than a Julep, more refreshment than a Sour. The lemon brightens what would otherwise be a sweet-mint drink, and the crushed ice keeps it cold enough to drink in the heat. Summer porch material.",
+    "glassware": "rocks glass",
+    "methods": ["MUDDLE", "SHAKE"],
+    "baseSpirit": "bourbon",
+    "difficulty": "EASY",
+    "prepTime": 4,
+    "abvEstimate": "MEDIUM",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "bourbon", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "lemon wedges", "amount": 3, "unit": null, "optional": false, "order": 2},
+      {"name": "mint leaves (fresh)", "amount": 8, "unit": null, "optional": false, "order": 3},
+      {"name": "simple syrup", "amount": 0.75, "unit": "oz", "optional": false, "order": 4},
+      {"name": "crushed ice", "amount": null, "unit": "to fill", "optional": false, "order": 5},
+      {"name": "mint sprig", "amount": 1, "unit": null, "optional": false, "order": 6}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add the lemon wedges, mint leaves, and simple syrup to a shaker.", "tip": null, "duration": null},
+      {"order": 2, "text": "Muddle gently to release the lemon juice and mint oils. Don't pulverize the mint.", "tip": "A few firm presses on the lemon wedges, then ease up on the mint. The lemon needs more force, the mint barely any.", "duration": null},
+      {"order": 3, "text": "Add bourbon and ice. Shake briefly, about 10 seconds, just to combine and chill.", "tip": null, "duration": 10},
+      {"order": 4, "text": "Double-strain into a rocks glass filled with crushed ice.", "tip": "Double-strain to keep the muddled bits out. A regular strainer plus a fine-mesh strainer held over the glass does the job.", "duration": null},
+      {"order": 5, "text": "Garnish with a mint sprig, slapped between your hands first to release the aroma.", "tip": "Slap the mint, don't just lay it on top. The aroma is what hits you on every sip, and unslapped mint is just decoration.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "citrus-forward", "herbaceous", "sweet", "classic", "pre-prohibition", "muddled", "shaken", "summer", "vegan"]
+  },
+  {
+    "name": "Rob Roy",
+    "description": "A stirred Scotch whisky cocktail with sweet vermouth and Angostura bitters, served up in a coupe with a brandied cherry. The Scotch Manhattan, named for the 1894 operetta about the Scottish folk hero, and built on the same template as the Manhattan with a different base.",
+    "rickNote": "Use a blended Scotch, not a peated single malt. The peat fights the vermouth and produces a smoky-sweet drink that tastes like an argument. A soft blend lets the vermouth and bitters do their job.",
+    "glassware": "coupe",
+    "methods": ["STIR"],
+    "baseSpirit": "Scotch",
+    "difficulty": "EASY",
+    "prepTime": 3,
+    "abvEstimate": "HIGH",
+    "status": "DRAFT",
+    "safetyFlags": ["CONTAINS_SULFITES"],
+    "ingredients": [
+      {"name": "blended Scotch", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "sweet vermouth", "amount": 1, "unit": "oz", "optional": false, "order": 2},
+      {"name": "Angostura bitters", "amount": 2, "unit": "dash", "optional": false, "order": 3},
+      {"name": "brandied cherry", "amount": 1, "unit": null, "optional": false, "order": 4}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add Scotch, sweet vermouth, and Angostura bitters to a mixing glass with ice.", "tip": null, "duration": null},
+      {"order": 2, "text": "Stir until well-chilled, about 30 seconds.", "tip": "Stir, don't shake. Shaking aerates the cocktail and clouds it. A Rob Roy should be silky and clear.", "duration": 30},
+      {"order": 3, "text": "Strain into a chilled coupe.", "tip": null, "duration": null},
+      {"order": 4, "text": "Garnish with a brandied cherry.", "tip": "A real brandied cherry, not a neon maraschino. Luxardo or Fabbri amarena work.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "boozy", "bitter", "classic", "pre-prohibition", "stirred", "vegan"]
+  },
+  {
+    "name": "Hot Toddy",
+    "description": "A hot whiskey drink built on lemon, honey, and spices. Originally a Scottish home remedy from the 18th century, now a winter staple and the classic move when you're trying to feel better and have a drink at the same time.",
+    "rickNote": "The whiskey choice doesn't have to be precious here. The hot water and lemon will dominate whatever you pour, so use something honest rather than something fancy. A bourbon, rye, or blended Scotch all work.",
+    "glassware": "mug",
+    "methods": ["BUILD"],
+    "baseSpirit": "whiskey",
+    "difficulty": "EASY",
+    "prepTime": 5,
+    "abvEstimate": "LOW",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "whiskey (bourbon, rye, or blended Scotch)", "amount": 1.5, "unit": "oz", "optional": false, "order": 1},
+      {"name": "lemon juice (fresh)", "amount": 0.5, "unit": "oz", "optional": false, "order": 2},
+      {"name": "honey", "amount": 1, "unit": "tsp", "optional": false, "order": 3},
+      {"name": "hot water", "amount": 6, "unit": "oz", "optional": false, "order": 4},
+      {"name": "lemon wheel", "amount": 1, "unit": null, "optional": false, "order": 5},
+      {"name": "cloves", "amount": 2, "unit": null, "optional": true, "order": 6},
+      {"name": "cinnamon stick", "amount": 1, "unit": null, "optional": true, "order": 7}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add the honey to the mug and pour in a small amount of hot water to dissolve it. Stir until fully combined.", "tip": "Honey doesn't dissolve well in cold liquid or whiskey. Dissolving it in hot water first prevents a gummy layer at the bottom of the mug.", "duration": null},
+      {"order": 2, "text": "Add whiskey, lemon juice, and the rest of the hot water. Stir to combine.", "tip": null, "duration": null},
+      {"order": 3, "text": "Stud the lemon wheel with the cloves if using, and float on top.", "tip": null, "duration": null},
+      {"order": 4, "text": "Add the cinnamon stick if using.", "tip": "The cinnamon stick is more than decoration. It infuses warmth and aroma as the drink sits, and you can use it as a stir stick.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "citrus-forward", "sweet", "warm", "classic", "built", "winter", "comfort", "low-abv"]
+  },
+  {
+    "name": "Negroni",
+    "description": "A stirred Italian aperitivo of gin, Campari, and sweet vermouth in equal parts, served over a large ice cube with an orange peel. Created at Florence's Caffè Casoni in 1919 and now a global benchmark for bitter cocktails.",
+    "rickNote": "Equal parts is the law. Some bartenders mess with the ratio to soften the bitterness, but the Negroni's whole identity is the balance point where gin, Campari, and vermouth meet evenly. Drink it for what it is, not for what you wish it were.",
+    "glassware": "rocks glass",
+    "methods": ["STIR"],
+    "baseSpirit": "gin",
+    "difficulty": "EASY",
+    "prepTime": 3,
+    "abvEstimate": "HIGH",
+    "status": "DRAFT",
+    "safetyFlags": ["CONTAINS_SULFITES"],
+    "ingredients": [
+      {"name": "gin", "amount": 1, "unit": "oz", "optional": false, "order": 1},
+      {"name": "Campari", "amount": 1, "unit": "oz", "optional": false, "order": 2},
+      {"name": "sweet vermouth", "amount": 1, "unit": "oz", "optional": false, "order": 3},
+      {"name": "orange peel", "amount": 1, "unit": null, "optional": false, "order": 4}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add gin, Campari, and sweet vermouth to a mixing glass with ice.", "tip": null, "duration": null},
+      {"order": 2, "text": "Stir until well-chilled, about 30 seconds.", "tip": null, "duration": 30},
+      {"order": 3, "text": "Strain into a rocks glass over a large ice cube.", "tip": null, "duration": null},
+      {"order": 4, "text": "Express the orange peel over the glass by pinching it skin-side-down to release the oils, then drop it in.", "tip": null, "duration": null}
+    ],
+    "tags": ["bitter", "boozy", "classic", "italian", "stirred", "vegan"]
+  },
+  {
+    "name": "Daiquiri",
+    "description": "A shaken cocktail of white rum, lime juice, and simple syrup, served up in a coupe. The original sour template that most other shaken citrus cocktails are built on. Created in Cuba around 1898 and named for a beach near Santiago.",
+    "rickNote": "This is what every shaken citrus cocktail is trying to be. Three ingredients, properly measured, properly shaken, properly chilled. If yours doesn't taste right, the answer is almost always fresh lime juice and a better balance, not more ingredients.",
+    "glassware": "coupe",
+    "methods": ["SHAKE"],
+    "baseSpirit": "rum",
+    "difficulty": "EASY",
+    "prepTime": 3,
+    "abvEstimate": "MEDIUM",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "white rum", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "lime juice (fresh)", "amount": 0.75, "unit": "oz", "optional": false, "order": 2},
+      {"name": "simple syrup", "amount": 0.5, "unit": "oz", "optional": false, "order": 3},
+      {"name": "lime wheel", "amount": 1, "unit": null, "optional": true, "order": 4}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add rum, lime juice, and simple syrup to a shaker with ice.", "tip": null, "duration": null},
+      {"order": 2, "text": "Shake hard until well-chilled, about 15 seconds.", "tip": "Shake harder than you think you need to. The Daiquiri benefits from real aeration and dilution that only a vigorous shake delivers.", "duration": 15},
+      {"order": 3, "text": "Double-strain into a chilled coupe.", "tip": "Double-strain to keep ice shards out of the finished drink. A regular strainer plus a fine-mesh strainer held over the glass does the job.", "duration": null},
+      {"order": 4, "text": "Garnish with a lime wheel on the rim if using.", "tip": null, "duration": null}
+    ],
+    "tags": ["rum-forward", "citrus-forward", "sour", "classic", "pre-prohibition", "shaken", "cuban", "vegan"]
+  },
+  {
+    "name": "Sidecar",
+    "description": "A shaken cocktail of cognac, orange liqueur, and lemon juice, served up in a coupe with an optional sugared rim. Created in the 1920s and traditionally credited to either Harry's Bar in Paris or the Buck's Club in London. The cognac sour template.",
+    "rickNote": "The orange liqueur matters more than the cognac here. A cheap triple sec produces a thin, flat drink. Cointreau or a quality dry curaçao is what makes a Sidecar taste like a real cocktail rather than a sweet-and-sour mix.",
+    "glassware": "coupe",
+    "methods": ["SHAKE"],
+    "baseSpirit": "cognac",
+    "difficulty": "EASY",
+    "prepTime": 4,
+    "abvEstimate": "MEDIUM",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "cognac", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "orange liqueur (Cointreau or dry curaçao)", "amount": 0.75, "unit": "oz", "optional": false, "order": 2},
+      {"name": "lemon juice (fresh)", "amount": 0.75, "unit": "oz", "optional": false, "order": 3},
+      {"name": "lemon peel", "amount": 1, "unit": null, "optional": false, "order": 4},
+      {"name": "sugar (for rim)", "amount": null, "unit": "to taste", "optional": true, "order": 5}
+    ],
+    "steps": [
+      {"order": 1, "text": "If using a sugared rim, rub a lemon wedge along the rim of a chilled coupe and dip the rim in sugar to coat.", "tip": "Sugar only the outside edge of the rim, not the inside. Sugar in the drink itself throws the balance off.", "duration": null},
+      {"order": 2, "text": "Add cognac, orange liqueur, and lemon juice to a shaker with ice.", "tip": null, "duration": null},
+      {"order": 3, "text": "Shake hard until well-chilled, about 15 seconds.", "tip": null, "duration": 15},
+      {"order": 4, "text": "Double-strain into the prepared coupe.", "tip": "Double-strain to keep ice shards out of the finished drink. A regular strainer plus a fine-mesh strainer held over the glass does the job.", "duration": null},
+      {"order": 5, "text": "Express the lemon peel over the glass by pinching it skin-side-down to release the oils, then drop it in or discard.", "tip": null, "duration": null}
+    ],
+    "tags": ["brandy-forward", "citrus-forward", "sour", "classic", "pre-prohibition", "shaken", "vegan"]
+  },
+  {
+    "name": "Aviation",
+    "description": "A shaken gin cocktail of maraschino liqueur, crème de violette, and lemon juice, served up in a coupe. Created in New York around 1916 and named for the pale blue color the violette gives the drink. Almost lost during Prohibition and revived in the 2000s when crème de violette became available again.",
+    "rickNote": "The crème de violette is what makes an Aviation an Aviation. Skip it and you have a gin sour with maraschino, which is a fine drink but not this drink. The pale blue color and the floral note are the whole identity.",
+    "glassware": "coupe",
+    "methods": ["SHAKE"],
+    "baseSpirit": "gin",
+    "difficulty": "EASY",
+    "prepTime": 4,
+    "abvEstimate": "MEDIUM",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "gin", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "maraschino liqueur", "amount": 0.5, "unit": "oz", "optional": false, "order": 2},
+      {"name": "crème de violette", "amount": 0.25, "unit": "oz", "optional": false, "order": 3},
+      {"name": "lemon juice (fresh)", "amount": 0.75, "unit": "oz", "optional": false, "order": 4},
+      {"name": "brandied cherry", "amount": 1, "unit": null, "optional": false, "order": 5}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add gin, maraschino, crème de violette, and lemon juice to a shaker with ice.", "tip": null, "duration": null},
+      {"order": 2, "text": "Shake hard until well-chilled, about 15 seconds.", "tip": null, "duration": 15},
+      {"order": 3, "text": "Double-strain into a chilled coupe.", "tip": "Double-strain to keep ice shards out of the finished drink. A regular strainer plus a fine-mesh strainer held over the glass does the job.", "duration": null},
+      {"order": 4, "text": "Garnish with a brandied cherry, dropped to the bottom of the glass.", "tip": "A real brandied cherry, not a neon maraschino. Luxardo or Fabbri amarena work.", "duration": null}
+    ],
+    "tags": ["gin-forward", "citrus-forward", "floral", "sour", "classic", "pre-prohibition", "shaken", "vegan"]
+  },
+  {
+    "name": "Corpse Reviver #2",
+    "description": "A shaken gin cocktail with Cointreau, Lillet Blanc, and lemon juice in equal parts, served in an absinthe-rinsed coupe. From Harry Craddock's 1930 Savoy Cocktail Book, originally suggested as a hangover cure with the warning that 'four of these taken in swift succession will unrevive the corpse again.'",
+    "rickNote": "Don't let the equal-parts spec fool you. The absinthe rinse and the Lillet bring this drink somewhere unexpected. It tastes brighter and more complex than a 1:1:1:1 mix has any right to. The Lillet is the key.",
+    "glassware": "coupe",
+    "methods": ["SHAKE", "RINSE"],
+    "baseSpirit": "gin",
+    "difficulty": "MEDIUM",
+    "prepTime": 4,
+    "abvEstimate": "MEDIUM",
+    "status": "DRAFT",
+    "safetyFlags": ["CONTAINS_SULFITES"],
+    "ingredients": [
+      {"name": "gin", "amount": 0.75, "unit": "oz", "optional": false, "order": 1},
+      {"name": "Cointreau", "amount": 0.75, "unit": "oz", "optional": false, "order": 2},
+      {"name": "Lillet Blanc", "amount": 0.75, "unit": "oz", "optional": false, "order": 3},
+      {"name": "lemon juice (fresh)", "amount": 0.75, "unit": "oz", "optional": false, "order": 4},
+      {"name": "absinthe", "amount": 1, "unit": "dash", "optional": false, "order": 5},
+      {"name": "lemon peel", "amount": 1, "unit": null, "optional": false, "order": 6}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add the absinthe to a chilled coupe, swirl to coat the inside of the glass, then discard the excess.", "tip": "Discard means dump it. The point is a thin coating, not a measured pour.", "duration": null},
+      {"order": 2, "text": "Add gin, Cointreau, Lillet Blanc, and lemon juice to a shaker with ice.", "tip": null, "duration": null},
+      {"order": 3, "text": "Shake hard until well-chilled, about 15 seconds.", "tip": null, "duration": 15},
+      {"order": 4, "text": "Double-strain into the absinthe-rinsed coupe.", "tip": "Double-strain to keep ice shards out of the finished drink. A regular strainer plus a fine-mesh strainer held over the glass does the job.", "duration": null},
+      {"order": 5, "text": "Express the lemon peel over the glass by pinching it skin-side-down to release the oils, then discard the peel.", "tip": null, "duration": null}
+    ],
+    "tags": ["gin-forward", "citrus-forward", "herbal", "classic", "pre-prohibition", "shaken", "vegan"]
+  },
+  {
+    "name": "Pendennis Club",
+    "description": "A shaken bourbon cocktail with apricot brandy, lime juice, and Peychaud's bitters, served up in a coupe. Created at the Pendennis Club in Louisville, Kentucky in the early 1900s, and a regional Kentucky cocktail that never quite went national.",
+    "rickNote": "Bourbon and apricot are an underrated pairing. The apricot brings stone fruit warmth that complements bourbon's vanilla and oak, and the lime brightens the whole thing. If you've never tried bourbon with apricot, this is the cocktail that makes the case.",
+    "glassware": "coupe",
+    "methods": ["SHAKE"],
+    "baseSpirit": "bourbon",
+    "difficulty": "EASY",
+    "prepTime": 4,
+    "abvEstimate": "MEDIUM",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "bourbon", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "apricot brandy", "amount": 0.5, "unit": "oz", "optional": false, "order": 2},
+      {"name": "lime juice (fresh)", "amount": 0.75, "unit": "oz", "optional": false, "order": 3},
+      {"name": "Peychaud's bitters", "amount": 2, "unit": "dash", "optional": false, "order": 4},
+      {"name": "lime peel", "amount": 1, "unit": null, "optional": false, "order": 5}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add bourbon, apricot brandy, lime juice, and Peychaud's bitters to a shaker with ice.", "tip": null, "duration": null},
+      {"order": 2, "text": "Shake hard until well-chilled, about 15 seconds.", "tip": null, "duration": 15},
+      {"order": 3, "text": "Double-strain into a chilled coupe.", "tip": "Double-strain to keep ice shards out of the finished drink. A regular strainer plus a fine-mesh strainer held over the glass does the job.", "duration": null},
+      {"order": 4, "text": "Express the lime peel over the glass by pinching it skin-side-down to release the oils, then drop it in or discard.", "tip": null, "duration": null}
+    ],
+    "tags": ["whiskey-forward", "citrus-forward", "fruity", "classic", "pre-prohibition", "shaken", "vegan"]
+  },
+  {
+    "name": "New York Sour",
+    "description": "A whiskey sour with a red wine float on top. Created in Chicago in the late 1800s and called 'Continental Sour' before settling into its current name. The wine float adds a fruity, tannic layer that drinks differently from the rest of the cocktail.",
+    "rickNote": "The wine float looks like a stunt and isn't. The dry red sits on top of the sour and you taste both layers as you drink, the wine first and the bourbon underneath. Use a real dry red. A Malbec, Cabernet, or Syrah works. A sweet wine collapses the structure.",
+    "glassware": "rocks glass",
+    "methods": ["SHAKE"],
+    "baseSpirit": "bourbon",
+    "difficulty": "MEDIUM",
+    "prepTime": 5,
+    "abvEstimate": "MEDIUM",
+    "status": "DRAFT",
+    "safetyFlags": ["CONTAINS_EGGS", "CONTAINS_SULFITES"],
+    "ingredients": [
+      {"name": "bourbon", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "lemon juice (fresh)", "amount": 0.75, "unit": "oz", "optional": false, "order": 2},
+      {"name": "simple syrup", "amount": 0.75, "unit": "oz", "optional": false, "order": 3},
+      {"name": "egg white", "amount": 1, "unit": null, "optional": true, "order": 4},
+      {"name": "dry red wine (Malbec, Cabernet, or Syrah)", "amount": 0.5, "unit": "oz", "optional": false, "order": 5}
+    ],
+    "steps": [
+      {"order": 1, "text": "If using egg white, add it to a shaker with the bourbon, lemon juice, and simple syrup. Shake hard without ice for about 15 seconds to build the foam.", "tip": "This is called a dry shake. Skipping it means a thinner, less stable foam. The dry shake is non-negotiable if you want the texture.", "duration": 15},
+      {"order": 2, "text": "Add ice to the shaker and shake again until well-chilled, about 15 seconds.", "tip": null, "duration": 15},
+      {"order": 3, "text": "Strain into a rocks glass over fresh ice. If skipping egg white, just shake once with ice and strain.", "tip": null, "duration": null},
+      {"order": 4, "text": "Slowly pour the red wine over the back of a barspoon held just above the surface of the drink, letting it float on top in a distinct layer.", "tip": "The back of the spoon disperses the pour and lets the wine float instead of sinking. Pour slow. A direct pour will mix the wine into the cocktail and lose the layered effect.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "citrus-forward", "sour", "fruity", "classic", "shaken"]
+  },
+  {
+    "name": "Toronto",
+    "description": "A stirred rye cocktail with Fernet-Branca, simple syrup, and Angostura bitters, served up in a coupe. A Canadian variation on the Old Fashioned template, dating to the 1920s and named for the city. Built around Fernet's bitter-herbal complexity rather than vermouth's sweetness.",
+    "rickNote": "This drink is for people who already love Fernet. If you're new to Fernet, expect bitterness like nothing else in your liquor cabinet. Menthol, anise, dark herbs, slightly medicinal. The cocktail dilutes and rounds it, but doesn't hide it. That's the point.",
+    "glassware": "coupe",
+    "methods": ["STIR"],
+    "baseSpirit": "rye",
+    "difficulty": "EASY",
+    "prepTime": 3,
+    "abvEstimate": "HIGH",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "rye whiskey", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "Fernet-Branca", "amount": 0.25, "unit": "oz", "optional": false, "order": 2},
+      {"name": "simple syrup", "amount": 0.25, "unit": "oz", "optional": false, "order": 3},
+      {"name": "Angostura bitters", "amount": 2, "unit": "dash", "optional": false, "order": 4},
+      {"name": "orange peel", "amount": 1, "unit": null, "optional": false, "order": 5}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add rye, Fernet-Branca, simple syrup, and Angostura bitters to a mixing glass with ice.", "tip": null, "duration": null},
+      {"order": 2, "text": "Stir until well-chilled, about 30 seconds.", "tip": null, "duration": 30},
+      {"order": 3, "text": "Strain into a chilled coupe.", "tip": null, "duration": null},
+      {"order": 4, "text": "Express the orange peel over the glass by pinching it skin-side-down to release the oils, then drop it in or discard.", "tip": null, "duration": null}
+    ],
+    "tags": ["whiskey-forward", "bitter", "herbal", "classic", "pre-prohibition", "stirred", "vegan"]
+  },
+  {
+    "name": "Brown Derby",
+    "description": "A shaken bourbon cocktail with grapefruit juice and honey syrup, served up in a coupe. Created at the Vendome Club in Hollywood in the 1930s and named for the nearby Brown Derby restaurant. A bourbon sour built on grapefruit instead of lemon.",
+    "rickNote": "Honey and bourbon belong together, and the grapefruit's bitterness keeps the drink from getting cloying. Use real honey syrup, not a substitute. Dissolving honey in equal parts hot water makes it pour like simple syrup without losing the floral character.",
+    "glassware": "coupe",
+    "methods": ["SHAKE"],
+    "baseSpirit": "bourbon",
+    "difficulty": "EASY",
+    "prepTime": 4,
+    "abvEstimate": "MEDIUM",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "bourbon", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "grapefruit juice (fresh)", "amount": 1, "unit": "oz", "optional": false, "order": 2},
+      {"name": "honey syrup", "amount": 0.5, "unit": "oz", "optional": false, "order": 3},
+      {"name": "grapefruit peel", "amount": 1, "unit": null, "optional": false, "order": 4}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add bourbon, grapefruit juice, and honey syrup to a shaker with ice.", "tip": null, "duration": null},
+      {"order": 2, "text": "Shake hard until well-chilled, about 15 seconds.", "tip": "To make honey syrup, dissolve 1 part honey in 1 part hot water and let cool. Lasts about a month in the fridge.", "duration": 15},
+      {"order": 3, "text": "Double-strain into a chilled coupe.", "tip": "Double-strain to keep ice shards out of the finished drink. A regular strainer plus a fine-mesh strainer held over the glass does the job.", "duration": null},
+      {"order": 4, "text": "Express the grapefruit peel over the glass by pinching it skin-side-down to release the oils, then drop it in or discard.", "tip": null, "duration": null}
+    ],
+    "tags": ["whiskey-forward", "citrus-forward", "sour", "sweet", "classic", "pre-prohibition", "shaken", "vegan"]
+  },
+  {
+    "name": "Penicillin",
+    "description": "A shaken Scotch cocktail of blended Scotch, lemon juice, and honey-ginger syrup, finished with a peated Islay Scotch float on top. Created by Sam Ross at Milk & Honey in New York in 2005, and one of the rare modern classics that earned its place in the canon within a decade.",
+    "rickNote": "A modern classic that drinks like an old one. The honey-ginger syrup is the core invention here. It builds warmth and a slow burn into a cocktail that would otherwise be a Scotch sour. The Islay float on top makes the smoke the last thing you taste, like an aftertaste built into the drink.",
+    "glassware": "rocks glass",
+    "methods": ["SHAKE"],
+    "baseSpirit": "Scotch",
+    "difficulty": "MEDIUM",
+    "prepTime": 5,
+    "abvEstimate": "MEDIUM",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "blended Scotch", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "lemon juice (fresh)", "amount": 0.75, "unit": "oz", "optional": false, "order": 2},
+      {"name": "honey-ginger syrup", "amount": 0.75, "unit": "oz", "optional": false, "order": 3},
+      {"name": "peated Islay Scotch", "amount": 0.25, "unit": "oz", "optional": false, "order": 4},
+      {"name": "candied ginger", "amount": 1, "unit": null, "optional": true, "order": 5}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add blended Scotch, lemon juice, and honey-ginger syrup to a shaker with ice.", "tip": null, "duration": null},
+      {"order": 2, "text": "Shake hard until well-chilled, about 15 seconds.", "tip": "To make honey-ginger syrup, simmer 1 part honey, 1 part water, and a few thin slices of fresh ginger for about 5 minutes, then strain and cool. Lasts about two weeks in the fridge.", "duration": 15},
+      {"order": 3, "text": "Strain into a rocks glass over a large ice cube.", "tip": null, "duration": null},
+      {"order": 4, "text": "Slowly pour the peated Islay Scotch over the back of a barspoon held just above the surface of the drink, letting it float on top in a thin layer.", "tip": "The back of the spoon disperses the pour and lets the Scotch float instead of mixing in. Pour slow and use a true peated Islay like Laphroaig or Ardbeg. A non-peated Scotch on top loses the whole point.", "duration": null},
+      {"order": 5, "text": "Garnish with candied ginger on a pick if using.", "tip": null, "duration": null}
+    ],
+    "tags": ["whiskey-forward", "citrus-forward", "smoky", "sour", "modern-classic", "shaken", "vegan"]
+  }
+]

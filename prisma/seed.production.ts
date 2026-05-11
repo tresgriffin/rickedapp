@@ -1,129 +1,202 @@
 /**
- * Production seed — runs once on the production Neon database after migration.
+ * Production seed — runs once against the production Neon database.
  *
- * Contains ONLY:
- *   - Whiskey catalog (50 bottles — provide via WHISKEY_DATA env or JSON file)
- *   - Cocktail recipes (20 classics — provide via RECIPE_DATA env or JSON file)
+ * Seeds:
+ *   - 50-bottle whiskey catalog (prisma/data/whiskeys.json)
+ *   - 20 classic cocktail recipes (prisma/data/recipes.json)
  *
- * Does NOT contain:
- *   - Demo users (tres, brian)
- *   - Dev test data
- *   - Any content that shouldn't be public
+ * Does NOT seed demo users, dev test data, or any QA-only content.
+ * Idempotent: skip rows that already exist (matched by name/title).
  *
  * Run: pnpm db:seed:prod
- * (add "db:seed:prod": "tsx --env-file .env.production prisma/seed.production.ts" to package.json)
- *
- * PLACEHOLDER: The whiskey and recipe data arrays below are empty.
- * Ping the project owner for the locked JSON catalog before running.
  */
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../app/generated/prisma/client";
+import whiskeysRaw from "./data/whiskeys.json";
+import recipesRaw from "./data/recipes.json";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
-// ─── Whiskey catalog ──────────────────────────────────────────────────────────
-// TODO: Replace with locked 50-bottle JSON catalog when provided
-const WHISKEYS: Array<{
-  name: string;
-  brand: string;
-  category: "BOURBON" | "RYE" | "TENNESSEE" | "SCOTCH" | "IRISH" | "JAPANESE" | "OTHER";
-  distillery?: string;
-  proof?: number;
-  ageYears?: number;
-  description?: string;
-}> = [
-  // Data pending — will be provided as JSON by project owner
-];
+// ─── Type definitions matching the source JSON schemas ────────────────────────
 
-// ─── Cocktail recipes ─────────────────────────────────────────────────────────
-// TODO: Replace with locked 20-recipe JSON catalog when provided
-const RECIPES: Array<{
-  title: string;
+interface WhiskeySource {
+  brand: string;        // full product name e.g. "Jim Beam White Label"
+  type: string;         // "Bourbon" | "Rye" | "Tennessee" | "Scotch (Single Malt)" | etc.
+  regionOrigin: string; // "Kentucky, USA" — not stored, no schema field
+  abv: number;          // 40.0–50.5; converted to proof (× 2)
   description: string;
-  ingredients: Array<{ amount: string; item: string }>;
-  steps: string[];
-  taggedWhiskeyName?: string;
-}> = [
-  // Data pending — will be provided as JSON by project owner
-];
+  // pipeline-only fields — ignored:
+  // writingApproach, status, wordCount, notes
+}
+
+interface RecipeIngredientSource {
+  name: string;
+  amount: number;
+  unit: string | null;
+  optional: boolean;
+  order: number;
+}
+
+interface RecipeStepSource {
+  order: number;
+  text: string;
+  tip: string | null;
+  duration: number | null;
+}
+
+interface RecipeSource {
+  name: string;
+  description: string;
+  rickNote: string | null;
+  baseSpirit: string;
+  difficulty: "EASY" | "MEDIUM" | "ADVANCED";
+  safetyFlags: string[];
+  ingredients: RecipeIngredientSource[];
+  steps: RecipeStepSource[];
+  // ignored: glassware, methods, prepTime, abvEstimate, status, tags
+}
+
+// ─── Field mappings ────────────────────────────────────────────────────────────
+
+type BourbonCategory = "BOURBON" | "RYE" | "TENNESSEE" | "SCOTCH" | "IRISH" | "JAPANESE" | "OTHER";
+
+const TYPE_TO_CATEGORY: Record<string, BourbonCategory> = {
+  Bourbon:               "BOURBON",
+  Tennessee:             "TENNESSEE",
+  Rye:                   "RYE",
+  "Scotch (Single Malt)": "SCOTCH",
+  "Scotch (Blended)":    "SCOTCH",
+  "Scotch (Blended Malt)": "SCOTCH",
+  Irish:                 "IRISH",
+  Japanese:              "JAPANESE",
+  Canadian:              "OTHER",   // no CANADIAN enum value
+};
+
+function mapWhiskey(w: WhiskeySource) {
+  const category = TYPE_TO_CATEGORY[w.type] ?? "OTHER";
+  const proof = Math.round(w.abv * 2 * 10) / 10; // e.g. 40.0 → 80, 45.2 → 90.4
+
+  return {
+    name: w.brand,    // source "brand" field is the full product name
+    brand: w.brand,   // same value — brand/name separation can be refined later
+    category,
+    proof,
+    description: w.description,
+  };
+}
+
+function mapIngredient(ing: RecipeIngredientSource): { amount: string; item: string } {
+  const amount = ing.unit
+    ? `${ing.amount} ${ing.unit}`
+    : `${ing.amount}`;
+  return { amount, item: ing.name };
+}
+
+function mapStep(step: RecipeStepSource): string {
+  return step.text;
+}
+
+function mapRecipe(r: RecipeSource) {
+  const ingredients = [...r.ingredients]
+    .sort((a, b) => a.order - b.order)
+    .map(mapIngredient);
+
+  const steps = [...r.steps]
+    .sort((a, b) => a.order - b.order)
+    .map(mapStep);
+
+  // Append rickNote to description if present — it's contextual flavor text
+  // that belongs near the description for catalog recipes that have no separate field.
+  const description = r.rickNote
+    ? `${r.description}\n\n${r.rickNote}`
+    : r.description;
+
+  return {
+    title: r.name,
+    description,
+    ingredients,
+    steps,
+    difficulty: r.difficulty,
+    safetyFlags: r.safetyFlags,
+  };
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
-  console.log("Starting production seed...\n");
+  const whiskeys = (whiskeysRaw as WhiskeySource[]).map(mapWhiskey);
+  const recipes = (recipesRaw as RecipeSource[]).map(mapRecipe);
 
-  // ── Whiskeys ────────────────────────────────────────────────────────────────
-  if (WHISKEYS.length === 0) {
-    console.warn("⚠  WHISKEYS array is empty — skipping whiskey seed.");
-    console.warn("   Add the 50-bottle catalog JSON before running in production.");
-  } else {
-    let created = 0;
-    for (const w of WHISKEYS) {
-      const existing = await prisma.whiskey.findFirst({
-        where: { name: w.name, brand: w.brand },
-      });
-      if (!existing) {
-        await prisma.whiskey.create({ data: w });
-        created++;
-      }
+  console.log(`Production seed — ${whiskeys.length} whiskeys, ${recipes.length} recipes\n`);
+
+  // ── Whiskeys ──────────────────────────────────────────────────────────────
+  let wCreated = 0;
+  let wSkipped = 0;
+
+  for (const w of whiskeys) {
+    const existing = await prisma.whiskey.findFirst({
+      where: { name: { equals: w.name, mode: "insensitive" } },
+    });
+    if (existing) {
+      wSkipped++;
+    } else {
+      await prisma.whiskey.create({ data: w });
+      wCreated++;
     }
-    console.log(`✓ Whiskeys: ${created} created, ${WHISKEYS.length - created} already existed`);
   }
 
-  // ── Cocktail recipes ────────────────────────────────────────────────────────
-  if (RECIPES.length === 0) {
-    console.warn("⚠  RECIPES array is empty — skipping recipe seed.");
-    console.warn("   Add the 20-recipe catalog JSON before running in production.");
-  } else {
-    // Recipes require a system user to own them — create one if it doesn't exist
-    const systemUser = await prisma.user.upsert({
-      where: { email: "catalog@ricked.app" },
-      create: {
-        email: "catalog@ricked.app",
-        name: "Ricked Catalog",
-        displayName: "Ricked",
-        handle: "ricked_catalog",
-        hasPickedHandle: true,
-        emailVerified: new Date(),
-        dateOfBirth: new Date("1990-01-01"),
-      },
-      update: {},
+  console.log(`✓ Whiskeys: ${wCreated} created, ${wSkipped} already existed`);
+
+  // ── System user for catalog recipes ──────────────────────────────────────
+  const systemUser = await prisma.user.upsert({
+    where: { email: "catalog@ricked.app" },
+    create: {
+      email: "catalog@ricked.app",
+      name: "Ricked",
+      displayName: "Ricked",
+      handle: "ricked",
+      hasPickedHandle: true,
+      emailVerified: new Date(),
+      dateOfBirth: new Date("1990-01-01"),
+    },
+    update: {},
+  });
+
+  // ── Cocktail recipes ──────────────────────────────────────────────────────
+  let rCreated = 0;
+  let rSkipped = 0;
+
+  for (const r of recipes) {
+    const existing = await prisma.recipe.findFirst({
+      where: { title: { equals: r.title, mode: "insensitive" }, userId: systemUser.id },
     });
 
-    let created = 0;
-    for (const r of RECIPES) {
-      const existing = await prisma.recipe.findFirst({ where: { title: r.title, userId: systemUser.id } });
-      if (!existing) {
-        let taggedWhiskeyId: string | null = null;
-        if (r.taggedWhiskeyName) {
-          const whiskey = await prisma.whiskey.findFirst({
-            where: { name: { equals: r.taggedWhiskeyName, mode: "insensitive" } },
-            select: { id: true },
-          });
-          taggedWhiskeyId = whiskey?.id ?? null;
-        }
-
-        await prisma.recipe.create({
-          data: {
-            userId: systemUser.id,
-            title: r.title,
-            description: r.description,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ingredients: r.ingredients as any,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            steps: r.steps as any,
-            taggedWhiskeyId,
-            status: "APPROVED",
-            isPublished: true,
-          },
-        });
-        created++;
-      }
+    if (existing) {
+      rSkipped++;
+      continue;
     }
-    console.log(`✓ Recipes: ${created} created, ${RECIPES.length - created} already existed`);
+
+    await prisma.recipe.create({
+      data: {
+        userId: systemUser.id,
+        title: r.title,
+        description: r.description,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ingredients: r.ingredients as any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        steps: r.steps as any,
+        status: "APPROVED",
+        isPublished: true,
+      },
+    });
+    rCreated++;
   }
 
+  console.log(`✓ Recipes:  ${rCreated} created, ${rSkipped} already existed`);
   console.log("\n✓ Production seed complete.");
+
   await prisma.$disconnect();
 }
 
