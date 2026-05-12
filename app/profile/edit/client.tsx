@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Camera } from "lucide-react";
 import AppBar from "@/components/app-bar";
@@ -8,6 +8,7 @@ import BottomNav from "@/components/bottom-nav";
 import Avatar from "@/components/avatar";
 import LoadingDots from "@/components/loading-dots";
 import { updateProfile } from "@/lib/actions/onboarding";
+import { uploadAvatar } from "@/lib/actions/avatar";
 
 interface Props {
   displayName: string;
@@ -16,10 +17,37 @@ interface Props {
   avatarUrl: string | null;
 }
 
-export default function ProfileEditClient({ displayName: initialName, bio: initialBio, handle, avatarUrl }: Props) {
+export default function ProfileEditClient({ displayName: initialName, bio: initialBio, handle, avatarUrl: initialAvatarUrl }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarError, setAvatarError] = useState("");
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setAvatarError("");
+    setAvatarUploading(true);
+
+    const formData = new FormData();
+    formData.set("avatar", file);
+    const result = await uploadAvatar(formData);
+
+    setAvatarUploading(false);
+
+    if ("error" in result) {
+      setAvatarError(result.error);
+    } else {
+      setAvatarUrl(result.avatarUrl);
+    }
+
+    // Reset input so the same file can be re-selected after an error
+    if (avatarInputRef.current) avatarInputRef.current.value = "";
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -36,19 +64,35 @@ export default function ProfileEditClient({ displayName: initialName, bio: initi
       <AppBar title="Edit profile" showBack />
 
       <main className="flex-1 pb-24 px-4 pt-6 max-w-lg mx-auto w-full">
-        {/* Avatar — visible placeholder, upload coming Phase 8b */}
+        {/* Avatar upload */}
         <div className="flex flex-col items-center mb-8">
-          <div className="relative">
+          <button
+            type="button"
+            onClick={() => avatarInputRef.current?.click()}
+            disabled={avatarUploading || pending}
+            className="relative group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0d3c54] rounded-full"
+            aria-label="Upload profile photo"
+          >
             <Avatar displayName={initialName} avatarUrl={avatarUrl} size="lg" />
-            <div
-              className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center cursor-not-allowed"
-              aria-label="Upload photo — coming soon"
-            >
-              <Camera size={18} className="text-white/60" />
+            <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
+              {avatarUploading
+                ? <LoadingDots />
+                : <Camera size={18} className="text-white" />}
             </div>
-          </div>
-          <p className="text-xs text-gray-400 mt-2">Upload photo — coming soon</p>
-          {/* FUTURE: Phase 8b — replace stub with file input wired to uploadFile() */}
+          </button>
+          <p className="text-xs text-gray-400 mt-2">
+            {avatarUploading ? "Uploading…" : "Tap to change photo"}
+          </p>
+          {avatarError && (
+            <p className="text-xs text-red-600 mt-1 text-center">{avatarError}</p>
+          )}
+          <input
+            ref={avatarInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/heic,image/gif"
+            className="hidden"
+            onChange={handleAvatarChange}
+          />
         </div>
 
         {error && (
@@ -102,7 +146,7 @@ export default function ProfileEditClient({ displayName: initialName, bio: initi
           <div className="flex flex-col gap-3 mt-2">
             <button
               type="submit"
-              disabled={pending}
+              disabled={pending || avatarUploading}
               className="w-full rounded-full bg-[#0d3c54] py-3.5 text-sm font-bold text-white hover:bg-[#0a2f42] transition-colors disabled:opacity-60"
             >
               {pending
@@ -111,7 +155,7 @@ export default function ProfileEditClient({ displayName: initialName, bio: initi
             </button>
             <button
               type="button"
-              disabled={pending}
+              disabled={pending || avatarUploading}
               onClick={() => router.back()}
               className="w-full rounded-full border border-gray-200 py-3.5 text-sm font-bold text-gray-500 hover:border-[#0d3c54]/30 transition-colors disabled:opacity-40"
             >

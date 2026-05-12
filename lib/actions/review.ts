@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { uploadFile } from "@/lib/upload";
+import { uploadFile, UploadError } from "@/lib/upload";
 import { requireVerifiedUser } from "@/lib/require-verified";
 
 export async function createReview(
@@ -30,7 +30,11 @@ export async function createReview(
 
   let mediaUrl: string | null = null;
   if (mediaFile && mediaFile.size > 0) {
-    mediaUrl = await uploadFile(mediaFile);
+    try {
+      mediaUrl = await uploadFile(mediaFile);
+    } catch (err) {
+      return { error: err instanceof UploadError ? err.message : "Upload failed. Try again." };
+    }
   }
 
   await prisma.review.create({
