@@ -140,7 +140,7 @@ export default function CommentSection({
               onChange={(e) => setBody(e.target.value)}
               placeholder="Add a comment..."
               maxLength={1000}
-              className="flex-1 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+              className="flex-1 rounded-full border border-gray-200 bg-white px-3 py-2 text-base text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
             />
             <button
               type="submit"

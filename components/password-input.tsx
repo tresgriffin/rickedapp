@@ -38,7 +38,7 @@ export default function PasswordInput({
         placeholder={placeholder}
         className={
           className ??
-          "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pr-11 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+          "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pr-11 text-base text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
         }
       />
       <button

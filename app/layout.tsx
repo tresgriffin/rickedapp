@@ -34,8 +34,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // userScalable and maximumScale removed — pinch-zoom must remain accessible.
+  // iOS auto-zoom on focus is prevented instead by setting all inputs to text-base (16px).
   viewportFit: "cover",
   themeColor: "#0d3c54",
 };

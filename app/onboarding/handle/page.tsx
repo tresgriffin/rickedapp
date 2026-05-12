@@ -119,7 +119,7 @@ export default function HandlePage() {
                   onChange={(e) => setHandle(e.target.value)}
                   placeholder="yourhandle"
                   maxLength={20}
-                  className="w-full rounded-xl border border-gray-200 bg-white pl-8 pr-10 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+                  className="w-full rounded-xl border border-gray-200 bg-white pl-8 pr-10 py-3 text-base text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
                 />
                 {/* Status indicator */}
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">

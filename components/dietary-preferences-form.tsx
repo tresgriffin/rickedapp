@@ -58,7 +58,7 @@ export default function DietaryPreferencesForm({ current, currentNotes, redirect
           defaultValue={currentNotes}
           placeholder="Anything else Rick should know — allergies, strong preferences…"
           rows={3}
-          className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] resize-none"
+          className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-base text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] resize-none"
         />
       </div>
 

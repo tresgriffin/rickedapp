@@ -134,7 +134,7 @@ function NewRecipeForm() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Old Fashioned, Whiskey Sour..."
-              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
             />
           </div>
 
@@ -149,7 +149,7 @@ function NewRecipeForm() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="One line about this recipe."
-              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
             />
           </div>
 
@@ -175,14 +175,14 @@ function NewRecipeForm() {
                   value={ing.amount}
                   onChange={(e) => updateIngredient(i, "amount", e.target.value)}
                   placeholder="2 oz"
-                  className="w-20 flex-shrink-0 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+                  className="w-20 flex-shrink-0 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-base text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
                 />
                 <input
                   type="text"
                   value={ing.item}
                   onChange={(e) => updateIngredient(i, "item", e.target.value)}
                   placeholder="Bourbon"
-                  className="flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+                  className="flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-base text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
                 />
                 {ingredients.length > 1 && (
                   <button
@@ -219,7 +219,7 @@ function NewRecipeForm() {
                   onChange={(e) => updateStep(i, e.target.value)}
                   rows={2}
                   placeholder={`Step ${i + 1}`}
-                  className="flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-black placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+                  className="flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-base text-black placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
                 />
                 {steps.length > 1 && (
                   <button

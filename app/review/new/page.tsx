@@ -140,7 +140,7 @@ function NewReviewForm() {
               onChange={(e) => setBody(e.target.value)}
               rows={5}
               placeholder="What did you think? Plain language is fine. You're not writing for a magazine."
-              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-black placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
             />
             <p className="text-xs text-gray-400 text-right">
               {body.trim().length}/10 min

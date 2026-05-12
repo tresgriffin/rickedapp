@@ -441,7 +441,7 @@ export default function RickChat({
             placeholder={isRateLimited ? "Come back tomorrow…" : "Tell Rick what you've got…"}
             disabled={loading || isRateLimited}
             rows={1}
-            className="flex-1 resize-none bg-transparent text-sm text-black placeholder-gray-400 focus:outline-none leading-relaxed max-h-28 overflow-y-auto disabled:opacity-50"
+            className="flex-1 resize-none bg-transparent text-base text-black placeholder-gray-400 focus:outline-none leading-relaxed max-h-28 overflow-y-auto disabled:opacity-50"
             style={{ minHeight: "24px" }}
             onInput={(e) => {
               const el = e.currentTarget;
