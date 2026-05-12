@@ -33,16 +33,22 @@ export default function ProfileEditClient({ displayName: initialName, bio: initi
     setAvatarError("");
     setAvatarUploading(true);
 
-    const formData = new FormData();
-    formData.set("avatar", file);
-    const result = await uploadAvatar(formData);
+    try {
+      const formData = new FormData();
+      formData.set("avatar", file);
+      const result = await uploadAvatar(formData);
 
-    setAvatarUploading(false);
-
-    if ("error" in result) {
-      setAvatarError(result.error);
-    } else {
-      setAvatarUrl(result.avatarUrl);
+      if ("error" in result) {
+        setAvatarError(result.error);
+      } else {
+        setAvatarUrl(result.avatarUrl);
+      }
+    } catch {
+      // Framework-level rejection (e.g. body too large before action runs)
+      // or network error — surface a specific message rather than hanging
+      setAvatarError("Upload failed. Check your connection or try a smaller image.");
+    } finally {
+      setAvatarUploading(false);
     }
 
     // Reset input so the same file can be re-selected after an error

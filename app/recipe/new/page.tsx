@@ -87,7 +87,14 @@ function NewRecipeForm() {
     if (mediaFile) fd.append("media", mediaFile);
 
     setSubmitting(true);
-    const result = await createRecipe(fd);
+    let result: Awaited<ReturnType<typeof createRecipe>>;
+    try {
+      result = await createRecipe(fd);
+    } catch {
+      setError("Upload failed. Check your connection or try a smaller image.");
+      setSubmitting(false);
+      return;
+    }
     setSubmitting(false);
 
     if ("error" in result) {

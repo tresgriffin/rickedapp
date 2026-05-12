@@ -114,14 +114,12 @@ export default function ProfileView({ user, isOwnProfile, isFollowing }: Profile
           {/* Action button */}
           <div className="flex-shrink-0">
             {isOwnProfile ? (
-              <button
-                type="button"
-                disabled
-                className="rounded-full border border-gray-200 px-4 py-1.5 text-xs font-bold text-gray-400 cursor-not-allowed"
-                title="Coming soon"
+              <Link
+                href="/profile/edit"
+                className="rounded-full border border-[#0d3c54] px-4 py-1.5 text-xs font-bold text-[#0d3c54] hover:bg-[#0d3c54]/5 transition-colors"
               >
                 Edit profile
-              </button>
+              </Link>
             ) : (
               <FollowButton
                 targetUserId={user.id}

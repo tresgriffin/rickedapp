@@ -37,13 +37,17 @@ export default function NewPostPage() {
     if (taggedWhiskey) fd.append("taggedWhiskeyId", taggedWhiskey.id);
     if (mediaFile) fd.append("media", mediaFile);
 
-    const result = await createPost(fd);
-    setSubmitting(false);
-
-    if ("error" in result) {
-      setError(result.error);
-    } else {
-      setSuccess(true);
+    try {
+      const result = await createPost(fd);
+      if ("error" in result) {
+        setError(result.error);
+      } else {
+        setSuccess(true);
+      }
+    } catch {
+      setError("Upload failed. Check your connection or try a smaller image.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
