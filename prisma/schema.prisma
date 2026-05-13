@@ -70,9 +70,11 @@ model User {
   bio                   String?
   avatarUrl             String?
   createdAt             DateTime  @default(now())
-  hasSeenRickOnboarding Boolean   @default(false)
+  hasSeenRickOnboarding  Boolean   @default(false)
   dateOfBirth            DateTime?
   hasPickedHandle        Boolean   @default(false)
+  pendingEmail           String?
+  pendingEmailRequestedAt DateTime?
   dietaryRestrictions   DietaryRestriction[]
   dietaryNotes          String?
   dietaryPreferencesSet Boolean              @default(false)

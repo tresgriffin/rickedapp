@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import AppBar from "@/components/app-bar";
 import LoadingDots from "@/components/loading-dots";
@@ -14,7 +14,17 @@ const ENABLE_SOCIAL_AUTH = process.env.NEXT_PUBLIC_ENABLE_SOCIAL_AUTH === "true"
 const COOLDOWN_SECONDS = 60;
 
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const emailChanged = searchParams.get("email_changed") === "1";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -109,6 +119,13 @@ export default function LoginPage() {
           <p className="text-sm text-gray-500 mb-8">
             Good to see you again. Sign in below.
           </p>
+
+          {/* Email changed confirmation */}
+          {emailChanged && (
+            <div className="mb-5 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
+              Email updated. Sign in with your new address.
+            </div>
+          )}
 
           {/* Error / unverified state */}
           {error && (

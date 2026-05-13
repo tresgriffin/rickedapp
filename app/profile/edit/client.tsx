@@ -9,15 +9,35 @@ import Avatar from "@/components/avatar";
 import LoadingDots from "@/components/loading-dots";
 import { updateProfile } from "@/lib/actions/onboarding";
 import { uploadAvatar } from "@/lib/actions/avatar";
+import { requestEmailChange, cancelEmailChange } from "@/lib/actions/email-change";
 
 interface Props {
   displayName: string;
   bio: string;
   handle: string | null;
   avatarUrl: string | null;
+  currentEmail: string;
+  isOAuthOnly: boolean;
+  pendingEmail: string | null;
+  emailChangeStatus: string | null; // from ?email_change= query param
 }
 
-export default function ProfileEditClient({ displayName: initialName, bio: initialBio, handle, avatarUrl: initialAvatarUrl }: Props) {
+const EMAIL_CHANGE_MESSAGES: Record<string, string> = {
+  invalid: "That verification link is invalid or has already been used.",
+  expired: "That verification link expired. Request a new one below.",
+  claimed: "That email is no longer available — someone else claimed it before you could verify. Try a different one.",
+};
+
+export default function ProfileEditClient({
+  displayName: initialName,
+  bio: initialBio,
+  handle,
+  avatarUrl: initialAvatarUrl,
+  currentEmail,
+  isOAuthOnly,
+  pendingEmail: initialPendingEmail,
+  emailChangeStatus,
+}: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
@@ -25,6 +45,16 @@ export default function ProfileEditClient({ displayName: initialName, bio: initi
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarError, setAvatarError] = useState("");
   const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  // Email change state
+  const [emailInput, setEmailInput] = useState("");
+  const [pendingEmail, setPendingEmail] = useState(initialPendingEmail);
+  const [emailPending, startEmailTransition] = useTransition();
+  const [emailError, setEmailError] = useState(
+    emailChangeStatus ? (EMAIL_CHANGE_MESSAGES[emailChangeStatus] ?? "") : ""
+  );
+  const [emailSuccess, setEmailSuccess] = useState("");
+  const [cancelling, setCancelling] = useState(false);
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -44,14 +74,11 @@ export default function ProfileEditClient({ displayName: initialName, bio: initi
         setAvatarUrl(result.avatarUrl);
       }
     } catch {
-      // Framework-level rejection (e.g. body too large before action runs)
-      // or network error — surface a specific message rather than hanging
       setAvatarError("Upload failed. Check your connection or try a smaller image.");
     } finally {
       setAvatarUploading(false);
     }
 
-    // Reset input so the same file can be re-selected after an error
     if (avatarInputRef.current) avatarInputRef.current.value = "";
   }
 
@@ -63,6 +90,32 @@ export default function ProfileEditClient({ displayName: initialName, bio: initi
       const result = await updateProfile(formData);
       if (result && "error" in result) setError(result.error);
     });
+  }
+
+  async function handleEmailChange(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setEmailError("");
+    setEmailSuccess("");
+    const formData = new FormData(e.currentTarget);
+    startEmailTransition(async () => {
+      const result = await requestEmailChange(formData);
+      if ("error" in result) {
+        setEmailError(result.error);
+      } else {
+        setPendingEmail(emailInput);
+        setEmailInput("");
+        setEmailSuccess(`Verification email sent to ${emailInput}. Check your inbox.`);
+      }
+    });
+  }
+
+  async function handleCancelEmailChange() {
+    setCancelling(true);
+    await cancelEmailChange();
+    setPendingEmail(null);
+    setEmailSuccess("");
+    setEmailError("");
+    setCancelling(false);
   }
 
   return (
@@ -81,17 +134,13 @@ export default function ProfileEditClient({ displayName: initialName, bio: initi
           >
             <Avatar displayName={initialName} avatarUrl={avatarUrl} size="lg" />
             <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
-              {avatarUploading
-                ? <LoadingDots />
-                : <Camera size={18} className="text-white" />}
+              {avatarUploading ? <LoadingDots /> : <Camera size={18} className="text-white" />}
             </div>
           </button>
           <p className="text-xs text-gray-400 mt-2">
             {avatarUploading ? "Uploading…" : "Tap to change photo"}
           </p>
-          {avatarError && (
-            <p className="text-xs text-red-600 mt-1 text-center">{avatarError}</p>
-          )}
+          {avatarError && <p className="text-xs text-red-600 mt-1 text-center">{avatarError}</p>}
           <input
             ref={avatarInputRef}
             type="file"
@@ -107,7 +156,8 @@ export default function ProfileEditClient({ displayName: initialName, bio: initi
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        {/* Profile form — display name + bio */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5 mb-8">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="displayName" className="text-sm font-bold text-[#0d3c54]">
               Display name
@@ -149,7 +199,7 @@ export default function ProfileEditClient({ displayName: initialName, bio: initi
             />
           </div>
 
-          <div className="flex flex-col gap-3 mt-2">
+          <div className="flex flex-col gap-3">
             <button
               type="submit"
               disabled={pending || avatarUploading}
@@ -169,6 +219,101 @@ export default function ProfileEditClient({ displayName: initialName, bio: initi
             </button>
           </div>
         </form>
+
+        {/* Email section */}
+        <div className="border-t border-gray-100 pt-6">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-[#0d3c54] mb-4">
+            Email address
+          </h2>
+
+          {isOAuthOnly ? (
+            <div className="rounded-xl bg-gray-50 border border-gray-200 px-4 py-3">
+              <p className="text-sm text-gray-500">
+                {currentEmail}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                Your account uses Google sign-in. To change your email, update it in your Google account.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 mb-4">
+                <p className="text-sm text-gray-700 font-medium">{currentEmail}</p>
+                <p className="text-xs text-gray-400 mt-0.5">Current email</p>
+              </div>
+
+              {/* Pending state */}
+              {pendingEmail && (
+                <div className="mb-4 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
+                  <p className="text-sm text-amber-800 font-medium">
+                    Pending verification: {pendingEmail}
+                  </p>
+                  <p className="text-xs text-amber-700 mt-0.5 mb-2">
+                    Check your inbox and click the link to confirm. Your current email stays active until then.
+                  </p>
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={handleCancelEmailChange}
+                      disabled={cancelling}
+                      className="text-xs font-bold text-amber-700 hover:text-amber-900 transition-colors disabled:opacity-50"
+                    >
+                      {cancelling ? "Cancelling…" : "Cancel change"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEmailInput(pendingEmail);
+                        setPendingEmail(null);
+                      }}
+                      className="text-xs font-bold text-amber-700 hover:text-amber-900 transition-colors"
+                    >
+                      Resend verification
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {emailError && (
+                <p className="text-sm text-red-600 mb-3">{emailError}</p>
+              )}
+              {emailSuccess && (
+                <p className="text-sm text-green-700 mb-3">{emailSuccess}</p>
+              )}
+
+              {/* Change email form */}
+              {!pendingEmail && (
+                <form onSubmit={handleEmailChange} className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="email" className="text-sm font-bold text-[#0d3c54]">
+                      New email address
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      value={emailInput}
+                      onChange={(e) => { setEmailInput(e.target.value); setEmailError(""); setEmailSuccess(""); }}
+                      placeholder="new@example.com"
+                      className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={emailPending || !emailInput.trim()}
+                    className="self-start rounded-full bg-[#0d3c54] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#0a2f42] transition-colors disabled:opacity-50"
+                  >
+                    {emailPending
+                      ? <span className="flex items-center gap-2">Sending <LoadingDots /></span>
+                      : "Send verification email"}
+                  </button>
+                </form>
+              )}
+            </>
+          )}
+        </div>
       </main>
 
       <BottomNav />
