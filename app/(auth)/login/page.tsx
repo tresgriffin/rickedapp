@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -11,6 +11,8 @@ import PasswordInput from "@/components/password-input";
 // TODO Phase 8b: enable Google OAuth — set NEXT_PUBLIC_ENABLE_SOCIAL_AUTH=true in Vercel
 const ENABLE_SOCIAL_AUTH = process.env.NEXT_PUBLIC_ENABLE_SOCIAL_AUTH === "true";
 
+const COOLDOWN_SECONDS = 60;
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -18,23 +20,75 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Unverified-email affordance
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resentConfirm, setResentConfirm] = useState("");
+  const [cooldownLeft, setCooldownLeft] = useState(0);
+  const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  function startCooldown() {
+    setCooldownLeft(COOLDOWN_SECONDS);
+    if (cooldownRef.current) clearInterval(cooldownRef.current);
+    cooldownRef.current = setInterval(() => {
+      setCooldownLeft((s) => {
+        if (s <= 1) {
+          clearInterval(cooldownRef.current!);
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+  }
+
+  useEffect(() => () => { if (cooldownRef.current) clearInterval(cooldownRef.current); }, []);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setNeedsVerification(false);
+    setResentConfirm("");
     setLoading(true);
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-
+    const result = await signIn("credentials", { email, password, redirect: false });
     setLoading(false);
 
     if (result?.error) {
+      // Auto-check whether the failure is an unverified-email issue
+      try {
+        const res = await fetch(`/api/auth/check-unverified?email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+        if (data.needsVerification) {
+          setNeedsVerification(true);
+          setError("You need to verify your email before signing in.");
+          return;
+        }
+      } catch {
+        // If check fails, fall through to generic error
+      }
       setError("Incorrect email or password. Give it another shot.");
     } else {
       router.replace("/home");
+    }
+  }
+
+  async function handleResend() {
+    if (cooldownLeft > 0 || resending) return;
+    setResending(true);
+    setResentConfirm("");
+
+    try {
+      await fetch("/api/auth/resend-verification-public", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      setResentConfirm("Check your inbox — email sent.");
+      startCooldown();
+    } catch {
+      setResentConfirm("Couldn't send the email. Check your connection and try again.");
+    } finally {
+      setResending(false);
     }
   }
 
@@ -56,20 +110,36 @@ export default function LoginPage() {
             Good to see you again. Sign in below.
           </p>
 
-          {/* Error */}
+          {/* Error / unverified state */}
           {error && (
-            <div className="mb-5 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
-              {error}
+            <div className={`mb-5 rounded-lg px-4 py-3 text-sm ${needsVerification ? "bg-amber-50 border border-amber-200 text-amber-800" : "bg-red-50 border border-red-200 text-red-700"}`}>
+              <p>{error}</p>
+              {needsVerification && (
+                <div className="mt-2">
+                  {resentConfirm ? (
+                    <p className="text-xs font-medium text-amber-700">{resentConfirm}</p>
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    disabled={resending || cooldownLeft > 0}
+                    className="mt-1 text-xs font-bold text-amber-700 hover:text-amber-900 transition-colors disabled:opacity-50"
+                  >
+                    {resending
+                      ? <span className="flex items-center gap-1">Sending <LoadingDots /></span>
+                      : cooldownLeft > 0
+                        ? `Resend in ${cooldownLeft}s`
+                        : "Resend verification email"}
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label
-                htmlFor="email"
-                className="text-sm font-bold text-[#0d3c54]"
-              >
+              <label htmlFor="email" className="text-sm font-bold text-[#0d3c54]">
                 Email
               </label>
               <input
@@ -78,7 +148,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); setNeedsVerification(false); setError(""); }}
                 placeholder="you@example.com"
                 className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
               />
@@ -89,10 +159,7 @@ export default function LoginPage() {
                 <label htmlFor="password" className="text-sm font-bold text-[#0d3c54]">
                   Password
                 </label>
-                <Link
-                  href="/forgot-password"
-                  className="text-xs font-bold text-[#551904] hover:underline"
-                >
+                <Link href="/forgot-password" className="text-xs font-bold text-[#551904] hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -159,10 +226,7 @@ export default function LoginPage() {
           {/* Sign up link */}
           <p className="mt-8 text-center text-sm text-gray-500">
             New to Ricked?{" "}
-            <Link
-              href="/signup"
-              className="font-bold text-[#551904] hover:underline"
-            >
+            <Link href="/signup" className="font-bold text-[#551904] hover:underline">
               Create your account
             </Link>
           </p>
@@ -175,22 +239,10 @@ export default function LoginPage() {
 function GoogleIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-      <path
-        fill="#4285F4"
-        d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
-      />
-      <path
-        fill="#34A853"
-        d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"
-      />
-      <path
-        fill="#EA4335"
-        d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"
-      />
+      <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" />
+      <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" />
+      <path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" />
+      <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z" />
     </svg>
   );
 }
