@@ -37,7 +37,7 @@ export default function WelcomeCTAs() {
         onClick={() => handleCTA("/home")}
         className="w-full rounded-full border border-white/30 py-3.5 text-sm font-bold text-white/80 hover:border-white/60 hover:text-white transition-colors disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
       >
-        I&apos;ll find you
+        Maybe later
       </button>
     </div>
   );

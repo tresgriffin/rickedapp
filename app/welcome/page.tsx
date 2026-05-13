@@ -34,7 +34,7 @@ export default async function WelcomePage() {
             help you figure out what to make.
           </p>
           <p className="text-sm text-white/80 leading-relaxed">
-            No snobbery. Fish sauce welcome.
+            No snobbery. All questions welcome.
           </p>
         </div>
       </div>
