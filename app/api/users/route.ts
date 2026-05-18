@@ -32,7 +32,13 @@ export async function GET(request: Request) {
       handle: true,
       displayName: true,
       avatarUrl: true,
-      _count: { select: { recipes: true, reviews: true, followers: true } },
+      _count: {
+        select: {
+          recipes: { where: { status: "APPROVED", isPublished: true } },
+          reviews: { where: { status: "APPROVED" } },
+          followers: true,
+        },
+      },
     },
   });
 
