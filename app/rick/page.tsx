@@ -76,7 +76,7 @@ export default async function RickPage() {
 
   return (
     <div className="flex flex-col h-screen bg-[#fffbfa] overflow-hidden">
-      <div className="flex flex-col flex-1 min-h-0 pb-16">
+      <div className="flex flex-col flex-1 min-h-0 pb-[calc(4rem+env(safe-area-inset-bottom))]">
         <Suspense>
           <RickChat
             userId={data.userId}
