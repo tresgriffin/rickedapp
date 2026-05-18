@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     const random = Math.floor(Math.random() * 9000) + 1000;
     const handle = `${baseHandle}${random}`;
 
-    await prisma.user.create({
+    const newUser = await prisma.user.create({
       data: {
         name,
         displayName: name,
@@ -51,9 +51,21 @@ export async function POST(req: Request) {
         hashedPassword,
         handle,
       },
+      select: { id: true },
     });
 
     console.log(`[register] User created: ${normalizedEmail}`);
+
+    // Auto-follow Rick (fire-and-forget — don't block or fail signup)
+    prisma.user.findUnique({ where: { handle: "rick" }, select: { id: true } })
+      .then((rick) => {
+        if (rick) {
+          return prisma.follow.create({
+            data: { followerId: newUser.id, followingId: rick.id },
+          });
+        }
+      })
+      .catch((err) => console.error("[register] Auto-follow Rick failed:", err));
   } catch (err) {
     console.error("[register] DB write failed:", err);
     return NextResponse.json(

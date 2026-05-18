@@ -154,27 +154,43 @@ async function main() {
     where: { email: "catalog@ricked.app" },
     create: {
       email: "catalog@ricked.app",
-      name: "Ricked",
-      displayName: "Ricked",
-      handle: "ricked",
+      name: "Rick",
+      displayName: "Rick",
+      handle: "rick",
+      bio: "Resident mixologist. Knows the recipes, will build you new ones.",
       hasPickedHandle: true,
       emailVerified: new Date(),
       dateOfBirth: new Date("1990-01-01"),
     },
-    update: {},
+    update: {
+      name: "Rick",
+      displayName: "Rick",
+      handle: "rick",
+      bio: "Resident mixologist. Knows the recipes, will build you new ones.",
+    },
   });
 
   // ── Cocktail recipes ──────────────────────────────────────────────────────
   let rCreated = 0;
+  let rUpdated = 0;
   let rSkipped = 0;
 
   for (const r of recipes) {
     const existing = await prisma.recipe.findFirst({
       where: { title: { equals: r.title, mode: "insensitive" }, userId: systemUser.id },
+      select: { id: true, isAiGenerated: true },
     });
 
     if (existing) {
-      rSkipped++;
+      if (!existing.isAiGenerated) {
+        await prisma.recipe.update({
+          where: { id: existing.id },
+          data: { isAiGenerated: true },
+        });
+        rUpdated++;
+      } else {
+        rSkipped++;
+      }
       continue;
     }
 
@@ -189,12 +205,13 @@ async function main() {
         steps: r.steps as any,
         status: "APPROVED",
         isPublished: true,
+        isAiGenerated: true,
       },
     });
     rCreated++;
   }
 
-  console.log(`✓ Recipes:  ${rCreated} created, ${rSkipped} already existed`);
+  console.log(`✓ Recipes:  ${rCreated} created, ${rUpdated} updated (isAiGenerated), ${rSkipped} already up to date`);
   console.log("\n✓ Production seed complete.");
 
   await prisma.$disconnect();
