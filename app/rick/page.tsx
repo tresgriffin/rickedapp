@@ -75,7 +75,7 @@ export default async function RickPage() {
   if (!data) redirect("/login");
 
   return (
-    <div className="flex flex-col h-screen bg-[#fffbfa] overflow-hidden">
+    <div className="flex flex-col h-dvh bg-[#fffbfa] overflow-hidden">
       <div className="flex flex-col flex-1 min-h-0 pb-[calc(4rem+env(safe-area-inset-bottom))]">
         <Suspense>
           <RickChat
