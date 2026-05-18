@@ -66,15 +66,15 @@ interface ProfileViewProps {
   isFollowing: boolean;
 }
 
-const TABS = [
-  { id: "recipes", label: "Recipes" },
-  { id: "posts", label: "Posts" },
-  { id: "reviews", label: "Reviews" },
-  { id: "saved", label: "Saved" },
-];
-
 export default function ProfileView({ user, isOwnProfile, isFollowing }: ProfileViewProps) {
   const [activeTab, setActiveTab] = useState("recipes");
+
+  const tabs = [
+    { id: "recipes", label: "Recipes" },
+    { id: "posts", label: "Posts" },
+    { id: "reviews", label: "Reviews" },
+    ...(isOwnProfile ? [{ id: "saved", label: "Saved" }] : []),
+  ];
 
   return (
     <div>
@@ -135,7 +135,7 @@ export default function ProfileView({ user, isOwnProfile, isFollowing }: Profile
       </div>
 
       {/* Tabs */}
-      <TabBar tabs={TABS} activeId={activeTab} onChange={setActiveTab} />
+      <TabBar tabs={tabs} activeId={activeTab} onChange={setActiveTab} />
 
       <div className="px-4 pt-4 pb-6 flex flex-col gap-3">
         {activeTab === "reviews" &&
