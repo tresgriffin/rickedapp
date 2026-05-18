@@ -12,6 +12,7 @@ export async function sendVerificationEmail(email: string, token: string) {
     from: FROM,
     to: email,
     subject: "Verify your Ricked email",
+    text: `Verify your Ricked email\n\nClick the link below to verify your account. It expires in 24 hours.\n\n${url}\n\nIf you didn't create a Ricked account, ignore this email.`,
     html: `
       <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#0d3c54">
         <h1 style="font-size:24px;font-weight:700;margin-bottom:8px">Verify your email</h1>
@@ -36,6 +37,7 @@ export async function sendEmailChangeVerification(email: string, token: string) 
     from: FROM,
     to: email,
     subject: "Confirm your new Ricked email address",
+    text: `Confirm your new Ricked email address\n\nClick the link below to confirm this as your new email. It expires in 24 hours. Your current email stays active until you confirm.\n\n${url}\n\nIf you didn't request this change, ignore this email.`,
     html: `
       <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#0d3c54">
         <h1 style="font-size:24px;font-weight:700;margin-bottom:8px">Confirm your new email</h1>
@@ -61,6 +63,7 @@ export async function sendPasswordResetEmail(email: string, token: string) {
     from: FROM,
     to: email,
     subject: "Reset your Ricked password",
+    text: `Reset your Ricked password\n\nSomeone requested a password reset for this account. Click the link below to choose a new password. It expires in 1 hour.\n\n${url}\n\nIf you didn't request this, ignore this email. Your password won't change.`,
     html: `
       <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#0d3c54">
         <h1 style="font-size:24px;font-weight:700;margin-bottom:8px">Reset your password</h1>
