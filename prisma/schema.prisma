@@ -96,6 +96,7 @@ model User {
   following       Follow[]       @relation("Follower")
   followers       Follow[]       @relation("Following")
   conversations   Conversation[]
+  recipeReviews   RecipeReview[]
 }
 
 model Account {
@@ -227,10 +228,31 @@ model Recipe {
   taggedWhiskey      Whiskey?      @relation("RecipeWhiskey", fields: [taggedWhiskeyId], references: [id])
   sourceConversation Conversation? @relation("ConversationRecipes", fields: [sourceConversationId], references: [id])
   ratings            RecipeRating[]
+  recipeReviews      RecipeReview[]
 
   @@index([userId])
   @@index([taggedWhiskeyId])
   @@index([status, createdAt])
+}
+
+// Recipe reviews — star rating (required) + optional written body.
+// Unique per (userId, recipeId) — one review per user per recipe; editable.
+model RecipeReview {
+  id        String           @id @default(cuid())
+  userId    String
+  recipeId  String
+  rating    Int              // 1–5 stars, required
+  body      String?          @db.Text
+  status    ModerationStatus @default(APPROVED)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, recipeId])
+  @@index([recipeId, status, createdAt])
+  @@index([userId])
 }
 
 // Letterboxd-style dual rating: stars (quality) + wouldMakeAgain (preference).
