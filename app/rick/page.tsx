@@ -17,6 +17,7 @@ async function getRickData(userId: string) {
         dietaryPreferencesSet: true,
         rickConversationsToday: true,
         rickLastResetAt: true,
+        isAdmin: true,
       },
     }),
     prisma.conversation.findFirst({
@@ -37,7 +38,7 @@ async function getRickData(userId: string) {
     resetDate.getUTCDate() !== now.getUTCDate();
 
   const conversationsToday = isNewDay ? 0 : user.rickConversationsToday;
-  const remaining = Math.max(0, DAILY_LIMIT - conversationsToday);
+  const remaining = user.isAdmin ? 999 : Math.max(0, DAILY_LIMIT - conversationsToday);
 
   return {
     userId: user.id,

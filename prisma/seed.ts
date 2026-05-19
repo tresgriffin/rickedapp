@@ -32,6 +32,7 @@ const DEMO_USERS = [
     handle: "tres",
     displayName: "Tres",
     bio: "Builder of Ricked. Occasional Old Fashioned enthusiast.",
+    isAdmin: true,  // unlimited Rick access for dev testing
   },
   {
     email: "brian@ricked.app",
@@ -39,6 +40,7 @@ const DEMO_USERS = [
     handle: "brian",
     displayName: "Brian",
     bio: "Just trying to figure out what I actually like. No shame in that.",
+    isAdmin: false, // non-admin preserves rate-limit testing locally
   },
 ] as const;
 
@@ -267,7 +269,7 @@ async function main() {
     // Upsert so re-seeding after the rename migration doesn't fail on existing users
     const user = await prisma.user.upsert({
       where: { email: u.email },
-      update: {},
+      update: { isAdmin: u.isAdmin },
       create: {
         email: u.email,
         name: u.displayName,
@@ -275,6 +277,7 @@ async function main() {
         handle: u.handle,
         bio: u.bio,
         hashedPassword,
+        isAdmin: u.isAdmin,
         // Demo users skip onboarding so the feed is reachable immediately in dev
         hasSeenRickOnboarding: true,
       },

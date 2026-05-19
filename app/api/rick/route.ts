@@ -36,6 +36,7 @@ export async function POST(request: Request) {
       dietaryRestrictions: true,
       dietaryNotes: true,
       whiskeyInterest: true,
+      isAdmin: true,
       _count: { select: { recipes: true } },
     },
   });
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
     conversationsToday = 0;
   }
 
-  if (conversationsToday >= DAILY_LIMIT) {
+  if (!user.isAdmin && conversationsToday >= DAILY_LIMIT) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
@@ -185,13 +186,16 @@ export async function POST(request: Request) {
       where: { id: conversation.id },
       data: { updatedAt: now },
     }),
-    prisma.user.update({
-      where: { id: user.id },
-      data: {
-        rickConversationsToday: conversationsToday + 1,
-        ...(isNewDay ? { rickLastResetAt: now } : {}),
-      },
-    }),
+    // Admins bypass rate-limit tracking — don't increment their counter
+    ...(user.isAdmin ? [] : [
+      prisma.user.update({
+        where: { id: user.id },
+        data: {
+          rickConversationsToday: conversationsToday + 1,
+          ...(isNewDay ? { rickLastResetAt: now } : {}),
+        },
+      }),
+    ]),
   ]);
 
   return NextResponse.json({
@@ -211,7 +215,7 @@ export async function GET(request: Request) {
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
-    select: { id: true, rickConversationsToday: true, rickLastResetAt: true },
+    select: { id: true, rickConversationsToday: true, rickLastResetAt: true, isAdmin: true },
   });
 
   if (!user) {
@@ -227,7 +231,7 @@ export async function GET(request: Request) {
     resetDate.getUTCMonth() !== now.getUTCMonth() ||
     resetDate.getUTCDate() !== now.getUTCDate();
   const conversationsToday = isNewDay ? 0 : user.rickConversationsToday;
-  const remaining = Math.max(0, DAILY_LIMIT - conversationsToday);
+  const remaining = user.isAdmin ? 999 : Math.max(0, DAILY_LIMIT - conversationsToday);
 
   const { searchParams } = new URL(request.url);
   const conversationId = searchParams.get("conversationId");
