@@ -15,6 +15,29 @@ const MODEL = process.env.RICK_MODEL ?? "claude-sonnet-4-6";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+// Normalize a string for fuzzy title matching: lowercase, strip punctuation, collapse spaces
+function normalizeForMatch(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim();
+}
+
+// Returns the first canonical catalog recipe whose title appears in the user's message
+// or in the last 4 turns of conversation history. Longest title wins on ties.
+function findCatalogMatch(
+  userMessage: string,
+  history: { role: string; content: string }[],
+  catalog: { id: string; title: string }[]
+): { title: string } | null {
+  const recentHistory = history.slice(-4).map((m) => m.content).join(" ");
+  const corpus = normalizeForMatch(`${userMessage} ${recentHistory}`);
+  const sorted = [...catalog].sort((a, b) => b.title.length - a.title.length);
+  for (const recipe of sorted) {
+    if (corpus.includes(normalizeForMatch(recipe.title))) {
+      return { title: recipe.title };
+    }
+  }
+  return null;
+}
+
 // POST /api/rick
 // Body: { message: string, conversationId?: string }
 // Returns: { message: string, recipe: object | null, conversationId: string }
@@ -71,20 +94,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Message is required" }, { status: 400 });
   }
 
-  // Load or create conversation
-  let conversation = conversationId
-    ? await prisma.conversation.findFirst({
-        where: { id: conversationId, userId: user.id },
-        include: { messages: { orderBy: { createdAt: "asc" } } },
-      })
-    : null;
+  // Load catalog + conversation in parallel — catalog fetch adds no latency
+  const [catalog, existingConversation] = await Promise.all([
+    prisma.recipe.findMany({
+      where: { user: { handle: "rick" }, isPublished: true, status: "APPROVED" },
+      select: { id: true, title: true },
+    }),
+    conversationId
+      ? prisma.conversation.findFirst({
+          where: { id: conversationId, userId: user.id },
+          include: { messages: { orderBy: { createdAt: "asc" } } },
+        })
+      : Promise.resolve(null),
+  ]);
 
+  let conversation = existingConversation;
   if (!conversation) {
     conversation = await prisma.conversation.create({
       data: { userId: user.id },
       include: { messages: { orderBy: { createdAt: "asc" } } },
     });
   }
+
+  // Fuzzy-match user message + recent history against the canonical catalog
+  const catalogMatch = findCatalogMatch(userMessage, conversation.messages, catalog);
 
   // Build Anthropic messages from history + new user message
   const historyMessages: Anthropic.MessageParam[] = conversation.messages.map(
@@ -128,15 +161,12 @@ export async function POST(request: Request) {
   const profileBlock = fullPrompt.slice(0, profileEnd);
 
   const systemBlocks: Anthropic.TextBlockParam[] = [
-    {
-      type: "text",
-      text: profileBlock,
-    },
-    {
-      type: "text",
-      text: RICK_SYSTEM_PROMPT,
-      cache_control: { type: "ephemeral" },
-    },
+    { type: "text", text: profileBlock },
+    // Catalog match block — dynamic per turn, not cached
+    ...(catalogMatch
+      ? [{ type: "text" as const, text: `[CATALOG_MATCH]\nTitle: "${catalogMatch.title}"\n[/CATALOG_MATCH]` }]
+      : []),
+    { type: "text", text: RICK_SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
   ];
 
   // Call Anthropic API
