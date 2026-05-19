@@ -81,6 +81,7 @@ model User {
   whiskeyInterest       WhiskeyInterest?
   rickConversationsToday Int                 @default(0)
   rickLastResetAt        DateTime?
+  isAdmin                Boolean             @default(false)
 
   accounts Account[]
   sessions Session[]
