@@ -86,7 +86,9 @@ export default async function RecipePage({
   const ingredients = recipe.ingredients as unknown as Ingredient[];
   const steps = recipe.steps as unknown as string[];
   const isVerified = !!currentUser?.emailVerified;
-  const isRecipeOwner = recipe.userId === session.user.id;
+  // isRecipeOwner gates self-review/thumb blocks. AI-generated recipes are
+  // conceptually authored by Rick — the publisher can still leave a review.
+  const isRecipeOwner = !recipe.isAiGenerated && recipe.userId === session.user.id;
   const backHref = recipe.user.handle ? `/profile/${recipe.user.handle}` : "/profile";
   const ratingStats = (ratingStatsMap as Map<string, import("@/lib/recipe-rating-stats").RecipeRatingStats>).get(id) ?? {
     avgStars: null,
@@ -158,14 +160,16 @@ export default async function RecipePage({
             />
           </div>
 
-          {/* Ratings */}
-          <div className="border-t border-gray-100 pt-3">
-            <RecipeRatingSection
-              recipeId={recipe.id}
-              stats={ratingStats}
-              myRating={myRating ?? null}
-            />
-          </div>
+          {/* Ratings — hidden for the recipe's own author */}
+          {!isRecipeOwner && (
+            <div className="border-t border-gray-100 pt-3">
+              <RecipeRatingSection
+                recipeId={recipe.id}
+                stats={ratingStats}
+                myRating={myRating ?? null}
+              />
+            </div>
+          )}
         </div>
 
         {/* Photo */}

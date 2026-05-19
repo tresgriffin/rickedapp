@@ -28,9 +28,11 @@ export async function upsertRecipeReview({
   if (!existing) {
     const recipe = await prisma.recipe.findUnique({
       where: { id: recipeId },
-      select: { userId: true },
+      select: { userId: true, isAiGenerated: true },
     });
-    if (recipe?.userId === auth.userId) {
+    // AI-generated recipes are conceptually authored by Rick — the publisher can review.
+    // Only block self-review on user-authored (non-AI) recipes.
+    if (recipe && !recipe.isAiGenerated && recipe.userId === auth.userId) {
       return { error: "You can't review your own recipe." };
     }
   }

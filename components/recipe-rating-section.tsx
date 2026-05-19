@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ThumbsUp } from "lucide-react";
+import StarRating from "@/components/star-rating";
 import { upsertRecipeRating } from "@/lib/actions/recipe-rating";
 import type { RecipeRatingStats } from "@/lib/recipe-rating-stats";
 
@@ -46,6 +47,16 @@ export default function RecipeRatingSection({
 
   return (
     <div className="flex flex-col gap-3">
+      {/* Read-only star aggregate — sourced from RecipeReview table */}
+      {stats.avgStars != null && stats.ratingCount > 0 && (
+        <div className="flex items-center gap-1.5">
+          <StarRating rating={stats.avgStars} size="sm" showValue />
+          <span className="text-xs text-gray-400">
+            from {stats.ratingCount} {stats.ratingCount === 1 ? "review" : "reviews"}
+          </span>
+        </div>
+      )}
+
       {localPct != null && (
         <div className="flex items-center gap-1 text-xs text-gray-500">
           <ThumbsUp size={13} className="text-[#0d3c54]" />
