@@ -5,6 +5,7 @@ import Link from "next/link";
 import TabBar from "@/components/tab-bar";
 import Avatar from "@/components/avatar";
 import ReviewCard from "@/components/review-card";
+import RecipeReviewCard from "@/components/recipe-review-card";
 import PostCard from "@/components/post-card";
 import FollowButton from "@/components/follow-button";
 import EmptyState from "@/components/empty-state";
@@ -48,6 +49,14 @@ interface Recipe {
   taggedWhiskey?: { id: string; name: string; brand: string } | null;
 }
 
+interface RecipeReview {
+  id: string;
+  rating: number;
+  body: string | null;
+  createdAt: Date;
+  recipe: { id: string; title: string };
+}
+
 interface ProfileUser {
   id: string;
   handle: string | null;
@@ -55,6 +64,7 @@ interface ProfileUser {
   bio: string | null;
   avatarUrl: string | null;
   reviews: Review[];
+  recipeReviews: RecipeReview[];
   posts: Post[];
   recipes: Recipe[];
   _count: { followers: number; following: number };
@@ -64,15 +74,23 @@ interface ProfileViewProps {
   user: ProfileUser;
   isOwnProfile: boolean;
   isFollowing: boolean;
+  hideReviewsTab?: boolean;
 }
 
-export default function ProfileView({ user, isOwnProfile, isFollowing }: ProfileViewProps) {
+type ReviewFilter = "all" | "recipes" | "bottles";
+
+export default function ProfileView({ user, isOwnProfile, isFollowing, hideReviewsTab = false }: ProfileViewProps) {
   const [activeTab, setActiveTab] = useState("recipes");
+  const [reviewFilter, setReviewFilter] = useState<ReviewFilter>("all");
+
+  const hasWhiskeyReviews = user.reviews.length > 0;
+  const hasRecipeReviews = user.recipeReviews.length > 0;
+  const showReviewFilter = hasWhiskeyReviews && hasRecipeReviews;
 
   const tabs = [
     { id: "recipes", label: "Recipes" },
     { id: "posts", label: "Posts" },
-    { id: "reviews", label: "Reviews" },
+    ...(hideReviewsTab ? [] : [{ id: "reviews", label: "Reviews" }]),
     ...(isOwnProfile ? [{ id: "saved", label: "Saved" }] : []),
   ];
 
@@ -138,30 +156,60 @@ export default function ProfileView({ user, isOwnProfile, isFollowing }: Profile
       <TabBar tabs={tabs} activeId={activeTab} onChange={setActiveTab} />
 
       <div className="px-4 pt-4 pb-6 flex flex-col gap-3">
-        {activeTab === "reviews" &&
-          (user.reviews.length === 0 ? (
-            <EmptyState
-              message={
-                isOwnProfile
-                  ? "You haven't reviewed anything yet."
-                  : "Nothing reviewed yet."
-              }
-              sub={
-                isOwnProfile
-                  ? "Find a bottle you've had. Tell us what you think."
-                  : "Check back later."
-              }
-            />
-          ) : (
-            user.reviews.map((r) => (
-              <ReviewCard
-                key={r.id}
-                review={r}
-                isLiked={r.isLiked}
-                initialComments={r.initialComments}
+        {activeTab === "reviews" && (() => {
+          const noReviews = !hasWhiskeyReviews && !hasRecipeReviews;
+          if (noReviews) {
+            return (
+              <EmptyState
+                message={isOwnProfile ? "You haven't reviewed anything yet." : "Nothing reviewed yet."}
+                sub={isOwnProfile ? "Find a recipe or bottle you've tried. Tell us what you think." : "Check back later."}
               />
-            ))
-          ))}
+            );
+          }
+
+          const showWhiskey = reviewFilter === "all" || reviewFilter === "bottles";
+          const showRecipe = reviewFilter === "all" || reviewFilter === "recipes";
+
+          const merged = [
+            ...(showWhiskey ? user.reviews.map((r) => ({ type: "whiskey" as const, id: r.id, createdAt: new Date(r.createdAt), data: r })) : []),
+            ...(showRecipe ? user.recipeReviews.map((r) => ({ type: "recipe" as const, id: r.id, createdAt: new Date(r.createdAt), data: r })) : []),
+          ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+          return (
+            <>
+              {showReviewFilter && (
+                <div className="flex gap-2 mb-1">
+                  {(["all", "recipes", "bottles"] as ReviewFilter[]).map((f) => (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => setReviewFilter(f)}
+                      className={`rounded-full px-3 py-1 text-xs font-bold border transition-colors ${
+                        reviewFilter === f
+                          ? "bg-[#0d3c54] border-[#0d3c54] text-white"
+                          : "border-gray-200 text-gray-500 hover:border-[#0d3c54]/40"
+                      }`}
+                    >
+                      {f === "all" ? "All" : f === "recipes" ? "Recipes" : "Bottles"}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {merged.map((item) =>
+                item.type === "whiskey" ? (
+                  <ReviewCard
+                    key={`w-${item.id}`}
+                    review={item.data}
+                    isLiked={item.data.isLiked}
+                    initialComments={item.data.initialComments}
+                  />
+                ) : (
+                  <RecipeReviewCard key={`r-${item.id}`} review={item.data} />
+                )
+              )}
+            </>
+          );
+        })()}
 
         {activeTab === "posts" &&
           (user.posts.length === 0 ? (

@@ -33,6 +33,7 @@ export default async function UserProfilePage({
           user={result.user}
           isOwnProfile={isOwnProfile}
           isFollowing={result.isFollowing}
+          hideReviewsTab={result.user.handle === "rick"}
         />
       </main>
       <BottomNav />

@@ -12,6 +12,7 @@ import Avatar from "@/components/avatar";
 import LikeButton from "@/components/like-button";
 import CommentSection from "@/components/comment-section";
 import RecipeRatingSection from "@/components/recipe-rating-section";
+import RecipeReviewsSection from "@/components/recipe-reviews-section";
 import { fetchRecipeRatingStats } from "@/lib/recipe-rating-stats";
 
 interface Ingredient {
@@ -29,7 +30,7 @@ export default async function RecipePage({
 
   const { id } = await params;
 
-  const [recipe, likeCount, commentCount, userLike, initialComments, ratingStatsMap, myRating] =
+  const [recipe, likeCount, commentCount, userLike, initialComments, ratingStatsMap, myRating, recipeReviews, myRecipeReview, currentUser] =
     await Promise.all([
       prisma.recipe.findUnique({
         where: { id },
@@ -62,12 +63,29 @@ export default async function RecipePage({
         where: { userId_recipeId: { userId: session.user.id, recipeId: id } },
         select: { stars: true, wouldMakeAgain: true },
       }),
+      prisma.recipeReview.findMany({
+        where: { recipeId: id, status: "APPROVED" },
+        orderBy: { createdAt: "desc" },
+        take: 50,
+        include: {
+          user: { select: { handle: true, displayName: true, avatarUrl: true } },
+        },
+      }),
+      prisma.recipeReview.findUnique({
+        where: { userId_recipeId: { userId: session.user.id, recipeId: id } },
+        select: { rating: true, body: true },
+      }),
+      prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { emailVerified: true },
+      }),
     ]);
 
   if (!recipe) notFound();
 
   const ingredients = recipe.ingredients as unknown as Ingredient[];
   const steps = recipe.steps as unknown as string[];
+  const isVerified = !!currentUser?.emailVerified;
   const backHref = recipe.user.handle ? `/profile/${recipe.user.handle}` : "/profile";
   const ratingStats = (ratingStatsMap as Map<string, import("@/lib/recipe-rating-stats").RecipeRatingStats>).get(id) ?? {
     avgStars: null,
@@ -207,6 +225,13 @@ export default async function RecipePage({
             </ol>
           </section>
         </div>
+
+        <RecipeReviewsSection
+          recipeId={recipe.id}
+          reviews={recipeReviews}
+          myReview={myRecipeReview ?? null}
+          isVerified={isVerified}
+        />
       </main>
 
       <BottomNav />
