@@ -11,12 +11,17 @@
  * Run: pnpm db:seed:prod
  */
 
+import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../app/generated/prisma/client";
 import whiskeysRaw from "./data/whiskeys.json";
 import recipesRaw from "./data/recipes.json";
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL!,
+  ssl: { rejectUnauthorized: false },
+});
+const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 // ─── Type definitions matching the source JSON schemas ────────────────────────
