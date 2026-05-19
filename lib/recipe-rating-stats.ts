@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/db";
 
 export interface RecipeRatingStats {
-  avgStars: number | null;
-  wouldMakeAgainPct: number | null;
-  ratingCount: number;
+  avgStars: number | null;      // from RecipeReview (canonical star source)
+  wouldMakeAgainPct: number | null; // from RecipeRating (independent thumb signal)
+  ratingCount: number;          // number of star reviews
 }
 
 export async function fetchRecipeRatingStats(
@@ -11,22 +11,32 @@ export async function fetchRecipeRatingStats(
 ): Promise<Map<string, RecipeRatingStats>> {
   if (recipeIds.length === 0) return new Map();
 
-  const ratings = await prisma.recipeRating.findMany({
-    where: { recipeId: { in: recipeIds } },
-    select: { recipeId: true, stars: true, wouldMakeAgain: true },
-  });
+  const [ratings, reviews] = await Promise.all([
+    prisma.recipeRating.findMany({
+      where: { recipeId: { in: recipeIds } },
+      select: { recipeId: true, wouldMakeAgain: true },
+    }),
+    prisma.recipeReview.findMany({
+      where: { recipeId: { in: recipeIds }, status: "APPROVED" },
+      select: { recipeId: true, rating: true },
+    }),
+  ]);
 
   const grouped = new Map<string, { stars: number[]; thumbs: boolean[] }>();
+  for (const r of reviews) {
+    const entry = grouped.get(r.recipeId) ?? { stars: [], thumbs: [] };
+    entry.stars.push(r.rating);
+    grouped.set(r.recipeId, entry);
+  }
   for (const r of ratings) {
     const entry = grouped.get(r.recipeId) ?? { stars: [], thumbs: [] };
-    if (r.stars != null) entry.stars.push(r.stars);
     if (r.wouldMakeAgain != null) entry.thumbs.push(r.wouldMakeAgain);
     grouped.set(r.recipeId, entry);
   }
 
   const result = new Map<string, RecipeRatingStats>();
   for (const [recipeId, { stars, thumbs }] of grouped) {
-    const ratingCount = Math.max(stars.length, thumbs.length);
+    const ratingCount = stars.length;
     const avgStars =
       stars.length > 0
         ? Math.round((stars.reduce((s, r) => s + r, 0) / stars.length) * 10) / 10

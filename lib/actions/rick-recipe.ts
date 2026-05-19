@@ -87,11 +87,14 @@ export async function saveRickRecipe(
 }
 
 // Called from the "I made this" publish flow.
-// Requires at least a star rating and a verified email before publishing.
+// Requires a star rating and verified email before publishing.
+// Stars + body → RecipeReview (canonical review record).
+// wouldMakeAgain → RecipeRating (independent signal, stays separate).
 export async function publishRickRecipe(
   recipeId: string,
   stars: number,
-  wouldMakeAgain: boolean | null
+  wouldMakeAgain: boolean | null,
+  body?: string | null
 ): Promise<{ ok: true } | { error: string }> {
   const auth = await requireVerifiedUser();
   if ("error" in auth) return auth;
@@ -108,15 +111,15 @@ export async function publishRickRecipe(
       where: { id: recipeId },
       data: { isPublished: true },
     }),
+    prisma.recipeReview.upsert({
+      where: { userId_recipeId: { userId: auth.userId, recipeId } },
+      create: { userId: auth.userId, recipeId, rating: stars, body: body?.trim() || null },
+      update: { rating: stars, body: body?.trim() || null },
+    }),
     prisma.recipeRating.upsert({
       where: { userId_recipeId: { userId: auth.userId, recipeId } },
-      create: {
-        userId: auth.userId,
-        recipeId,
-        stars,
-        wouldMakeAgain,
-      },
-      update: { stars, wouldMakeAgain },
+      create: { userId: auth.userId, recipeId, wouldMakeAgain },
+      update: { wouldMakeAgain },
     }),
   ]);
 

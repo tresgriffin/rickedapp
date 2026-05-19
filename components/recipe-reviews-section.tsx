@@ -20,6 +20,7 @@ interface RecipeReviewsSectionProps {
   reviews: ReviewItem[];
   myReview: { rating: number; body: string | null } | null;
   isVerified: boolean;
+  isRecipeOwner: boolean;
 }
 
 export default function RecipeReviewsSection({
@@ -27,6 +28,7 @@ export default function RecipeReviewsSection({
   reviews,
   myReview,
   isVerified,
+  isRecipeOwner,
 }: RecipeReviewsSectionProps) {
   const avgRating =
     reviews.length > 0
@@ -78,11 +80,15 @@ export default function RecipeReviewsSection({
       )}
 
       <div className="border-t border-gray-100 pt-4">
-        <RecipeReviewComposer
-          recipeId={recipeId}
-          isVerified={isVerified}
-          existingReview={myReview}
-        />
+        {isRecipeOwner && !myReview ? (
+          <p className="text-sm text-gray-400 italic">You made this drink.</p>
+        ) : (
+          <RecipeReviewComposer
+            recipeId={recipeId}
+            isVerified={isVerified}
+            existingReview={myReview}
+          />
+        )}
       </div>
     </section>
   );

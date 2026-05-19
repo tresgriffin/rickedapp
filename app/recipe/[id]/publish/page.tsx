@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Star, ThumbsUp, ThumbsDown } from "lucide-react";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
+import StarSelector from "@/components/star-selector";
 import { publishRickRecipe } from "@/lib/actions/rick-recipe";
 import LoadingDots from "@/components/loading-dots";
 
@@ -10,7 +11,7 @@ export default function PublishRecipePage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [stars, setStars] = useState<number>(0);
-  const [hoveredStar, setHoveredStar] = useState<number>(0);
+  const [body, setBody] = useState("");
   const [wouldMakeAgain, setWouldMakeAgain] = useState<boolean | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +22,7 @@ export default function PublishRecipePage() {
       return;
     }
     setPending(true);
-    const result = await publishRickRecipe(id, stars, wouldMakeAgain);
+    const result = await publishRickRecipe(id, stars, wouldMakeAgain, body || null);
     if ("error" in result) {
       setError(result.error);
       setPending(false);
@@ -45,34 +46,30 @@ export default function PublishRecipePage() {
           <p className="text-xs font-bold uppercase tracking-widest text-[#0d3c54]">
             How&apos;d it turn out?
           </p>
-          <div className="flex gap-2">
-            {[1, 2, 3, 4, 5].map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => setStars(n)}
-                onMouseEnter={() => setHoveredStar(n)}
-                onMouseLeave={() => setHoveredStar(0)}
-                className="transition-transform active:scale-90"
-                aria-label={`${n} star${n > 1 ? "s" : ""}`}
-              >
-                <Star
-                  size={36}
-                  className={
-                    n <= (hoveredStar || stars)
-                      ? "fill-[#e6a817] text-[#e6a817]"
-                      : "text-gray-200"
-                  }
-                />
-              </button>
-            ))}
-          </div>
+          <StarSelector value={stars} onChange={setStars} size={36} />
+        </div>
+
+        {/* Written review — optional */}
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#0d3c54]">
+            Anything to add?{" "}
+            <span className="text-gray-400 font-normal normal-case tracking-normal">(optional)</span>
+          </p>
+          <textarea
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            placeholder="What worked, what you'd tweak, how it went…"
+            rows={3}
+            maxLength={500}
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition resize-none"
+          />
         </div>
 
         {/* Would make again — optional */}
         <div className="flex flex-col items-center gap-3">
           <p className="text-xs font-bold uppercase tracking-widest text-[#0d3c54]">
-            Would you make it again? <span className="text-gray-400 font-normal normal-case tracking-normal">(optional)</span>
+            Would you make it again?{" "}
+            <span className="text-gray-400 font-normal normal-case tracking-normal">(optional)</span>
           </p>
           <div className="flex gap-4">
             <button
@@ -113,7 +110,9 @@ export default function PublishRecipePage() {
             disabled={pending || !stars}
             className="w-full rounded-full bg-[#0d3c54] py-3 text-sm font-bold text-white hover:bg-[#0d3c54]/90 transition-colors disabled:opacity-40"
           >
-            {pending ? <span className="flex items-center justify-center gap-2">Publishing <LoadingDots /></span> : "Publish recipe"}
+            {pending
+              ? <span className="flex items-center justify-center gap-2">Publishing <LoadingDots /></span>
+              : "Publish recipe"}
           </button>
           <button
             type="button"

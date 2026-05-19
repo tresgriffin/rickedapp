@@ -86,6 +86,7 @@ export default async function RecipePage({
   const ingredients = recipe.ingredients as unknown as Ingredient[];
   const steps = recipe.steps as unknown as string[];
   const isVerified = !!currentUser?.emailVerified;
+  const isRecipeOwner = recipe.userId === session.user.id;
   const backHref = recipe.user.handle ? `/profile/${recipe.user.handle}` : "/profile";
   const ratingStats = (ratingStatsMap as Map<string, import("@/lib/recipe-rating-stats").RecipeRatingStats>).get(id) ?? {
     avgStars: null,
@@ -231,6 +232,7 @@ export default async function RecipePage({
           reviews={recipeReviews}
           myReview={myRecipeReview ?? null}
           isVerified={isVerified}
+          isRecipeOwner={isRecipeOwner}
         />
       </main>
 
