@@ -87,8 +87,16 @@ export async function requestEmailChange(
     }),
   ]);
 
-  // Send verification to the NEW address
-  await sendEmailChangeVerification(newEmail, token);
+  // Send verification to the NEW address.
+  // DB state is committed (pendingEmail set, token created) — on send failure,
+  // user can recover via "Resend verification" on the profile edit page.
+  try {
+    await sendEmailChangeVerification(newEmail, token);
+  } catch {
+    return {
+      error: "Request saved, but the verification email failed to send. Use 'Resend verification' to try again.",
+    };
+  }
 
   revalidatePath("/profile/edit");
   return { ok: true };

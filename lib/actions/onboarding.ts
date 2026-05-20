@@ -99,10 +99,14 @@ export async function submitHandle(
 
   if (existing) return { error: "That handle is taken." };
 
-  await prisma.user.update({
-    where: { id: session.user.id },
-    data: { handle, hasPickedHandle: true },
-  });
+  try {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { handle, hasPickedHandle: true },
+    });
+  } catch {
+    return { error: "Something went wrong saving your handle. Please try again." };
+  }
 
   // FUTURE: Phase 8b — when users change handles post-onboarding, audit all
   // profile URLs and social graph links that reference the old handle.
@@ -126,10 +130,15 @@ export async function submitWhiskeyInterest(
   const raw = formData.get("interest") as string | null;
 
   if (raw && VALID_INTERESTS.includes(raw as WhiskeyInterest)) {
-    await prisma.user.update({
-      where: { id: session.user.id },
-      data: { whiskeyInterest: raw as WhiskeyInterest },
-    });
+    try {
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { whiskeyInterest: raw as WhiskeyInterest },
+      });
+    } catch {
+      // Interests are optional — failure is equivalent to skipping. User can
+      // set preferences later in Settings. Prevents crash on DB error.
+    }
   }
 
   // Client calls update() then router.push() — redirect() here prevents update() from running

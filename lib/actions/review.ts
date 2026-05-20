@@ -1,5 +1,6 @@
 "use server";
 
+import { del } from "@vercel/blob";
 import { prisma } from "@/lib/db";
 import { uploadFile, UploadError } from "@/lib/upload";
 import { requireVerifiedUser } from "@/lib/require-verified";
@@ -37,16 +38,21 @@ export async function createReview(
     }
   }
 
-  await prisma.review.create({
-    data: {
-      userId: auth.userId,
-      whiskeyId,
-      rating,
-      body,
-      mediaUrl,
-      status: "APPROVED",
-    },
-  });
+  try {
+    await prisma.review.create({
+      data: {
+        userId: auth.userId,
+        whiskeyId,
+        rating,
+        body,
+        mediaUrl,
+        status: "APPROVED",
+      },
+    });
+  } catch {
+    if (mediaUrl) await del(mediaUrl).catch(() => {}); // best-effort blob cleanup
+    return { error: "Something went wrong saving your review. Please try again." };
+  }
 
   return { ok: true as const, whiskeyId };
 }

@@ -1,5 +1,6 @@
 "use server";
 
+import { del } from "@vercel/blob";
 import { prisma } from "@/lib/db";
 import { uploadFile, UploadError } from "@/lib/upload";
 import { requireVerifiedUser } from "@/lib/require-verified";
@@ -49,20 +50,25 @@ export async function createRecipe(
     }
   }
 
-  await prisma.recipe.create({
-    data: {
-      userId: auth.userId,
-      title,
-      description,
-      taggedWhiskeyId,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ingredients: validIngredients as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      steps: validSteps as any,
-      mediaUrl,
-      status: "APPROVED",
-    },
-  });
+  try {
+    await prisma.recipe.create({
+      data: {
+        userId: auth.userId,
+        title,
+        description,
+        taggedWhiskeyId,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ingredients: validIngredients as any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        steps: validSteps as any,
+        mediaUrl,
+        status: "APPROVED",
+      },
+    });
+  } catch {
+    if (mediaUrl) await del(mediaUrl).catch(() => {}); // best-effort blob cleanup
+    return { error: "Something went wrong saving your recipe. Please try again." };
+  }
 
   return { ok: true as const };
 }

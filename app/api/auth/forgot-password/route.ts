@@ -30,7 +30,14 @@ export async function POST(req: Request) {
     data: { email: user.email, token, expires },
   });
 
-  await sendPasswordResetEmail(user.email, token);
+  try {
+    await sendPasswordResetEmail(user.email, token);
+  } catch {
+    return NextResponse.json(
+      { error: "Something went wrong sending the reset email. Please try again." },
+      { status: 500 }
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }
