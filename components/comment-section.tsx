@@ -35,6 +35,7 @@ export default function CommentSection({
   const [body, setBody] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [loadError, setLoadError] = useState("");
   const [hasMore, setHasMore] = useState(initialCount > initialComments.length);
   const [error, setError] = useState("");
 
@@ -59,13 +60,17 @@ export default function CommentSection({
 
   async function handleLoadMore() {
     setLoadingMore(true);
+    setLoadError("");
     try {
       const res = await fetch(
         `/api/comments?targetType=${targetType}&targetId=${targetId}&offset=${comments.length}`
       );
+      if (!res.ok) throw new Error("load failed");
       const json = await res.json();
       setComments((prev) => [...prev, ...(json.data ?? [])]);
       setHasMore(json.meta?.hasMore ?? false);
+    } catch {
+      setLoadError("Couldn't load comments. Tap to try again.");
     } finally {
       setLoadingMore(false);
     }
@@ -122,14 +127,17 @@ export default function CommentSection({
           ))}
 
           {hasMore && (
-            <button
-              type="button"
-              onClick={handleLoadMore}
-              disabled={loadingMore}
-              className="text-xs font-bold text-[#551904] text-left w-fit"
-            >
-              {loadingMore ? <span className="flex items-center gap-1.5">Loading <LoadingDots /></span> : "Load more comments"}
-            </button>
+            <div className="flex flex-col gap-0.5">
+              <button
+                type="button"
+                onClick={handleLoadMore}
+                disabled={loadingMore}
+                className="text-xs font-bold text-[#551904] text-left w-fit"
+              >
+                {loadingMore ? <span className="flex items-center gap-1.5">Loading <LoadingDots /></span> : "Load more comments"}
+              </button>
+              {loadError && <p className="text-[10px] text-red-500">{loadError}</p>}
+            </div>
           )}
 
           {/* Input */}

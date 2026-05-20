@@ -252,10 +252,10 @@ export default function RickChat({
       }
 
       if (!res.ok) {
-        setMessages((prev) => [
-          ...prev,
-          { role: "ASSISTANT", content: "Something went wrong. Try again." },
-        ]);
+        const msg = data?.error === "ai_error"
+          ? "Rick had a moment. Try again."
+          : "Something went wrong. Try again.";
+        setMessages((prev) => [...prev, { role: "ASSISTANT", content: msg }]);
         return;
       }
 
@@ -276,7 +276,7 @@ export default function RickChat({
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "ASSISTANT", content: "Something went wrong. Try again." },
+        { role: "ASSISTANT", content: "Couldn't reach Rick. Check your connection and try again." },
       ]);
     } finally {
       setLoading(false);

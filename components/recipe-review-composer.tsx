@@ -53,7 +53,12 @@ export default function RecipeReviewComposer({
               disabled={deleting}
               onClick={async () => {
                 setDeleting(true);
-                await deleteRecipeReview({ recipeId });
+                const result = await deleteRecipeReview({ recipeId });
+                if ("error" in result) {
+                  setError(result.error);
+                  setDeleting(false);
+                  return;
+                }
                 router.refresh();
               }}
               className="text-xs font-bold text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
