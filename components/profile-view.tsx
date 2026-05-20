@@ -127,12 +127,14 @@ export default function ProfileView({ user, isOwnProfile, isFollowing, hideRevie
                 </span>
                 <span className="text-xs text-gray-400">following</span>
               </div>
-              <div className="flex flex-col items-center">
-                <span className="text-sm font-bold text-[#0d3c54]">
-                  {user.reviews.length}
-                </span>
-                <span className="text-xs text-gray-400">reviews</span>
-              </div>
+              {!hideReviewsTab && (
+                <div className="flex flex-col items-center">
+                  <span className="text-sm font-bold text-[#0d3c54]">
+                    {user.reviews.length}
+                  </span>
+                  <span className="text-xs text-gray-400">reviews</span>
+                </div>
+              )}
             </div>
           </div>
 
