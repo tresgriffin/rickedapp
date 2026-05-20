@@ -194,7 +194,7 @@ export default function RickFeedAffordance() {
               onClick={submitCompact}
               disabled={!compactInput.trim()}
               aria-label="Send message to Rick"
-              className={`flex-shrink-0 transition-colors disabled:opacity-30 ${THEME.iconColor}`}
+              className={`flex-shrink-0 p-2 -mr-1 transition-colors disabled:opacity-30 ${THEME.iconColor}`}
             >
               <Send size={14} />
             </button>
