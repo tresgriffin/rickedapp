@@ -13,6 +13,7 @@ import LikeButton from "@/components/like-button";
 import CommentSection from "@/components/comment-section";
 import RecipeRatingSection from "@/components/recipe-rating-section";
 import RecipeReviewsSection from "@/components/recipe-reviews-section";
+import OwnerActionMenu from "@/components/owner-action-menu";
 import { fetchRecipeRatingStats } from "@/lib/recipe-rating-stats";
 
 interface Ingredient {
@@ -89,6 +90,8 @@ export default async function RecipePage({
   // isRecipeOwner gates self-review/thumb blocks. AI-generated recipes are
   // conceptually authored by Rick — the publisher can still leave a review.
   const isRecipeOwner = !recipe.isAiGenerated && recipe.userId === session.user.id;
+  // canDelete: any recipe the user published (including AI-generated) is deletable by them.
+  const canDelete = recipe.userId === session.user.id;
   const backHref = recipe.user.handle ? `/profile/${recipe.user.handle}` : "/profile";
   const ratingStats = (ratingStatsMap as Map<string, import("@/lib/recipe-rating-stats").RecipeRatingStats>).get(id) ?? {
     avgStars: null,
@@ -103,13 +106,22 @@ export default async function RecipePage({
       <main className="flex-1 pb-nav">
         {/* Header */}
         <div className="bg-white border-b border-gray-100 px-4 pt-5 pb-5 flex flex-col gap-4">
-          <Link
-            href={backHref}
-            className="flex items-center gap-1 text-sm text-[#551904] font-bold w-fit"
-          >
-            <ChevronLeft size={16} />
-            {recipe.user.displayName ?? recipe.user.handle ?? "Profile"}
-          </Link>
+          <div className="flex items-center justify-between">
+            <Link
+              href={backHref}
+              className="flex items-center gap-1 text-sm text-[#551904] font-bold w-fit"
+            >
+              <ChevronLeft size={16} />
+              {recipe.user.displayName ?? recipe.user.handle ?? "Profile"}
+            </Link>
+            {canDelete && (
+              <OwnerActionMenu
+                type="recipe"
+                id={recipe.id}
+                afterDeleteHref={backHref}
+              />
+            )}
+          </div>
 
           <h1 className="font-[family-name:var(--font-abhaya-libre)] text-2xl font-bold text-[#0d3c54] leading-tight">
             {recipe.title}

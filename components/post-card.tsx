@@ -4,12 +4,14 @@ import { Share2 } from "lucide-react";
 import Avatar from "@/components/avatar";
 import LikeButton from "@/components/like-button";
 import CommentSection from "@/components/comment-section";
+import OwnerActionMenu from "@/components/owner-action-menu";
 import { timeAgo } from "@/lib/format";
 import type { CommentWithUser } from "@/lib/actions/comment";
 
 interface PostCardProps {
   post: {
     id: string;
+    userId: string;
     body: string;
     createdAt: Date;
     mediaUrl: string | null;
@@ -24,9 +26,11 @@ interface PostCardProps {
   };
   isLiked: boolean;
   initialComments: CommentWithUser[];
+  viewerId?: string;
 }
 
-export default function PostCard({ post, isLiked, initialComments }: PostCardProps) {
+export default function PostCard({ post, isLiked, initialComments, viewerId }: PostCardProps) {
+  const canDelete = !!viewerId && post.userId === viewerId;
   return (
     <article className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3">
       {/* Header */}
@@ -53,6 +57,9 @@ export default function PostCard({ post, isLiked, initialComments }: PostCardPro
             @{post.user.handle} · {timeAgo(post.createdAt)}
           </p>
         </div>
+        {canDelete && (
+          <OwnerActionMenu type="post" id={post.id} />
+        )}
       </div>
 
       {/* Body */}

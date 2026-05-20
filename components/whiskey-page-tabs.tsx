@@ -26,6 +26,7 @@ interface Review {
 
 interface Post {
   id: string;
+  userId: string;
   body: string;
   createdAt: Date;
   mediaUrl: string | null;

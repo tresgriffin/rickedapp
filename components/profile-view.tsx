@@ -27,6 +27,7 @@ interface Review {
 
 interface Post {
   id: string;
+  userId: string;
   body: string;
   createdAt: Date;
   mediaUrl: string | null;
@@ -224,6 +225,7 @@ export default function ProfileView({ user, isOwnProfile, isFollowing, hideRevie
                 post={p}
                 isLiked={p.isLiked}
                 initialComments={p.initialComments}
+                viewerId={isOwnProfile ? user.id : undefined}
               />
             ))
           ))}
