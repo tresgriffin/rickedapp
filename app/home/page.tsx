@@ -8,7 +8,7 @@ import AppBar from "@/components/app-bar";
 import BottomNav from "@/components/bottom-nav";
 import PostCard from "@/components/post-card";
 import RecipeCard from "@/components/recipe-card";
-import RickCard from "@/components/rick-card";
+import RickFeedAffordance from "@/components/rick-feed-affordance";
 import EmptyState from "@/components/empty-state";
 import VerificationBannerServer from "@/components/verification-banner-server";
 
@@ -121,10 +121,8 @@ export default async function HomePage() {
             rating data; consider an adaptive fallback that switches between top
             recipes and top whiskeys based on data availability. */}
 
-        {/* ── Rick card (per-session dismissible) ──────────────────────────── */}
-        <div className="pt-4 pb-2">
-          <RickCard />
-        </div>
+        {/* ── Rick chat affordance — persistent, collapses to compact bar on scroll ── */}
+        <RickFeedAffordance />
 
         {/* ── Feed (posts + recipes only; reviews are on brand pages) ──────── */}
         <section className="px-4 pt-2 flex flex-col gap-3">
