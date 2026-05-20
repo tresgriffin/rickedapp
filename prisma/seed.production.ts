@@ -163,6 +163,7 @@ async function main() {
       displayName: "Rick",
       handle: "rick",
       bio: "Resident mixologist. Knows the recipes, will build you new ones.",
+      avatarUrl: "/rick-avatar.png",
       hasPickedHandle: true,
       emailVerified: new Date(),
       dateOfBirth: new Date("1990-01-01"),
@@ -172,6 +173,7 @@ async function main() {
       displayName: "Rick",
       handle: "rick",
       bio: "Resident mixologist. Knows the recipes, will build you new ones.",
+      avatarUrl: "/rick-avatar.png",
     },
   });
 

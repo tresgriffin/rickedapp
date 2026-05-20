@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Send, Plus, ChevronRight, Clock } from "lucide-react";
@@ -194,6 +195,29 @@ function RecipeCard({
   );
 }
 
+// Character-destination avatar — real image in the chat header, RocksGlass fallback on load error
+function RickHeaderAvatar() {
+  const [imgError, setImgError] = useState(false);
+  if (imgError) {
+    return (
+      <div className="w-8 h-8 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0">
+        <RocksGlass size={16} className="text-white" />
+      </div>
+    );
+  }
+  return (
+    <Image
+      src="/rick-avatar.png"
+      alt="Rick"
+      width={32}
+      height={32}
+      className="w-8 h-8 rounded-full object-cover object-center flex-shrink-0"
+      onError={() => setImgError(true)}
+    />
+  );
+}
+
+// Per-message avatar — stays as RocksGlass brand mark throughout the conversation
 function RickAvatar() {
   return (
     <div className="w-7 h-7 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -323,9 +347,7 @@ export default function RickChat({
     <>
       {/* ── Rick header ─────────────────────────────────────────────── */}
       <header className="flex-shrink-0 sticky top-0 z-20 bg-[#0d3c54] px-4 py-3 flex items-center gap-3 shadow-sm">
-        <div className="w-8 h-8 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0">
-          <RocksGlass size={16} className="text-white" />
-        </div>
+        <RickHeaderAvatar />
         <div className="flex-1">
           <p className="text-sm font-bold text-white leading-none">Rick</p>
           <p className="text-[10px] text-white/50 leading-none mt-0.5">AI mixologist</p>
