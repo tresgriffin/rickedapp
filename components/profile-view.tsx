@@ -111,6 +111,12 @@ export default function ProfileView({ user, isOwnProfile, isFollowing, hideRevie
             <div className="flex gap-5 mt-2">
               <div className="flex flex-col items-center">
                 <span className="text-sm font-bold text-[#0d3c54]">
+                  {user.recipes.length}
+                </span>
+                <span className="text-xs text-gray-400">recipes</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="text-sm font-bold text-[#0d3c54]">
                   {user._count.followers}
                 </span>
                 <span className="text-xs text-gray-400">followers</span>

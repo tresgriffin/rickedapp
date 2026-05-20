@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Share2 } from "lucide-react";
 import Avatar from "@/components/avatar";
 import LikeButton from "@/components/like-button";
 import CommentSection from "@/components/comment-section";
@@ -102,14 +101,6 @@ export default function PostCard({ post, isLiked, initialComments, viewerId }: P
           initialComments={initialComments}
           initialCount={post.commentCount}
         />
-        {/* Share — wired in a future phase */}
-        <button
-          type="button"
-          className="flex items-center gap-1.5 text-gray-400 hover:text-[#0d3c54] transition-colors ml-auto"
-          aria-label="Share"
-        >
-          <Share2 size={16} strokeWidth={1.5} />
-        </button>
       </div>
     </article>
   );
