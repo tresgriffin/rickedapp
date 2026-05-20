@@ -211,7 +211,9 @@ export default function RickChat({
   const searchParams = useSearchParams();
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [conversationId, setConversationId] = useState<string | null>(initialConversationId ?? null);
-  const [input, setInput] = useState(searchParams.get("prompt") ?? "");
+  // ?prompt= → fills input AND auto-sends (custom typed message, deliberate intent)
+  // ?prefill= → fills input only, no auto-send (chip tap, user may want to edit)
+  const [input, setInput] = useState(searchParams.get("prompt") ?? searchParams.get("prefill") ?? "");
   const [loading, setLoading] = useState(false);
   const [remaining, setRemaining] = useState(initialRemaining);
   const bottomRef = useRef<HTMLDivElement>(null);
