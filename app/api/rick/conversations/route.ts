@@ -22,7 +22,10 @@ export async function GET() {
   }
 
   const conversations = await prisma.conversation.findMany({
-    where: { userId: user.id },
+    where: {
+      userId: user.id,
+      messages: { some: {} }, // exclude blank conversations (created but abandoned)
+    },
     orderBy: { updatedAt: "desc" },
     take: 20,
     include: {

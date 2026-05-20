@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Send, Plus, ChevronRight } from "lucide-react";
+import { Send, Plus, ChevronRight, Clock } from "lucide-react";
 import RocksGlass from "@/components/icons/rocks-glass";
 import LoadingDots from "@/components/loading-dots";
 import { saveRickRecipe } from "@/lib/actions/rick-recipe";
@@ -303,6 +303,16 @@ export default function RickChat({
           <p className="text-sm font-bold text-white leading-none">Rick</p>
           <p className="text-[10px] text-white/50 leading-none mt-0.5">AI mixologist</p>
         </div>
+        {/* History — secondary affordance, lower visual weight than + New */}
+        <Link
+          href="/rick/history"
+          className="flex items-center gap-1 text-xs text-white/40 hover:text-white/60 transition-colors"
+          aria-label="Conversation history"
+        >
+          <Clock size={12} />
+          History
+        </Link>
+
         <button
           type="button"
           onClick={startNewConversation}
