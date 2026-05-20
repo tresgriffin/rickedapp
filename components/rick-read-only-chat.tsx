@@ -227,7 +227,7 @@ export default function RickReadOnlyChat({
           href="/rick"
           className="rounded-full bg-[#0d3c54] px-6 py-3 text-sm font-bold text-white hover:bg-[#0a2f42] transition-colors"
         >
-          Start a new conversation
+          Back to chat
         </Link>
       </div>
     </div>

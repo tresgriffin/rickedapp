@@ -26,6 +26,7 @@ export default async function RickHistoryPage() {
       messages: { some: {} },
     },
     orderBy: { updatedAt: "desc" },
+    skip: 1, // skip the most recent — that's the active conversation shown in /rick
     take: 20,
     include: {
       messages: {
