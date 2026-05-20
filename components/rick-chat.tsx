@@ -63,6 +63,7 @@ function RecipeCard({
 }) {
   const [saving, setSaving] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
+  const [isCanonical, setIsCanonical] = useState(false);
   const saveInFlight = useRef(false);
 
   async function handleSave() {
@@ -73,6 +74,7 @@ function RecipeCard({
     const result = await saveRickRecipe(conversationId, recipe);
     if ("id" in result) {
       setSavedId(result.id);
+      setIsCanonical(result.isCanonical ?? false);
       onSaved();
     }
     setSaving(false);
@@ -154,13 +156,23 @@ function RecipeCard({
         {/* Save / view CTA */}
         <div className="border-t border-gray-100 pt-2">
           {savedId ? (
-            <Link
-              href={`/recipe/${savedId}/publish`}
-              className="w-full flex items-center justify-center gap-2 rounded-full bg-[#551904] py-2.5 text-xs font-bold text-white hover:bg-[#551904]/90 transition-colors"
-            >
-              Tell Rick how it went
-              <ChevronRight size={14} />
-            </Link>
+            isCanonical ? (
+              <Link
+                href={`/recipe/${savedId}`}
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-[#551904] py-2.5 text-xs font-bold text-white hover:bg-[#551904]/90 transition-colors"
+              >
+                View recipe
+                <ChevronRight size={14} />
+              </Link>
+            ) : (
+              <Link
+                href={`/recipe/${savedId}/publish`}
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-[#551904] py-2.5 text-xs font-bold text-white hover:bg-[#551904]/90 transition-colors"
+              >
+                Tell Rick how it went
+                <ChevronRight size={14} />
+              </Link>
+            )
           ) : (
             <button
               type="button"

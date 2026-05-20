@@ -31,10 +31,12 @@ interface RickRecipeJson {
 
 // Called from the Rick chat UI when a recipe is generated.
 // Creates an unpublished AI draft recipe and returns its ID.
+// If the recipe title matches a canonical catalog recipe (@rick-authored, published),
+// returns the canonical's ID instead — prevents duplicate catalog entries.
 export async function saveRickRecipe(
   conversationId: string,
   recipeJson: RickRecipeJson
-): Promise<{ id: string } | { error: string }> {
+): Promise<{ id: string; isCanonical?: boolean } | { error: string }> {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return { error: "Unauthorized" };
 
@@ -42,6 +44,25 @@ export async function saveRickRecipe(
     where: { id: conversationId, userId: session.user.id },
   });
   if (!conversation) return { error: "Conversation not found" };
+
+  // Duplicate-prevention guard: check if this recipe matches a canonical catalog entry.
+  // Canonical = @rick-authored, published, approved. If matched, return the canonical
+  // instead of creating a new row.
+  const norm = (s: string) =>
+    s.toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim();
+  const incomingNorm = norm(recipeJson.title);
+
+  const canonicals = await prisma.recipe.findMany({
+    where: { user: { handle: "rick" }, isPublished: true, status: "APPROVED" },
+    select: { id: true, title: true },
+  });
+  const canonicalMatch = canonicals.find((c) => {
+    const cn = norm(c.title);
+    return incomingNorm === cn || incomingNorm.includes(cn) || cn.includes(incomingNorm);
+  });
+  if (canonicalMatch) {
+    return { id: canonicalMatch.id, isCanonical: true };
+  }
 
   // Normalize ingredient shape to match what recipe detail page expects
   const ingredients = recipeJson.ingredients.map((i) => ({
