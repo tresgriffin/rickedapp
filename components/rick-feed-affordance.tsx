@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Send, ArrowUp } from "lucide-react";
 import RocksGlass from "@/components/icons/rocks-glass";
 
@@ -44,6 +45,7 @@ const CHIPS = [
 export default function RickFeedAffordance() {
   const router = useRouter();
   const [isCompact, setIsCompact] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
   const [expandedInput, setExpandedInput] = useState("");
   const [compactInput, setCompactInput] = useState("");
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
@@ -103,9 +105,20 @@ export default function RickFeedAffordance() {
         {/* Rick identity */}
         <div className="flex items-center gap-2.5">
           {/* Avatar sized to match feed post card user avatars (w-10 h-10) */}
-          <div className="w-10 h-10 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0">
-            <RocksGlass size={20} className="text-white" />
-          </div>
+          {avatarError ? (
+            <div className="w-10 h-10 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0">
+              <RocksGlass size={20} className="text-white" />
+            </div>
+          ) : (
+            <Image
+              src="/rick-avatar.png"
+              alt="Rick"
+              width={40}
+              height={40}
+              className="w-10 h-10 rounded-full object-cover object-center flex-shrink-0"
+              onError={() => setAvatarError(true)}
+            />
+          )}
           <div>
             <p className={`text-base font-bold leading-tight ${THEME.headlineText}`}>
               Chat with Rick
@@ -169,9 +182,20 @@ export default function RickFeedAffordance() {
       >
         <div className="flex items-center gap-2">
           {/* Avatar — outside the pill, sized to match pill height (w-10 h-10 ≈ 40px) */}
-          <div className="w-10 h-10 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0">
-            <RocksGlass size={18} className="text-white" />
-          </div>
+          {avatarError ? (
+            <div className="w-10 h-10 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0">
+              <RocksGlass size={18} className="text-white" />
+            </div>
+          ) : (
+            <Image
+              src="/rick-avatar.png"
+              alt="Rick"
+              width={40}
+              height={40}
+              className="w-10 h-10 rounded-full object-cover object-center flex-shrink-0"
+              onError={() => setAvatarError(true)}
+            />
+          )}
 
           {/* Input pill: input + send */}
           <div className={`flex-1 flex items-center gap-2 rounded-full px-3 py-2 transition-colors ${THEME.inputBg}`}>

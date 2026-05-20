@@ -217,12 +217,25 @@ function RickHeaderAvatar() {
   );
 }
 
-// Per-message avatar — stays as RocksGlass brand mark throughout the conversation
+// Per-message avatar — character image with RocksGlass fallback
 function RickAvatar() {
+  const [imgError, setImgError] = useState(false);
+  if (imgError) {
+    return (
+      <div className="w-7 h-7 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0 mt-0.5">
+        <RocksGlass size={13} className="text-white" />
+      </div>
+    );
+  }
   return (
-    <div className="w-7 h-7 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0 mt-0.5">
-      <RocksGlass size={13} className="text-white" />
-    </div>
+    <Image
+      src="/rick-avatar.png"
+      alt="Rick"
+      width={28}
+      height={28}
+      className="w-7 h-7 rounded-full object-cover object-center flex-shrink-0 mt-0.5"
+      onError={() => setImgError(true)}
+    />
   );
 }
 
