@@ -62,14 +62,20 @@ function RecipeCard({
   onSaved: (id: string) => void;
 }) {
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const saveInFlight = useRef(false);
 
   async function handleSave() {
     if (saving || savedRecipeId || saveInFlight.current) return;
     saveInFlight.current = true;
     setSaving(true);
+    setSaveError("");
     const result = await saveRickRecipe(conversationId, recipe);
-    if ("id" in result) onSaved(result.id);
+    if ("id" in result) {
+      onSaved(result.id);
+    } else {
+      setSaveError(result.error);
+    }
     setSaving(false);
     saveInFlight.current = false;
   }
@@ -140,7 +146,7 @@ function RecipeCard({
           </p>
         )}
 
-        <div className="border-t border-gray-100 pt-2">
+        <div className="border-t border-gray-100 pt-2 flex flex-col gap-1.5">
           {savedRecipeId ? (
             <Link
               href={`/recipe/${savedRecipeId}`}
@@ -161,6 +167,7 @@ function RecipeCard({
                 : "Save recipe"}
             </button>
           )}
+          {saveError && <p className="text-xs text-red-500 text-center">{saveError}</p>}
         </div>
       </div>
     </div>

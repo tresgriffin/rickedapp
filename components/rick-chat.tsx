@@ -64,6 +64,7 @@ function RecipeCard({
   const [saving, setSaving] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
   const [isCanonical, setIsCanonical] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const saveInFlight = useRef(false);
 
   async function handleSave() {
@@ -71,11 +72,14 @@ function RecipeCard({
     if (saving || savedId || saveInFlight.current) return;
     saveInFlight.current = true;
     setSaving(true);
+    setSaveError("");
     const result = await saveRickRecipe(conversationId, recipe);
     if ("id" in result) {
       setSavedId(result.id);
       setIsCanonical(result.isCanonical ?? false);
       onSaved();
+    } else {
+      setSaveError(result.error);
     }
     setSaving(false);
     saveInFlight.current = false;
@@ -154,7 +158,7 @@ function RecipeCard({
         )}
 
         {/* Save / view CTA */}
-        <div className="border-t border-gray-100 pt-2">
+        <div className="border-t border-gray-100 pt-2 flex flex-col gap-1.5">
           {savedId ? (
             isCanonical ? (
               <Link
@@ -183,6 +187,7 @@ function RecipeCard({
               {saving ? <span className="flex items-center justify-center gap-2">Saving <LoadingDots /></span> : "Save recipe"}
             </button>
           )}
+          {saveError && <p className="text-xs text-red-500 text-center">{saveError}</p>}
         </div>
       </div>
     </div>
