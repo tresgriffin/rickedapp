@@ -209,11 +209,19 @@ export default function RickChat({
 }: RickChatProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
-  const [conversationId, setConversationId] = useState<string | null>(initialConversationId ?? null);
   // ?prompt= → fills input AND auto-sends (custom typed message, deliberate intent)
-  // ?prefill= → fills input only, no auto-send (chip tap, user may want to edit)
-  const [input, setInput] = useState(searchParams.get("prompt") ?? searchParams.get("prefill") ?? "");
+  // ?prefill= → fills input only, no auto-send (chip tap, user may want to edit first)
+  // Either param signals a home-feed handoff → start fresh so auto-send fires reliably
+  // and the user isn't dropped mid-conversation.
+  const promptParam = searchParams.get("prompt");
+  const prefillParam = searchParams.get("prefill");
+  const isHandoff = !!promptParam || !!prefillParam;
+
+  const [messages, setMessages] = useState<ChatMessage[]>(isHandoff ? [] : initialMessages);
+  const [conversationId, setConversationId] = useState<string | null>(
+    isHandoff ? null : (initialConversationId ?? null)
+  );
+  const [input, setInput] = useState(promptParam ?? prefillParam ?? "");
   const [loading, setLoading] = useState(false);
   const [remaining, setRemaining] = useState(initialRemaining);
   const bottomRef = useRef<HTMLDivElement>(null);

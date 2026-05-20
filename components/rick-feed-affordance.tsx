@@ -163,16 +163,18 @@ export default function RickFeedAffordance() {
         role="region"
         aria-label="Rick chat"
         aria-hidden={!isCompact}
-        className={`fixed top-14 left-0 right-0 z-30 px-4 py-2 motion-safe:transition-opacity motion-safe:duration-200 ${THEME.compactBar} ${
+        className={`fixed top-[55px] left-0 right-0 z-30 px-4 py-2 motion-safe:transition-opacity motion-safe:duration-200 ${THEME.compactBar} ${
           isCompact ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
         <div className="flex items-center gap-2">
-          {/* Input pill: avatar + input + send */}
+          {/* Avatar — outside the pill, sized to match pill height (w-10 h-10 ≈ 40px) */}
+          <div className="w-10 h-10 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0">
+            <RocksGlass size={18} className="text-white" />
+          </div>
+
+          {/* Input pill: input + send */}
           <div className={`flex-1 flex items-center gap-2 rounded-full px-3 py-2 transition-colors ${THEME.inputBg}`}>
-            <div className="w-5 h-5 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0">
-              <RocksGlass size={10} className="text-white" />
-            </div>
             <input
               ref={compactInputRef}
               type="text"
@@ -198,13 +200,13 @@ export default function RickFeedAffordance() {
             </button>
           </div>
 
-          {/* Scroll-to-top — outside the input pill */}
+          {/* Scroll-to-top — outside the input pill; p-2.5 ensures ≥36px touch target */}
           <button
             type="button"
             tabIndex={isCompact ? 0 : -1}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             aria-label="Scroll to top"
-            className={`flex-shrink-0 transition-colors ${THEME.iconColor}`}
+            className={`flex-shrink-0 p-2.5 -mr-2.5 transition-colors ${THEME.iconColor}`}
           >
             <ArrowUp size={16} />
           </button>
