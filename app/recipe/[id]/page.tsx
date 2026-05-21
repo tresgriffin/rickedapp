@@ -8,6 +8,7 @@ import { prisma } from "@/lib/db";
 import { timeAgo } from "@/lib/format";
 import AppBar from "@/components/app-bar";
 import BottomNav from "@/components/bottom-nav";
+import ScrollToTop from "@/components/scroll-to-top";
 import Avatar from "@/components/avatar";
 import LikeButton from "@/components/like-button";
 import CommentSection from "@/components/comment-section";
@@ -104,6 +105,7 @@ export default async function RecipePage({
       <AppBar />
 
       <main className="flex-1 pb-nav">
+        <ScrollToTop />
         {/* Header */}
         <div className="bg-white border-b border-gray-100 px-4 pt-5 pb-5 flex flex-col gap-4">
           <div className="flex items-center justify-between">
