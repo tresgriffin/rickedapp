@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import TabBar from "@/components/tab-bar";
 import Avatar from "@/components/avatar";
 import ReviewCard from "@/components/review-card";
@@ -44,6 +45,7 @@ interface Recipe {
   id: string;
   title: string;
   description: string | null;
+  mediaUrl: string | null;
   ingredients: unknown;
   createdAt: Date;
   isAiGenerated: boolean;
@@ -265,34 +267,47 @@ export default function ProfileView({ user, isOwnProfile, isFollowing, hideRevie
               <Link
                 key={r.id}
                 href={r.isAiGenerated && !r.isPublished ? `/recipe/${r.id}/publish` : `/recipe/${r.id}`}
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-1 hover:border-[#0d3c54]/20 transition-colors active:scale-[0.98]"
+                className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:border-[#0d3c54]/20 transition-colors active:scale-[0.98]"
               >
-                <div className="flex items-start gap-2 flex-wrap">
-                  {r.taggedWhiskey && (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#551904] bg-[#551904]/8 rounded-full px-2 py-0.5">
-                      🥃 {r.taggedWhiskey.name}
-                    </span>
-                  )}
-                  {r.isAiGenerated && !r.isPublished && (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-100 rounded-full px-2 py-0.5">
-                      ✦ Rick draft · Tap to publish
-                    </span>
-                  )}
-                  {r.isAiGenerated && r.isPublished && (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0d3c54] bg-[#0d3c54]/8 rounded-full px-2 py-0.5">
-                      ✦ by Rick
-                    </span>
-                  )}
-                </div>
-                <p className="text-sm font-bold text-[#0d3c54]">{r.title}</p>
-                {r.description && (
-                  <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                    {r.description}
-                  </p>
+                {r.mediaUrl && (
+                  <div className="relative aspect-[4/3] bg-gray-100">
+                    <Image
+                      src={r.mediaUrl}
+                      alt={r.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 600px"
+                      className="object-cover"
+                    />
+                  </div>
                 )}
-                <p className="text-xs text-gray-400 mt-1">
-                  {Array.isArray(r.ingredients) ? r.ingredients.length : 0} ingredients
-                </p>
+                <div className="p-4 flex flex-col gap-1">
+                  <div className="flex items-start gap-2 flex-wrap">
+                    {r.taggedWhiskey && (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#551904] bg-[#551904]/8 rounded-full px-2 py-0.5">
+                        🥃 {r.taggedWhiskey.name}
+                      </span>
+                    )}
+                    {r.isAiGenerated && !r.isPublished && (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-100 rounded-full px-2 py-0.5">
+                        ✦ Rick draft · Tap to publish
+                      </span>
+                    )}
+                    {r.isAiGenerated && r.isPublished && (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0d3c54] bg-[#0d3c54]/8 rounded-full px-2 py-0.5">
+                        ✦ by Rick
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm font-bold text-[#0d3c54]">{r.title}</p>
+                  {r.description && (
+                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
+                      {r.description}
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-400 mt-1">
+                    {Array.isArray(r.ingredients) ? r.ingredients.length : 0} ingredients
+                  </p>
+                </div>
               </Link>
             ))
           ))}
