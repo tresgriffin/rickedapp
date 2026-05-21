@@ -104,21 +104,28 @@ export default function RickFeedAffordance() {
       <div className={`${THEME.card} mx-4 mt-4 mb-2 rounded-2xl p-4 flex flex-col gap-3`}>
         {/* Rick identity */}
         <div className="flex items-center gap-2.5">
-          {/* Avatar sized to match feed post card user avatars (w-10 h-10) */}
-          {avatarError ? (
-            <div className="w-10 h-10 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0">
-              <RocksGlass size={20} className="text-white" />
-            </div>
-          ) : (
-            <Image
-              src="/rick-avatar.png"
-              alt="Rick"
-              width={40}
-              height={40}
-              className="w-10 h-10 rounded-full object-cover object-center flex-shrink-0"
-              onError={() => setAvatarError(true)}
-            />
-          )}
+          {/* Avatar — tappable, navigates to /rick */}
+          <button
+            type="button"
+            onClick={() => router.push("/rick")}
+            aria-label="Chat with Rick"
+            className="flex-shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d3c54] focus-visible:ring-offset-1"
+          >
+            {avatarError ? (
+              <div className="w-10 h-10 rounded-full bg-[#551904] flex items-center justify-center">
+                <RocksGlass size={20} className="text-white" />
+              </div>
+            ) : (
+              <Image
+                src="/rick-avatar.png"
+                alt=""
+                width={40}
+                height={40}
+                className="w-10 h-10 rounded-full object-cover object-center"
+                onError={() => setAvatarError(true)}
+              />
+            )}
+          </button>
           <div>
             <p className={`text-base font-bold leading-tight ${THEME.headlineText}`}>
               Chat with Rick
@@ -181,21 +188,29 @@ export default function RickFeedAffordance() {
         }`}
       >
         <div className="flex items-center gap-2">
-          {/* Avatar — outside the pill, sized to match pill height (w-10 h-10 ≈ 40px) */}
-          {avatarError ? (
-            <div className="w-10 h-10 rounded-full bg-[#551904] flex items-center justify-center flex-shrink-0">
-              <RocksGlass size={18} className="text-white" />
-            </div>
-          ) : (
-            <Image
-              src="/rick-avatar.png"
-              alt="Rick"
-              width={40}
-              height={40}
-              className="w-10 h-10 rounded-full object-cover object-center flex-shrink-0"
-              onError={() => setAvatarError(true)}
-            />
-          )}
+          {/* Avatar — outside the pill, tappable, navigates to /rick */}
+          <button
+            type="button"
+            onClick={() => router.push("/rick")}
+            tabIndex={isCompact ? 0 : -1}
+            aria-label="Chat with Rick"
+            className="flex-shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d3c54] focus-visible:ring-offset-1"
+          >
+            {avatarError ? (
+              <div className="w-10 h-10 rounded-full bg-[#551904] flex items-center justify-center">
+                <RocksGlass size={18} className="text-white" />
+              </div>
+            ) : (
+              <Image
+                src="/rick-avatar.png"
+                alt=""
+                width={40}
+                height={40}
+                className="w-10 h-10 rounded-full object-cover object-center"
+                onError={() => setAvatarError(true)}
+              />
+            )}
+          </button>
 
           {/* Input pill: input + send */}
           <div className={`flex-1 flex items-center gap-2 rounded-full px-3 py-2 transition-colors ${THEME.inputBg}`}>
