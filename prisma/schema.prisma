@@ -223,6 +223,7 @@ model Recipe {
   isPublished          Boolean          @default(true)
   // FUTURE: remix functionality — allow users to fork and remix recipes in v1.1
   sourceConversationId String?
+  editedAt             DateTime?
   createdAt            DateTime         @default(now())
 
   user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
