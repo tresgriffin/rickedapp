@@ -4,10 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MoreHorizontal, Trash2 } from "lucide-react";
 import DeleteConfirmModal from "@/components/delete-confirm-modal";
-import { deleteRecipe, deletePost } from "@/lib/actions/delete";
+import { deleteRecipe, deletePost, deleteConversation } from "@/lib/actions/delete";
 
 interface OwnerActionMenuProps {
-  type: "recipe" | "post";
+  type: "recipe" | "post" | "conversation";
   id: string;
   afterDeleteHref?: string; // navigate here after delete; if omitted, refresh
 }
@@ -22,7 +22,11 @@ export default function OwnerActionMenu({ type, id, afterDeleteHref }: OwnerActi
   async function handleConfirmDelete() {
     setDeleting(true);
     setError("");
-    const result = type === "recipe" ? await deleteRecipe(id) : await deletePost(id);
+    const result = type === "recipe"
+      ? await deleteRecipe(id)
+      : type === "post"
+        ? await deletePost(id)
+        : await deleteConversation(id);
     setDeleting(false);
     if ("error" in result) {
       setError(result.error);

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import AppBar from "@/components/app-bar";
 import BottomNav from "@/components/bottom-nav";
 import RickReadOnlyChat from "@/components/rick-read-only-chat";
+import OwnerActionMenu from "@/components/owner-action-menu";
 
 export default async function RickConversationPage({
   params,
@@ -40,6 +41,15 @@ export default async function RickConversationPage({
   return (
     <div className="flex flex-col min-h-screen bg-[#fffbfa]">
       <AppBar title="Conversation" showBack />
+
+      {/* Delete affordance — right-aligned below AppBar, mirrors item 12 pattern */}
+      <div className="flex justify-end px-4 pt-3">
+        <OwnerActionMenu
+          type="conversation"
+          id={id}
+          afterDeleteHref="/rick/history"
+        />
+      </div>
 
       <main className="flex-1 pb-nav">
         <RickReadOnlyChat

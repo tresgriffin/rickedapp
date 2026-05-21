@@ -3,7 +3,7 @@
 import LoadingDots from "@/components/loading-dots";
 
 interface DeleteConfirmModalProps {
-  type: "recipe" | "post";
+  type: "recipe" | "post" | "conversation";
   onConfirm: () => void;
   onCancel: () => void;
   deleting: boolean;
@@ -17,7 +17,12 @@ export default function DeleteConfirmModal({
   deleting,
   error,
 }: DeleteConfirmModalProps) {
-  const isRecipe = type === "recipe";
+  const labels: Record<typeof type, { heading: string; body: string }> = {
+    recipe:       { heading: "Delete this recipe?",       body: "All reviews will also be removed. This can't be undone." },
+    post:         { heading: "Delete this post?",         body: "This can't be undone." },
+    conversation: { heading: "Delete this conversation?", body: "This can't be undone." },
+  };
+  const { heading, body } = labels[type];
 
   return (
     <div
@@ -26,14 +31,8 @@ export default function DeleteConfirmModal({
     >
       <div className="bg-white rounded-2xl p-6 w-full max-w-sm flex flex-col gap-4 shadow-xl">
         <div>
-          <h2 className="text-base font-bold text-[#0d3c54] mb-1">
-            Delete this {isRecipe ? "recipe" : "post"}?
-          </h2>
-          <p className="text-sm text-gray-500">
-            {isRecipe
-              ? "All reviews will also be removed. This can't be undone."
-              : "This can't be undone."}
-          </p>
+          <h2 className="text-base font-bold text-[#0d3c54] mb-1">{heading}</h2>
+          <p className="text-sm text-gray-500">{body}</p>
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}

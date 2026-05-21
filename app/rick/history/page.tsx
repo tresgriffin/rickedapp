@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import AppBar from "@/components/app-bar";
 import BottomNav from "@/components/bottom-nav";
+import OwnerActionMenu from "@/components/owner-action-menu";
 
 export default async function RickHistoryPage() {
   const session = await getServerSession(authOptions);
@@ -69,10 +70,10 @@ export default async function RickHistoryPage() {
         ) : (
           <ul className="divide-y divide-gray-100">
             {items.map((item) => (
-              <li key={item.id}>
+              <li key={item.id} className="flex items-center">
                 <Link
                   href={`/rick/history/${item.id}`}
-                  className="flex items-center gap-3 px-4 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                  className="flex-1 flex items-center gap-3 px-4 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors min-w-0"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
@@ -87,6 +88,9 @@ export default async function RickHistoryPage() {
                   </div>
                   <ChevronRight size={16} className="text-gray-300 flex-shrink-0" />
                 </Link>
+                <div className="pr-3 flex-shrink-0">
+                  <OwnerActionMenu type="conversation" id={item.id} />
+                </div>
               </li>
             ))}
           </ul>

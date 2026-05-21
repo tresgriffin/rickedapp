@@ -37,3 +37,20 @@ export async function deletePost(
   await prisma.post.delete({ where: { id: postId } });
   return { ok: true };
 }
+
+export async function deleteConversation(
+  conversationId: string
+): Promise<{ ok: true } | { error: string }> {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return { error: "Not signed in." };
+
+  const conversation = await prisma.conversation.findUnique({
+    where: { id: conversationId },
+    select: { userId: true },
+  });
+  if (!conversation) return { error: "Conversation not found." };
+  if (conversation.userId !== session.user.id) return { error: "Not your conversation." };
+
+  await prisma.conversation.delete({ where: { id: conversationId } });
+  return { ok: true };
+}
