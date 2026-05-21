@@ -116,7 +116,7 @@ export default function PublishRecipePage() {
           </button>
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={() => router.push(`/recipe/${id}`)}
             disabled={pending}
             className="w-full rounded-full border border-gray-200 py-3 text-sm font-bold text-gray-500 hover:border-[#0d3c54]/30 transition-colors disabled:opacity-40"
           >
