@@ -118,6 +118,7 @@ export default async function RecipePage({
               <OwnerActionMenu
                 type="recipe"
                 id={recipe.id}
+                editHref={`/recipe/${recipe.id}/edit`}
                 afterDeleteHref={backHref}
               />
             )}
@@ -155,6 +156,13 @@ export default async function RecipePage({
               <p className="text-[11px] text-gray-400">{timeAgo(recipe.createdAt)}</p>
             </div>
           </Link>
+
+          {/* Edited timestamp — only shown when recipe has been content-edited */}
+          {recipe.editedAt && (
+            <p className="text-[11px] text-gray-400 -mt-1">
+              Edited {timeAgo(recipe.editedAt)}
+            </p>
+          )}
 
           {/* Social actions */}
           <div className="flex items-center gap-5 pt-1 border-t border-gray-100">

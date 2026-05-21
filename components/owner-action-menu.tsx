@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MoreHorizontal, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import DeleteConfirmModal from "@/components/delete-confirm-modal";
 import { deleteRecipe, deletePost, deleteConversation } from "@/lib/actions/delete";
 
 interface OwnerActionMenuProps {
   type: "recipe" | "post" | "conversation";
   id: string;
+  editHref?: string;       // navigate here for edit (no confirm modal)
   afterDeleteHref?: string; // navigate here after delete; if omitted, refresh
 }
 
-export default function OwnerActionMenu({ type, id, afterDeleteHref }: OwnerActionMenuProps) {
+export default function OwnerActionMenu({ type, id, editHref, afterDeleteHref }: OwnerActionMenuProps) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -57,6 +59,16 @@ export default function OwnerActionMenu({ type, id, afterDeleteHref }: OwnerActi
 
         {menuOpen && (
           <div className="absolute right-0 top-full mt-1 z-20 bg-white rounded-xl border border-gray-100 shadow-lg py-1 min-w-[120px]">
+            {editHref && (
+              <Link
+                href={editHref}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-[#0d3c54] hover:bg-gray-50 transition-colors"
+              >
+                <Pencil size={14} />
+                Edit
+              </Link>
+            )}
             <button
               type="button"
               onClick={() => { setMenuOpen(false); setConfirmOpen(true); }}
