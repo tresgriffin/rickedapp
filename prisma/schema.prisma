@@ -227,7 +227,7 @@ model Recipe {
 
   user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   taggedWhiskey      Whiskey?      @relation("RecipeWhiskey", fields: [taggedWhiskeyId], references: [id])
-  sourceConversation Conversation? @relation("ConversationRecipes", fields: [sourceConversationId], references: [id])
+  sourceConversation Conversation? @relation("ConversationRecipes", fields: [sourceConversationId], references: [id], onDelete: SetNull)
   ratings            RecipeRating[]
   recipeReviews      RecipeReview[]
 
