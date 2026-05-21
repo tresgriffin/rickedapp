@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import TabBar from "@/components/tab-bar";
 import Avatar from "@/components/avatar";
@@ -82,8 +83,17 @@ interface ProfileViewProps {
 type ReviewFilter = "all" | "recipes" | "bottles";
 
 export default function ProfileView({ user, isOwnProfile, isFollowing, hideReviewsTab = false, defaultTab }: ProfileViewProps) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState(defaultTab ?? "recipes");
   const [reviewFilter, setReviewFilter] = useState<ReviewFilter>("all");
+
+  const baseUrl = isOwnProfile ? "/profile" : `/profile/${user.handle}`;
+
+  function handleTabChange(tabId: string) {
+    setActiveTab(tabId);
+    const url = tabId === "recipes" ? baseUrl : `${baseUrl}?tab=${tabId}`;
+    router.replace(url, { scroll: false });
+  }
 
   const hasWhiskeyReviews = user.reviews.length > 0;
   const hasRecipeReviews = user.recipeReviews.length > 0;
@@ -163,7 +173,7 @@ export default function ProfileView({ user, isOwnProfile, isFollowing, hideRevie
       </div>
 
       {/* Tabs */}
-      <TabBar tabs={tabs} activeId={activeTab} onChange={setActiveTab} />
+      <TabBar tabs={tabs} activeId={activeTab} onChange={handleTabChange} />
 
       <div className="px-4 pt-4 pb-6 flex flex-col gap-3">
         {activeTab === "reviews" && (() => {
@@ -235,7 +245,7 @@ export default function ProfileView({ user, isOwnProfile, isFollowing, hideRevie
                 isLiked={p.isLiked}
                 initialComments={p.initialComments}
                 viewerId={isOwnProfile ? user.id : undefined}
-                returnHref={user.handle ? `/profile/${user.handle}?tab=posts` : "/home"}
+                returnHref={`${baseUrl}?tab=posts`}
               />
             ))
           ))}
