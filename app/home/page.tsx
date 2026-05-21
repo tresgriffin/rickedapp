@@ -155,6 +155,7 @@ export default async function HomePage() {
                       initialComments as Parameters<typeof PostCard>[0]["initialComments"]
                     }
                     viewerId={session.user.id}
+                    returnHref="/home"
                   />
                 );
               }

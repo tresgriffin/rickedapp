@@ -26,10 +26,14 @@ interface PostCardProps {
   isLiked: boolean;
   initialComments: CommentWithUser[];
   viewerId?: string;
+  returnHref?: string; // return destination for post edit (e.g. "/home" or "/profile/handle")
 }
 
-export default function PostCard({ post, isLiked, initialComments, viewerId }: PostCardProps) {
+export default function PostCard({ post, isLiked, initialComments, viewerId, returnHref }: PostCardProps) {
   const canDelete = !!viewerId && post.userId === viewerId;
+  const editHref = canDelete
+    ? `/post/${post.id}/edit?return=${encodeURIComponent(returnHref ?? "/home")}`
+    : undefined;
   return (
     <article className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3">
       {/* Header */}
@@ -57,7 +61,7 @@ export default function PostCard({ post, isLiked, initialComments, viewerId }: P
           </p>
         </div>
         {canDelete && (
-          <OwnerActionMenu type="post" id={post.id} />
+          <OwnerActionMenu type="post" id={post.id} editHref={editHref} />
         )}
       </div>
 

@@ -234,6 +234,7 @@ export default function ProfileView({ user, isOwnProfile, isFollowing, hideRevie
                 isLiked={p.isLiked}
                 initialComments={p.initialComments}
                 viewerId={isOwnProfile ? user.id : undefined}
+                returnHref={user.handle ? `/profile/${user.handle}` : "/home"}
               />
             ))
           ))}
