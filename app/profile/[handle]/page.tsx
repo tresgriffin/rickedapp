@@ -8,13 +8,16 @@ import ProfileView from "@/components/profile-view";
 
 export default async function UserProfilePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ handle: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
   const { handle } = await params;
+  const { tab } = await searchParams;
 
   const result = await fetchProfileData({ handle }, session.user.id);
   if (!result) notFound();
@@ -34,6 +37,7 @@ export default async function UserProfilePage({
           isOwnProfile={isOwnProfile}
           isFollowing={result.isFollowing}
           hideReviewsTab={result.user.handle === "rick"}
+          defaultTab={tab}
         />
       </main>
       <BottomNav />

@@ -8,10 +8,15 @@ import ProfileView from "@/components/profile-view";
 import VerificationBannerServer from "@/components/verification-banner-server";
 import CompleteProfileNudgeServer from "@/components/complete-profile-nudge-server";
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
+  const { tab } = await searchParams;
   const result = await fetchProfileData({ id: session.user.id }, session.user.id, true);
   if (!result) redirect("/login");
 
@@ -25,6 +30,7 @@ export default async function ProfilePage() {
           user={result.user}
           isOwnProfile={true}
           isFollowing={false}
+          defaultTab={tab}
         />
       </main>
       <BottomNav />

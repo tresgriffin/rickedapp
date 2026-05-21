@@ -76,12 +76,13 @@ interface ProfileViewProps {
   isOwnProfile: boolean;
   isFollowing: boolean;
   hideReviewsTab?: boolean;
+  defaultTab?: string;
 }
 
 type ReviewFilter = "all" | "recipes" | "bottles";
 
-export default function ProfileView({ user, isOwnProfile, isFollowing, hideReviewsTab = false }: ProfileViewProps) {
-  const [activeTab, setActiveTab] = useState("recipes");
+export default function ProfileView({ user, isOwnProfile, isFollowing, hideReviewsTab = false, defaultTab }: ProfileViewProps) {
+  const [activeTab, setActiveTab] = useState(defaultTab ?? "recipes");
   const [reviewFilter, setReviewFilter] = useState<ReviewFilter>("all");
 
   const hasWhiskeyReviews = user.reviews.length > 0;
@@ -234,7 +235,7 @@ export default function ProfileView({ user, isOwnProfile, isFollowing, hideRevie
                 isLiked={p.isLiked}
                 initialComments={p.initialComments}
                 viewerId={isOwnProfile ? user.id : undefined}
-                returnHref={user.handle ? `/profile/${user.handle}` : "/home"}
+                returnHref={user.handle ? `/profile/${user.handle}?tab=posts` : "/home"}
               />
             ))
           ))}
