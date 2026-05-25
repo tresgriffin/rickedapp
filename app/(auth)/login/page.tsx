@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import AppBar from "@/components/app-bar";
+import Image from "next/image";
 import LoadingDots from "@/components/loading-dots";
 import PasswordInput from "@/components/password-input";
 
@@ -108,10 +108,19 @@ function LoginForm() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fffbfa]">
-      <AppBar plain />
-
       <main className="flex-1 flex flex-col items-center justify-center px-5 py-10">
         <div className="w-full max-w-sm">
+          {/* Wordmark */}
+          <div className="flex justify-center mb-8">
+            <Image
+              src="/ricked-assets/ricked-lockup-horizontal-dark.svg"
+              alt="Ricked"
+              width={3289}
+              height={850}
+              className="h-9 w-auto"
+              priority
+            />
+          </div>
           {/* Heading */}
           <h1 className="font-[family-name:var(--font-abhaya-libre)] text-3xl font-bold text-[#0d3c54] mb-1">
             Welcome back

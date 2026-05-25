@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronLeft } from "lucide-react";
 
 interface AppBarProps {
@@ -22,15 +23,24 @@ export default function AppBar({ plain, showBack, title }: AppBarProps) {
       {title ? (
         <span className="text-base font-bold text-white">{title}</span>
       ) : plain ? (
-        <span className="font-[family-name:var(--font-abhaya-libre)] text-2xl font-bold text-white tracking-wide select-none">
-          ricked
-        </span>
+        <Image
+          src="/ricked-assets/ricked-lockup-horizontal-light.svg"
+          alt="Ricked"
+          width={3289}
+          height={850}
+          className="h-7 w-auto"
+          priority
+        />
       ) : (
-        <Link
-          href="/home"
-          className="font-[family-name:var(--font-abhaya-libre)] text-2xl font-bold text-white tracking-wide"
-        >
-          ricked
+        <Link href="/home" aria-label="Ricked home">
+          <Image
+            src="/ricked-assets/ricked-lockup-horizontal-light.svg"
+            alt="Ricked"
+            width={3289}
+            height={850}
+            className="h-7 w-auto"
+            priority
+          />
         </Link>
       )}
     </header>
