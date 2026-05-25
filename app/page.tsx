@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 export default function SplashPage() {
   const router = useRouter();
@@ -22,10 +23,15 @@ export default function SplashPage() {
   }, [status, router]);
 
   return (
-    <main className="flex-1 flex flex-col items-center justify-center min-h-screen bg-[#0d3c54]">
-      <h1 className="font-[family-name:var(--font-abhaya-libre)] text-7xl font-bold text-white tracking-widest select-none">
-        ricked
-      </h1>
+    <main className="flex-1 flex flex-col items-center justify-center min-h-dvh bg-[#0d3c54]">
+      <Image
+        src="/ricked-assets/ricked-lockup-vertical-dark.svg"
+        alt="Ricked"
+        width={1150}
+        height={1288}
+        className="w-48 h-auto"
+        priority
+      />
     </main>
   );
 }
