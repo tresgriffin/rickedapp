@@ -35,37 +35,37 @@ export const metadata: Metadata = {
     startupImage: [
       // iPhone X / XS / 11 Pro / SE 2/3 variants: 375×812 @3x
       {
-        url: "/api/splash?w=1125&h=2436",
+        url: "/ricked-assets/splash/splash-1125x2436.png",
         media:
           "(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
       },
       // iPhone 12 Mini / 13 Mini: 360×780 @3x
       {
-        url: "/api/splash?w=1080&h=2340",
+        url: "/ricked-assets/splash/splash-1080x2340.png",
         media:
           "(device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
       },
       // iPhone 12 / 13 / 14 / 15 / 16 base: 390×844 @3x
       {
-        url: "/api/splash?w=1170&h=2532",
+        url: "/ricked-assets/splash/splash-1170x2532.png",
         media:
           "(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
       },
       // iPhone 14 Pro / 15 Pro / 16 Pro: 393×852 @3x
       {
-        url: "/api/splash?w=1179&h=2556",
+        url: "/ricked-assets/splash/splash-1179x2556.png",
         media:
           "(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
       },
       // iPhone 12 Pro Max / 13 Pro Max: 428×926 @3x
       {
-        url: "/api/splash?w=1284&h=2778",
+        url: "/ricked-assets/splash/splash-1284x2778.png",
         media:
           "(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
       },
       // iPhone 14 Pro Max / 15+ / 15 Pro Max / 16 Plus: 430×932 @3x
       {
-        url: "/api/splash?w=1290&h=2796",
+        url: "/ricked-assets/splash/splash-1290x2796.png",
         media:
           "(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)",
       },
