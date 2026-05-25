@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   title: "Ricked",
   description: "Discover, rate, and share your favorite whiskeys and cocktails.",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/ricked-assets/icon-32.png",
+    apple: "/ricked-assets/icon-180.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
