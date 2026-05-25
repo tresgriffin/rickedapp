@@ -20,7 +20,7 @@ export default async function DietaryPreferencesPage({
   const { redirectTo } = await searchParams;
 
   return (
-    <div className="min-h-screen bg-[#fffbfa] flex flex-col">
+    <div className="min-h-screen bg-[#fffbfa] flex flex-col pt-[env(safe-area-inset-top)]">
       <div className="flex-1 px-4 py-8 max-w-lg mx-auto w-full">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-[#0d3c54] mb-2">Dietary preferences</h1>

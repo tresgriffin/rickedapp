@@ -31,11 +31,11 @@ export default function PublishRecipePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fffbfa] flex flex-col">
+    <div className="min-h-screen bg-[#fffbfa] flex flex-col pt-[env(safe-area-inset-top)]">
       <div className="flex-1 px-4 py-10 max-w-sm mx-auto w-full flex flex-col gap-8">
         <div className="text-center">
           <div className="text-4xl mb-3">🥃</div>
-          <h1 className="text-2xl font-bold text-[#0d3c54] mb-2">You made it.</h1>
+          <h1 className="text-2xl font-bold text-[#0d3c54] mb-2">You made it!</h1>
           <p className="text-sm text-gray-500">
             Rate it and we&apos;ll publish it to your profile and the recipe feed.
           </p>

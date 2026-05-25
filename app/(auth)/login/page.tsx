@@ -109,7 +109,7 @@ function LoginForm() {
   return (
     <>
       <style>{`html, body { overflow: hidden; }`}</style>
-      <div className="flex flex-col h-dvh overflow-y-auto bg-[#fffbfa]">
+      <div className="flex flex-col h-dvh overflow-y-auto bg-[#fffbfa] pt-[env(safe-area-inset-top)]">
       <main className="flex-1 flex flex-col items-center justify-center px-5 py-10">
         <div className="w-full max-w-sm">
           {/* Wordmark */}

@@ -359,7 +359,7 @@ export default function RickChat({
   return (
     <>
       {/* ── Rick header ─────────────────────────────────────────────── */}
-      <header className="flex-shrink-0 sticky top-0 z-20 bg-[#0d3c54] px-4 py-3 flex items-center gap-3 shadow-sm">
+      <header className="flex-shrink-0 sticky top-0 z-20 bg-[#0d3c54] px-4 pb-3 pt-appbar flex items-center gap-3 shadow-sm">
         <RickHeaderAvatar />
         <div className="flex-1">
           <p className="text-sm font-bold text-white leading-none">Rick</p>
