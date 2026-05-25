@@ -23,15 +23,18 @@ export default function SplashPage() {
   }, [status, router]);
 
   return (
-    <main className="flex-1 flex flex-col items-center justify-center min-h-dvh bg-[#0d3c54]">
-      <Image
-        src="/ricked-assets/ricked-lockup-vertical-dark.svg"
-        alt="Ricked"
-        width={1150}
-        height={1288}
-        className="w-48 h-auto"
-        priority
-      />
-    </main>
+    <>
+      <style>{`html, body { background: #0d3c54; }`}</style>
+      <main className="flex-1 flex flex-col items-center justify-center min-h-dvh bg-[#0d3c54]">
+        <Image
+          src="/ricked-assets/ricked-lockup-vertical-light.svg"
+          alt="Ricked"
+          width={1150}
+          height={1288}
+          className="w-48 h-auto"
+          priority
+        />
+      </main>
+    </>
   );
 }

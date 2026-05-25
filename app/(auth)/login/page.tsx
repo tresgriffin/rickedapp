@@ -107,7 +107,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#fffbfa]">
+    <div className="flex flex-col min-h-dvh bg-[#fffbfa]">
       <main className="flex-1 flex flex-col items-center justify-center px-5 py-10">
         <div className="w-full max-w-sm">
           {/* Wordmark */}

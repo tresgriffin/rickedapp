@@ -9,7 +9,9 @@ export default async function WelcomePage() {
   if (!session) redirect("/login");
 
   return (
-    <main className="flex-1 min-h-dvh bg-[#0d3c54] flex flex-col items-center justify-center px-6 gap-10">
+    <>
+      <style>{`html, body { background: #0d3c54; }`}</style>
+      <main className="flex-1 min-h-dvh bg-[#0d3c54] flex flex-col items-center justify-center px-6 gap-10">
       {/* Wordmark */}
       <Image
         src="/ricked-assets/ricked-lockup-horizontal-light.svg"
@@ -35,7 +37,7 @@ export default async function WelcomePage() {
         </div>
 
         <div className="flex flex-col gap-2 w-full">
-          <p className="text-base text-white leading-relaxed">Hey. I&apos;m Rick.</p>
+          <p className="font-[family-name:var(--font-abhaya-libre)] text-xl font-bold text-white leading-relaxed">Hey, I&apos;m Rick!</p>
           <p className="text-sm text-white/80 leading-relaxed">
             I know a lot about whiskey and cocktails. Tell me what you&apos;ve got and I&apos;ll
             help you figure out what to make.
@@ -49,5 +51,6 @@ export default async function WelcomePage() {
       {/* Client component handles update() before navigating to avoid stale JWT */}
       <WelcomeCTAs />
     </main>
+    </>
   );
 }

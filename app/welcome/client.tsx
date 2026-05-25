@@ -29,7 +29,7 @@ export default function WelcomeCTAs() {
         onClick={() => handleCTA("/rick")}
         className="w-full rounded-full bg-white py-3.5 text-sm font-bold text-[#0d3c54] hover:bg-white/90 transition-colors disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d3c54]"
       >
-        {pending ? <span className="flex items-center justify-center gap-2">One sec <LoadingDots /></span> : "Say hi to Rick"}
+        {pending ? <span className="flex items-center justify-center gap-2">One sec <LoadingDots /></span> : `Say "hi" to Rick`}
       </button>
       <button
         type="button"
