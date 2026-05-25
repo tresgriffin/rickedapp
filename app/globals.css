@@ -34,6 +34,12 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* iOS safe area: push AppBar content below the status bar in standalone PWA.
+   Evaluates to 0.75rem in browser mode (identical to pt-3). */
+.pt-appbar {
+  padding-top: calc(env(safe-area-inset-top) + 0.75rem);
+}
+
 /* Smooth scrolling for in-page content, disabled for users who prefer reduced motion */
 @media (prefers-reduced-motion: no-preference) {
   html {

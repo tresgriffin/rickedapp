@@ -10,7 +10,7 @@ interface AppBarProps {
 
 export default function AppBar({ plain, showBack, title }: AppBarProps) {
   return (
-    <header className="sticky top-0 z-20 w-full bg-[#0d3c54] px-4 py-3 flex items-center gap-2 shadow-sm">
+    <header className="sticky top-0 z-20 w-full bg-[#0d3c54] px-4 pb-3 pt-appbar flex items-center gap-2 shadow-sm">
       {showBack && (
         <Link
           href=".."

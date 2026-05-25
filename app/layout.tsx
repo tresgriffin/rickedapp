@@ -22,7 +22,10 @@ export const metadata: Metadata = {
   description: "Discover, rate, and share your favorite whiskeys and cocktails.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/ricked-assets/icon-32.png",
+    icon: [
+      { url: "/ricked-assets/icon-32.svg", type: "image/svg+xml" },
+      { url: "/ricked-assets/icon-32.png", type: "image/png" },
+    ],
     apple: "/ricked-assets/icon-180.png",
   },
   appleWebApp: {
