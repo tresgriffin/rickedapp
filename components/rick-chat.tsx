@@ -363,7 +363,7 @@ export default function RickChat({
         <RickHeaderAvatar />
         <div className="flex-1">
           <p className="text-sm font-bold text-white leading-none">Rick</p>
-          <p className="text-[10px] text-white/50 leading-none mt-0.5">AI mixologist</p>
+          <p className="text-[10px] text-white/50 leading-none mt-0.5">Resident Mixologist</p>
         </div>
         {/* History — secondary affordance, lower visual weight than + New */}
         <Link

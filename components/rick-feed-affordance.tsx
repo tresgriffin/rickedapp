@@ -131,7 +131,7 @@ export default function RickFeedAffordance() {
               Chat with Rick
             </p>
             <p className={`text-xs leading-snug ${THEME.subheadText}`}>
-              Your AI Mixologist
+              Your Resident Mixologist
             </p>
           </div>
         </div>

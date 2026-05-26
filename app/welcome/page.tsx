@@ -50,6 +50,8 @@ export default async function WelcomePage() {
 
       {/* Client component handles update() before navigating to avoid stale JWT */}
       <WelcomeCTAs />
+
+      <p className="text-xs text-white/40 text-center">Rick is an AI mixologist character, powered by Claude</p>
     </main>
     </>
   );

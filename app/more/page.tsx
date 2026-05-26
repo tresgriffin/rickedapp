@@ -39,7 +39,13 @@ export default async function MorePage() {
           <ChevronRight size={16} className="text-gray-400" />
         </Link>
 
-        <PlaceholderItem label="About Ricked" note="Coming soon" />
+        <Link
+          href="/more/about"
+          className="flex items-center justify-between bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-4 hover:border-[#0d3c54]/20 transition-colors"
+        >
+          <span className="text-sm font-bold text-[#0d3c54]">About Ricked</span>
+          <ChevronRight size={16} className="text-gray-400" />
+        </Link>
         <PlaceholderItem label="Help" note="Coming soon" />
 
         <div className="mt-4">
