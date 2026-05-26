@@ -33,7 +33,7 @@ export default async function WelcomePage() {
         />
         <div className="text-center">
           <p className="text-sm font-bold text-white">Rick</p>
-          <p className="text-xs text-white/50">AI mixologist</p>
+          <p className="text-xs text-white/50">Resident mixologist</p>
         </div>
 
         <div className="flex flex-col gap-2 w-full">
