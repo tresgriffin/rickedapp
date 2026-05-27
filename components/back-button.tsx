@@ -21,6 +21,7 @@ export default function BackButton({ fallback }: { fallback: string }) {
       aria-label="Go back"
     >
       <ChevronLeft size={22} />
+      <span className="text-sm font-bold">Back</span>
     </button>
   );
 }
