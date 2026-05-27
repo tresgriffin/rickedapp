@@ -149,6 +149,17 @@ export default function SignupPage() {
               />
             </div>
 
+            <p className="text-xs text-center text-gray-500">
+              By creating an account, you agree to our{" "}
+              <Link href="/terms" className="font-bold text-[#551904] hover:underline">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link href="/privacy" className="font-bold text-[#551904] hover:underline">
+                Privacy Policy
+              </Link>.
+            </p>
+
             <button
               type="submit"
               disabled={loading}

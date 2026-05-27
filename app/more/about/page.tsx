@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { authOptions } from "@/lib/auth";
 import AppBar from "@/components/app-bar";
 import BottomNav from "@/components/bottom-nav";
@@ -40,7 +41,13 @@ export default async function AboutPage() {
           </p>
         </div>
 
-        <p className="text-xs text-gray-400 text-center mt-2">Closed beta · May 2026</p>
+        <p className="text-xs text-gray-400 text-center">
+          <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
+          {" · "}
+          <Link href="/terms" className="hover:underline">Terms of Service</Link>
+        </p>
+
+        <p className="text-xs text-gray-400 text-center">Closed beta · May 2026</p>
       </main>
 
       <BottomNav />
