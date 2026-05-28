@@ -27,7 +27,10 @@ export default function FollowButton({
 
     if ("error" in result) {
       setFollowing(!next);
-      setError("Couldn't save. Try again.");
+      const msg = result.error.toLowerCase().includes("verify")
+        ? "Verify your email to follow people. Check your inbox for the link."
+        : "Couldn't save. Try again.";
+      setError(msg);
       setTimeout(() => setError(""), 3000);
     }
   }

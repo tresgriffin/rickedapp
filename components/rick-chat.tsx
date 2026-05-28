@@ -10,7 +10,7 @@ import LoadingDots from "@/components/loading-dots";
 import { saveRickRecipe } from "@/lib/actions/rick-recipe";
 
 const SUGGESTION_CHIPS = [
-  "I have Buffalo Trace",
+  "I have bourbon",
   "Surprise me",
   "Something refreshing",
   "Make it boozy",
