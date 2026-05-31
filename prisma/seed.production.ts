@@ -28,17 +28,21 @@ const prisma = new PrismaClient({ adapter });
 
 interface WhiskeySource {
   brand: string;        // full product name e.g. "Jim Beam White Label"
-  type: string;         // "Bourbon" | "Rye" | "Tennessee" | "Scotch (Single Malt)" | etc.
+  type: string;         // "Bourbon" | "Rye" | "Tennessee" | "Zero-Proof Bourbon" | etc.
   regionOrigin: string; // "Kentucky, USA" — not stored, no schema field
-  abv: number;          // 40.0–50.5; converted to proof (× 2)
+  abv: number;          // 40.0–50.5 for spirits, 0.0 for zero-proof; converted to proof (× 2)
   description: string;
+  // Optional enrichment fields — mapped when present
+  distillery?: string;
+  mashBill?: string;
+  ageYears?: number;
   // pipeline-only fields — ignored:
   // writingApproach, status, wordCount, notes
 }
 
 interface RecipeIngredientSource {
   name: string;
-  amount: number;
+  amount: number | null; // null when the amount is a descriptor, e.g. "to fill" (soda water in Highball)
   unit: string | null;
   optional: boolean;
   order: number;
@@ -65,7 +69,7 @@ interface RecipeSource {
 
 // ─── Field mappings ────────────────────────────────────────────────────────────
 
-type BourbonCategory = "BOURBON" | "RYE" | "TENNESSEE" | "SCOTCH" | "IRISH" | "JAPANESE" | "OTHER";
+type BourbonCategory = "BOURBON" | "RYE" | "TENNESSEE" | "SCOTCH" | "IRISH" | "JAPANESE" | "OTHER" | "ZERO_PROOF";
 
 const TYPE_TO_CATEGORY: Record<string, BourbonCategory> = {
   Bourbon:               "BOURBON",
@@ -76,7 +80,10 @@ const TYPE_TO_CATEGORY: Record<string, BourbonCategory> = {
   "Scotch (Blended Malt)": "SCOTCH",
   Irish:                 "IRISH",
   Japanese:              "JAPANESE",
-  Canadian:              "OTHER",   // no CANADIAN enum value
+  Canadian:              "OTHER",        // no CANADIAN enum value
+  "Zero-Proof Bourbon":  "ZERO_PROOF",
+  "Zero-Proof Whiskey":  "ZERO_PROOF",
+  "Zero-Proof Spirit":   "ZERO_PROOF",
 };
 
 function mapWhiskey(w: WhiskeySource) {
@@ -89,13 +96,18 @@ function mapWhiskey(w: WhiskeySource) {
     category,
     proof,
     description: w.description,
+    // Optional enrichment fields — mapped when present in the source data
+    ...(w.distillery !== undefined && { distillery: w.distillery }),
+    ...(w.mashBill !== undefined && { mashBill: w.mashBill }),
+    ...(w.ageYears !== undefined && { ageYears: w.ageYears }),
   };
 }
 
 function mapIngredient(ing: RecipeIngredientSource): { amount: string; item: string } {
-  const amount = ing.unit
-    ? `${ing.amount} ${ing.unit}`
-    : `${ing.amount}`;
+  // null amount means the unit is itself the descriptor (e.g. "to fill" for soda water)
+  const amount = ing.amount === null
+    ? (ing.unit ?? "")
+    : ing.unit ? `${ing.amount} ${ing.unit}` : `${ing.amount}`;
   return { amount, item: ing.name };
 }
 

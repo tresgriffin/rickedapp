@@ -548,5 +548,128 @@
     "description": "The US*1 Small Batch bourbon from Michter's, a Louisville producer making bourbon in the high-quality, mid-priced lane. 91.4 proof, a specific number that gives the bourbon more weight than entry-level options without crossing into proof-bomb territory. Aged in fire-charred new American oak made from air-dried wood, which the distillery says develops more flavor from the staves. Caramel, vanilla, stone fruit, baking spice, and an earthy oak finish with maple sweetness underneath. Michter's drinks neat, takes a rock cleanly, and makes a serious Old Fashioned.",
     "wordCount": 84,
     "notes": null
+  },
+
+  {
+    "brand": "Blanton's Original Single Barrel",
+    "type": "Bourbon",
+    "regionOrigin": "Kentucky, USA",
+    "abv": 46.5,
+    "distillery": "Buffalo Trace Distillery, Frankfort, KY",
+    "mashBill": "~12-15% rye (Mash Bill #2) — exact recipe not disclosed",
+    "description": "Blanton's was the first commercial single barrel bourbon, released in 1984, and the bottle alone — that round, distinctive shape with the stopper shaped like a horse and jockey — has made it one of the most recognizable spirits in the world. The whiskey inside uses Buffalo Trace's higher-rye Mash Bill #2, which gives it a little more spice than the regular Buffalo Trace. Caramel, citrus, and toasted oak are the main players. The reality: it's genuinely good, but the bottle is now worth more than the whiskey to many collectors, which has made it nearly impossible to find at MSRP."
+  },
+  {
+    "brand": "Four Roses Single Barrel",
+    "type": "Bourbon",
+    "regionOrigin": "Kentucky, USA",
+    "abv": 50.0,
+    "distillery": "Four Roses Distillery, Lawrenceburg, KY",
+    "mashBill": "60% corn, 35% rye, 5% malted barley (OBSV recipe)",
+    "description": "Four Roses is one of the more interesting stories in bourbon — they actually use 10 different recipes (2 mash bills × 5 yeast strains) and blend or single-barrel from them. The Single Barrel release is typically their OBSV recipe: the high-rye mash bill with a spicy yeast strain, which gives you big fruit and floral notes alongside that rye kick. Each barrel is different, so your bottle might vary from someone else's, which is part of the fun. At 100 proof it has presence without being overwhelming."
+  },
+  {
+    "brand": "Henry McKenna 10 Year Single Barrel",
+    "type": "Bourbon",
+    "regionOrigin": "Kentucky, USA",
+    "abv": 50.0,
+    "distillery": "Heaven Hill Distilleries, Bardstown, KY",
+    "mashBill": "75% corn, 13% rye, 12% malted barley",
+    "ageYears": 10,
+    "description": "Henry McKenna 10 Year is a Bottled-in-Bond single barrel, which is a legal designation that means a lot: it's from one distillery, one distillation season, one barrel, and it's at least 4 years old and bottled at exactly 100 proof. McKenna hits all those marks and then some — it's 10 years old, which is rare for a BIB at this price. Expect rich vanilla, caramel, and a solid rye backbone with some dried fruit on the way out. Won a bunch of awards a few years back and still hasn't fully recovered its shelf presence. Worth seeking out."
+  },
+  {
+    "brand": "Jefferson's Reserve Very Small Batch",
+    "type": "Bourbon",
+    "regionOrigin": "Kentucky, USA",
+    "abv": 45.1,
+    "distillery": "Various distilleries (blended by Jefferson's)",
+    "mashBill": "~80% corn, 7% rye, 7% malted barley, 6% wheat",
+    "description": "Jefferson's Reserve is interesting because it's a blend — Jefferson's sources whiskey from multiple distilleries and ages, then blends them to a consistent flavor profile. The result is something that doesn't taste like any single distillery's house style, with layers of dried fruit, vanilla, toasted oak, and a gentle grain sweetness. The 'very small batch' on the label means each batch is different, though the house flavor stays consistent. It's a little more expensive than comparable bottles but rewards anyone who wants something that's harder to place."
+  },
+  {
+    "brand": "Old Forester 1920 Prohibition Style",
+    "type": "Bourbon",
+    "regionOrigin": "Kentucky, USA",
+    "abv": 57.5,
+    "distillery": "Old Forester Distilling Co., Louisville, KY",
+    "mashBill": "72% corn, 18% rye, 10% malted barley",
+    "description": "Old Forester 1920 is the bold sibling in the Old Forester lineup, bottled at 115 proof to mimic the proof level the distillery reportedly used during Prohibition when selling for 'medicinal purposes.' That extra proof means you get more of everything — the vanilla and caramel are richer, the dark fruit is more intense, and the finish goes on longer. It has the kind of weight that makes you actually think about what you're drinking. Add a little water or one big ice cube and it opens up beautifully."
+  },
+  {
+    "brand": "Russell's Reserve 10 Year",
+    "type": "Bourbon",
+    "regionOrigin": "Kentucky, USA",
+    "abv": 45.0,
+    "distillery": "Wild Turkey Distillery, Lawrenceburg, KY",
+    "mashBill": "75% corn, 13% rye, 12% malted barley",
+    "ageYears": 10,
+    "description": "Russell's Reserve 10 Year is what happens when Wild Turkey's Master Distillers (Jimmy and Eddie Russell) have 10 years and decide to dial the proof back to 90 instead of the 101 you get in the flagship. The lower proof makes it gentler and more approachable, while the extra aging adds layers — honey, baking spice, soft wood tannins, a little citrus. It's not trying to be bold; it's trying to be balanced, and it succeeds. A great option when you want something thoughtful rather than something that announces itself."
+  },
+  {
+    "brand": "Weller Special Reserve",
+    "type": "Bourbon",
+    "regionOrigin": "Kentucky, USA",
+    "abv": 45.0,
+    "distillery": "Buffalo Trace Distillery, Frankfort, KY",
+    "mashBill": "~0% rye — wheat as secondary grain (exact recipe not disclosed)",
+    "description": "Weller Special Reserve is a wheated bourbon from Buffalo Trace — the same distillery that makes Pappy Van Winkle, and reportedly using a similar wheat-forward mash bill. That connection has made it one of the most hunted bottles in bourbon. The actual whiskey? Soft, sweet, and approachable. Honey, vanilla, caramel, light fruit. It's not complex, but it's pleasant and easy to drink. At MSRP it's a solid everyday pour. At the $80–150 secondary market price some retailers charge? You're mostly paying for the label."
+  },
+
+  {
+    "brand": "Spiritless Kentucky 74",
+    "type": "Zero-Proof Bourbon",
+    "regionOrigin": "Kentucky, USA",
+    "abv": 0.0,
+    "description": "The Louisville-made zero-proof bourbon that starts with real bourbon and removes the alcohol through vacuum distillation. The process preserves flavor in a way most zero-proof bottles can't match. Caramel, vanilla, charred oak, and a touch of smoke on the finish. Lighter in body than full-proof bourbon, which is the honest tradeoff, but the flavor structure is genuinely bourbon-shaped. Drinks neat, and shines in an Old Fashioned mocktail where the bitters and sugar do their usual work. Spiritless built this category in a serious way, and Kentucky 74 remains the reference for what zero-proof bourbon can do."
+  },
+  {
+    "brand": "Lyre's American Malt",
+    "type": "Zero-Proof Whiskey",
+    "regionOrigin": "Australia",
+    "abv": 0.0,
+    "description": "The Australian zero-proof spirit modeled on American whiskey, from Lyre's, the global category leader in non-alcoholic spirits. Oak-forward with vanilla, caramel, and dried fruit, plus a touch of smoke and spice on the finish. The profile reads closer to a younger American whiskey than to a heavy bourbon, which makes Lyre's American Malt cocktail-versatile in a way some zero-proof bottles aren't. Works in an Old Fashioned, a Whiskey Sour, or a Manhattan-style stirred drink where you want whiskey's flavor backbone without the alcohol. Mid-tier in the zero-proof category, widely available, and an easy entry point."
+  },
+  {
+    "brand": "Ritual Zero Proof Whiskey Alternative",
+    "type": "Zero-Proof Whiskey",
+    "regionOrigin": "USA",
+    "abv": 0.0,
+    "description": "The zero-proof whiskey alternative from Ritual, built from botanicals rather than dealcoholized whiskey. That's a different approach than most zero-proof bottles, and it shows in the profile: a lighter body, brighter aromatics, and a finish that fades faster than a dealcoholized spirit's. Vanilla, caramel, oak, and a peppery edge on the back end. Sits in approachable territory rather than serious-sipping. Where Ritual lands is in cocktails, carrying character through lemon and sugar in a way some heavier zero-proof bottles struggle with. Widely available at Whole Foods and Target, which makes it the easiest zero-proof bottle to find."
+  },
+  {
+    "brand": "Free Spirits The Spirit of Bourbon",
+    "type": "Zero-Proof Bourbon",
+    "regionOrigin": "USA",
+    "abv": 0.0,
+    "description": "The bourbon-style zero-proof spirit from Free Spirits, with B vitamins and amino acids built into the formula, a wellness-adjacent positioning that sets the brand apart in the category. Balanced sweetness, vanilla, caramel, and a touch of oak on the back end. The Spirit of Bourbon leans more toward authentic bourbon notes than some zero-proof bottles, which makes it the natural choice for Old Fashioned mocktails where you want the spirit to be recognizable. Drinks fine on the rocks for a quiet sip, but the cocktail use case is where this bottle does its best work."
+  },
+  {
+    "brand": "Monday Zero Alcohol Whiskey",
+    "type": "Zero-Proof Whiskey",
+    "regionOrigin": "USA",
+    "abv": 0.0,
+    "description": "The cinnamon-forward zero-proof whiskey from Monday, built explicitly for cocktails rather than neat sipping. Heavy on baking spice up front, with cinnamon, nutmeg, and clove riding above the usual zero-proof vanilla and caramel base. The spice profile is more pronounced than most zero-proof bottles, which makes Monday excellent in a Whiskey Sour where the lemon plays against the cinnamon, or in a Highball where the soda lifts the spice notes. Less compelling neat, where the spice can feel one-note without a cocktail's structure around it. Sits at an everyday price."
+  },
+  {
+    "brand": "NKD Distillery NA Whiskey",
+    "type": "Zero-Proof Whiskey",
+    "regionOrigin": "USA",
+    "abv": 0.0,
+    "description": "The non-alcoholic whiskey from NKD Distillery, a newer entry in the zero-proof category that's designed for neat drinking rather than cocktails. Where most zero-proof whiskeys focus on cocktail versatility, NKD goes the other direction. Clean heat on the palate, subtle smoke on the finish, and a body that's heavier than most zero-proof bottles manage. The result is something that drinks more like a contemplative sip than a mixer ingredient. Less established than Spiritless or Lyre's, but worth seeking out if neat is your goal. Premium territory price-wise."
+  },
+  {
+    "brand": "Sylva",
+    "type": "Zero-Proof Spirit",
+    "regionOrigin": "United Kingdom",
+    "abv": 0.0,
+    "description": "The craft-tier zero-proof spirit from Ben Branson, the founder of Seedlip. Sylva is made from foraged wood and developed through a proprietary sonic maturation technique that the producer says builds complexity in weeks rather than years. The result is a spirit that doesn't directly mirror bourbon or whiskey but lands in adjacent territory: earthy, woody, slightly smoky, with herbal and forest-floor notes underneath. Best neat or with a single rock. Limited availability and premium pricing put Sylva in occasion territory rather than everyday. Worth trying for anyone who takes zero-proof seriously."
+  },
+  {
+    "brand": "ISH Bourbon",
+    "type": "Zero-Proof Bourbon",
+    "regionOrigin": "Denmark",
+    "abv": 0.0,
+    "description": "The Danish zero-proof bourbon from ISH, increasingly available in the US after building a following across Europe. Vanilla, caramel, oak, and a soft fruit note that pulls the profile slightly away from the heavier American bourbons toward something a touch lighter and brighter. The body is medium for the category, the finish runs clean rather than long. ISH Bourbon sits at a mid-tier price and works well in cocktails where you want zero-proof bourbon character without the heavier sweetness some American zero-proof bottles bring. A useful bottle for a Whiskey Sour or a Highball."
   }
 ]

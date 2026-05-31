@@ -546,5 +546,112 @@
       {"order": 5, "text": "Garnish with candied ginger on a pick if using.", "tip": null, "duration": null}
     ],
     "tags": ["whiskey-forward", "citrus-forward", "smoky", "sour", "modern-classic", "shaken", "vegan"]
+  },
+  {
+    "name": "Zero-Proof Old Fashioned",
+    "description": "A zero-proof version of the bourbon-forward classic, built on sugar, bitters, and citrus oils with a zero-proof bourbon base. The Old Fashioned's structure carries the cocktail in a way that other classics struggle to match without alcohol, which is why this is the easiest classic to translate to zero-proof.",
+    "rickNote": "The Old Fashioned translates better to zero-proof than almost any other classic. The sugar, bitters, and citrus oils do most of the structural work, so the spirit's lighter body doesn't hurt the drink the way it would in a Manhattan or Sazerac. Spiritless Kentucky 74 or Free Spirits give the closest bourbon character. Zero-proof bitters keep this strictly alcohol-free.",
+    "glassware": "rocks glass",
+    "methods": ["STIR", "BUILD"],
+    "baseSpirit": "zero-proof bourbon",
+    "difficulty": "EASY",
+    "prepTime": 3,
+    "abvEstimate": "NONE",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "zero-proof bourbon", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "simple syrup", "amount": 0.25, "unit": "oz", "optional": false, "order": 2},
+      {"name": "zero-proof aromatic bitters", "amount": 2, "unit": "dash", "optional": false, "order": 3},
+      {"name": "orange peel", "amount": 1, "unit": null, "optional": false, "order": 4}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add simple syrup and bitters to a rocks glass.", "tip": "Brands like All The Bitter and Free Bros & Sisters make zero-proof aromatic bitters.", "duration": null},
+      {"order": 2, "text": "Add zero-proof bourbon and a large ice cube. Stir until well-chilled, about 30 seconds.", "tip": "A large cube melts slower and keeps the drink from getting watery. Smaller cubes will work but you'll want to drink it faster.", "duration": 30},
+      {"order": 3, "text": "Express the orange peel over the glass by pinching it skin-side-down to release the oils, then drop it in.", "tip": "The oils on the peel are the point. Skip this step and the cocktail loses half its character.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "zero-proof", "bitter", "stirred", "built", "vegan"]
+  },
+  {
+    "name": "Zero-Proof Whiskey Sour",
+    "description": "A zero-proof version of the classic shaken sour, built on zero-proof whiskey, lemon juice, and simple syrup. The optional egg white version produces the same silky foam as the alcoholic version and rounds out the texture in the same way.",
+    "rickNote": "Whiskey Sour structure (citrus, sweetener, foam) carries flavor more than alcohol does, which makes this one of the best zero-proof cocktail translations. Monday or Lyre's give the most expressive base. Egg white still makes a real difference. Aquafaba works as a vegan substitute.",
+    "glassware": "rocks glass",
+    "methods": ["SHAKE"],
+    "baseSpirit": "zero-proof whiskey",
+    "difficulty": "EASY",
+    "prepTime": 4,
+    "abvEstimate": "NONE",
+    "status": "DRAFT",
+    "safetyFlags": ["CONTAINS_EGGS"],
+    "ingredients": [
+      {"name": "zero-proof whiskey", "amount": 2, "unit": "oz", "optional": false, "order": 1},
+      {"name": "lemon juice (fresh)", "amount": 0.75, "unit": "oz", "optional": false, "order": 2},
+      {"name": "simple syrup", "amount": 0.75, "unit": "oz", "optional": false, "order": 3},
+      {"name": "egg white", "amount": 1, "unit": null, "optional": true, "order": 4},
+      {"name": "zero-proof aromatic bitters", "amount": 2, "unit": "dash", "optional": true, "order": 5},
+      {"name": "alcohol-free brandied cherry", "amount": 1, "unit": null, "optional": false, "order": 6}
+    ],
+    "steps": [
+      {"order": 1, "text": "If using egg white, add it to a shaker with the zero-proof whiskey, lemon juice, and simple syrup. Shake hard without ice for about 15 seconds to build the foam.", "tip": "This is called a dry shake. Skipping it means a thinner, less stable foam. The dry shake is non-negotiable if you want the texture.", "duration": 15},
+      {"order": 2, "text": "Add ice to the shaker and shake again until well-chilled, about 15 seconds.", "tip": null, "duration": 15},
+      {"order": 3, "text": "Strain into a rocks glass over fresh ice. If skipping egg white, just shake once with ice and strain.", "tip": null, "duration": null},
+      {"order": 4, "text": "Garnish with an alcohol-free brandied cherry. If using egg white, dot a few drops of zero-proof bitters on the foam.", "tip": "The bitters dots aren't just decoration. They add a small bitter aroma on the nose that balances the sweet-sour palate.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "zero-proof", "citrus-forward", "sour", "shaken"]
+  },
+  {
+    "name": "Zero-Proof Highball",
+    "description": "A long, refreshing build of zero-proof whiskey over ice topped with cold soda water and a lemon peel. The simplest zero-proof recipe and the most forgiving, since any zero-proof bottle works as the base.",
+    "rickNote": "The Highball is where zero-proof whiskey actually shines, because the soda water lifts the spirit's character rather than asking it to carry the drink alone. Any of the zero-proof bottles work here. Lyre's, Monday, and ISH all build a clean Highball.",
+    "glassware": "highball",
+    "methods": ["BUILD"],
+    "baseSpirit": "zero-proof whiskey",
+    "difficulty": "EASY",
+    "prepTime": 2,
+    "abvEstimate": "NONE",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "zero-proof whiskey", "amount": 1.5, "unit": "oz", "optional": false, "order": 1},
+      {"name": "soda water", "amount": null, "unit": "to fill", "optional": false, "order": 2},
+      {"name": "lemon peel", "amount": 1, "unit": null, "optional": false, "order": 3}
+    ],
+    "steps": [
+      {"order": 1, "text": "Fill a highball glass with ice.", "tip": null, "duration": null},
+      {"order": 2, "text": "Add zero-proof whiskey.", "tip": null, "duration": null},
+      {"order": 3, "text": "Top with cold soda water and stir gently to combine.", "tip": "Cold soda water keeps the carbonation longer. Pour gently down the side of the glass to preserve the bubbles.", "duration": null},
+      {"order": 4, "text": "Express the lemon peel over the glass by pinching it skin-side-down to release the oils, then drop it in.", "tip": null, "duration": null}
+    ],
+    "tags": ["whiskey-forward", "zero-proof", "citrus-forward", "built", "summer", "vegan"]
+  },
+  {
+    "name": "Zero-Proof Hot Toddy",
+    "description": "A zero-proof version of the hot whiskey-and-honey drink. Hot water, lemon, honey, and zero-proof whiskey in a mug. The Hot Toddy's structure depends so much on the lemon-honey-water core that the whiskey contribution is minimal, which makes this an easy and successful zero-proof translation.",
+    "rickNote": "If the Old Fashioned is the easiest classic to translate to zero-proof, the Hot Toddy is even easier. The honey and lemon do most of the work, and the hot water hides any thinness in the spirit's body. Any zero-proof whiskey works here, including ones that feel underwhelming neat.",
+    "glassware": "mug",
+    "methods": ["BUILD"],
+    "baseSpirit": "zero-proof whiskey",
+    "difficulty": "EASY",
+    "prepTime": 5,
+    "abvEstimate": "NONE",
+    "status": "DRAFT",
+    "safetyFlags": [],
+    "ingredients": [
+      {"name": "zero-proof whiskey", "amount": 1.5, "unit": "oz", "optional": false, "order": 1},
+      {"name": "lemon juice (fresh)", "amount": 0.5, "unit": "oz", "optional": false, "order": 2},
+      {"name": "honey", "amount": 1, "unit": "tsp", "optional": false, "order": 3},
+      {"name": "hot water", "amount": 6, "unit": "oz", "optional": false, "order": 4},
+      {"name": "lemon wheel", "amount": 1, "unit": null, "optional": false, "order": 5},
+      {"name": "cloves", "amount": 2, "unit": null, "optional": true, "order": 6},
+      {"name": "cinnamon stick", "amount": 1, "unit": null, "optional": true, "order": 7}
+    ],
+    "steps": [
+      {"order": 1, "text": "Add the honey to the mug and pour in a small amount of hot water to dissolve it. Stir until fully combined.", "tip": "Honey doesn't dissolve well in cold liquid or zero-proof whiskey. Dissolving it in hot water first prevents a gummy layer at the bottom of the mug.", "duration": null},
+      {"order": 2, "text": "Add zero-proof whiskey, lemon juice, and the rest of the hot water. Stir to combine.", "tip": null, "duration": null},
+      {"order": 3, "text": "Stud the lemon wheel with the cloves if using, and float on top.", "tip": null, "duration": null},
+      {"order": 4, "text": "Add the cinnamon stick if using.", "tip": "The cinnamon stick is more than decoration. It infuses warmth and aroma as the drink sits, and you can use it as a stir stick.", "duration": null}
+    ],
+    "tags": ["whiskey-forward", "zero-proof", "citrus-forward", "sweet", "warm", "built", "winter", "comfort"]
   }
 ]
