@@ -32,6 +32,7 @@ export async function fetchProfileData(
           : { status: "APPROVED", isPublished: true },
         orderBy: { createdAt: "desc" },
         include: {
+          user: { select: { handle: true, displayName: true, avatarUrl: true } },
           taggedWhiskey: { select: { id: true, name: true, brand: true } },
         },
       },
@@ -50,15 +51,18 @@ export async function fetchProfileData(
 
   const reviewIds = user.reviews.map((r) => r.id);
   const postIds = user.posts.map((p) => p.id);
+  const recipeIds = user.recipes.map((r) => r.id);
 
   const orClauses = [
     ...(reviewIds.length ? [{ targetType: "REVIEW" as const, targetId: { in: reviewIds } }] : []),
     ...(postIds.length ? [{ targetType: "POST" as const, targetId: { in: postIds } }] : []),
+    ...(recipeIds.length ? [{ targetType: "RECIPE" as const, targetId: { in: recipeIds } }] : []),
   ];
 
   const commentTargets = [
     ...reviewIds.map((id) => ({ targetType: "REVIEW" as const, targetId: id })),
     ...postIds.map((id) => ({ targetType: "POST" as const, targetId: id })),
+    ...recipeIds.map((id) => ({ targetType: "RECIPE" as const, targetId: id })),
   ];
 
   const [likeCounts, commentCounts, userLikes, initialCommentsMap, isFollowingRow] =
@@ -134,6 +138,13 @@ export async function fetchProfileData(
         commentCount: commentMap.get(`POST:${p.id}`) ?? 0,
         isLiked: likedSet.has(`POST:${p.id}`),
         initialComments: commentsMap.get(`POST:${p.id}`) ?? [],
+      })),
+      recipes: user.recipes.map((r) => ({
+        ...r,
+        likeCount: likeMap.get(`RECIPE:${r.id}`) ?? 0,
+        commentCount: commentMap.get(`RECIPE:${r.id}`) ?? 0,
+        isLiked: likedSet.has(`RECIPE:${r.id}`),
+        initialComments: commentsMap.get(`RECIPE:${r.id}`) ?? [],
       })),
     },
     isFollowing: !!isFollowingRow,

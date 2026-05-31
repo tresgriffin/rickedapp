@@ -8,6 +8,7 @@ import TabBar from "@/components/tab-bar";
 import Avatar from "@/components/avatar";
 import ReviewCard from "@/components/review-card";
 import RecipeReviewCard from "@/components/recipe-review-card";
+import RecipeCard from "@/components/recipe-card";
 import PostCard from "@/components/post-card";
 import FollowButton from "@/components/follow-button";
 import EmptyState from "@/components/empty-state";
@@ -51,6 +52,11 @@ interface Recipe {
   isAiGenerated: boolean;
   isPublished: boolean;
   taggedWhiskey?: { id: string; name: string; brand: string } | null;
+  user: { handle: string | null; displayName: string | null; avatarUrl: string | null };
+  likeCount: number;
+  commentCount: number;
+  isLiked: boolean;
+  initialComments: CommentWithUser[];
 }
 
 interface RecipeReview {
@@ -80,11 +86,12 @@ interface ProfileViewProps {
   isFollowing: boolean;
   hideReviewsTab?: boolean;
   defaultTab?: string;
+  viewerId?: string;
 }
 
 type ReviewFilter = "all" | "recipes" | "bottles";
 
-export default function ProfileView({ user, isOwnProfile, isFollowing, hideReviewsTab = false, defaultTab }: ProfileViewProps) {
+export default function ProfileView({ user, isOwnProfile, isFollowing, hideReviewsTab = false, defaultTab, viewerId }: ProfileViewProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(defaultTab ?? "recipes");
   const [reviewFilter, setReviewFilter] = useState<ReviewFilter>("all");
@@ -263,53 +270,30 @@ export default function ProfileView({ user, isOwnProfile, isFollowing, hideRevie
               }
             />
           ) : (
-            user.recipes.map((r) => (
-              <Link
-                key={r.id}
-                href={r.isAiGenerated && !r.isPublished ? `/recipe/${r.id}/publish` : `/recipe/${r.id}`}
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:border-[#0d3c54]/20 transition-colors active:scale-[0.98]"
-              >
-                {r.mediaUrl && (
-                  <div className="relative aspect-[4/3] bg-gray-100">
-                    <Image
-                      src={r.mediaUrl}
-                      alt={r.title}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 600px"
-                      className="object-cover"
-                    />
-                  </div>
-                )}
-                <div className="p-4 flex flex-col gap-1">
-                  <div className="flex items-start gap-2 flex-wrap">
-                    {r.taggedWhiskey && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#551904] bg-[#551904]/8 rounded-full px-2 py-0.5">
-                        🥃 {r.taggedWhiskey.name}
-                      </span>
-                    )}
-                    {r.isAiGenerated && !r.isPublished && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-100 rounded-full px-2 py-0.5">
-                        ✦ Rick draft · Tap to publish
-                      </span>
-                    )}
-                    {r.isAiGenerated && r.isPublished && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0d3c54] bg-[#0d3c54]/8 rounded-full px-2 py-0.5">
-                        ✦ by Rick
-                      </span>
-                    )}
-                  </div>
+            user.recipes.map((r) =>
+              r.isAiGenerated && !r.isPublished ? (
+                // Unpublished AI draft — compact card linking to the publish flow
+                <Link
+                  key={r.id}
+                  href={`/recipe/${r.id}/publish`}
+                  className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-1 hover:border-[#0d3c54]/20 transition-colors active:scale-[0.98]"
+                >
+                  <span className="self-start inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-100 rounded-full px-2 py-0.5">
+                    ✦ Rick draft · Tap to publish
+                  </span>
                   <p className="text-sm font-bold text-[#0d3c54]">{r.title}</p>
-                  {r.description && (
-                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                      {r.description}
-                    </p>
-                  )}
-                  <p className="text-xs text-gray-400 mt-1">
-                    {Array.isArray(r.ingredients) ? r.ingredients.length : 0} ingredients
-                  </p>
-                </div>
-              </Link>
-            ))
+                </Link>
+              ) : (
+                // Published recipe — full RecipeCard with social affordances
+                <RecipeCard
+                  key={r.id}
+                  recipe={r}
+                  isLiked={r.isLiked}
+                  initialComments={r.initialComments as Parameters<typeof RecipeCard>[0]["initialComments"]}
+                  viewerId={viewerId}
+                />
+              )
+            )
           ))}
 
         {activeTab === "saved" && (

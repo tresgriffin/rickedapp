@@ -31,6 +31,7 @@ export default async function ProfilePage({
           isOwnProfile={true}
           isFollowing={false}
           defaultTab={tab}
+          viewerId={session.user.id}
         />
       </main>
       <BottomNav />

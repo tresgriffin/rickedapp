@@ -38,6 +38,7 @@ export default async function UserProfilePage({
           isFollowing={result.isFollowing}
           hideReviewsTab={result.user.handle === "rick"}
           defaultTab={tab}
+          viewerId={session.user.id}
         />
       </main>
       <BottomNav />
