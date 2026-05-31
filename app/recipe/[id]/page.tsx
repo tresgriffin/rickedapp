@@ -10,8 +10,7 @@ import AppBar from "@/components/app-bar";
 import BottomNav from "@/components/bottom-nav";
 import ScrollToTop from "@/components/scroll-to-top";
 import Avatar from "@/components/avatar";
-import LikeButton from "@/components/like-button";
-import CommentSection from "@/components/comment-section";
+import RecipePageActions from "@/components/recipe-page-actions";
 import RecipeRatingSection from "@/components/recipe-rating-section";
 import RecipeReviewsSection from "@/components/recipe-reviews-section";
 import OwnerActionMenu from "@/components/owner-action-menu";
@@ -160,20 +159,14 @@ export default async function RecipePage({
           )}
 
           {/* Social actions */}
-          <div className="flex items-center gap-5 pt-1 border-t border-gray-100">
-            <LikeButton
-              targetType="RECIPE"
-              targetId={recipe.id}
-              initialLiked={!!userLike}
-              initialCount={likeCount}
-            />
-            <CommentSection
-              targetType="RECIPE"
-              targetId={recipe.id}
-              initialComments={initialComments}
-              initialCount={commentCount}
-            />
-          </div>
+          <RecipePageActions
+            targetId={recipe.id}
+            isLiked={!!userLike}
+            likeCount={likeCount}
+            initialComments={initialComments as Parameters<typeof RecipePageActions>[0]["initialComments"]}
+            commentCount={commentCount}
+            viewerId={session.user.id}
+          />
 
           {/* Ratings — hidden for the recipe's own author */}
           {!isRecipeOwner && (

@@ -1,5 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { MessageCircle } from "lucide-react";
 import Avatar from "@/components/avatar";
 import StarRating from "@/components/star-rating";
 import LikeButton from "@/components/like-button";
@@ -26,9 +30,13 @@ interface ReviewCardProps {
   };
   isLiked: boolean;
   initialComments: CommentWithUser[];
+  viewerId?: string;
 }
 
-export default function ReviewCard({ review, isLiked, initialComments }: ReviewCardProps) {
+export default function ReviewCard({ review, isLiked, initialComments, viewerId }: ReviewCardProps) {
+  const [commentExpanded, setCommentExpanded] = useState(false);
+  const [commentCount, setCommentCount] = useState(review.commentCount);
+
   return (
     <article className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3">
       {/* Header */}
@@ -85,19 +93,37 @@ export default function ReviewCard({ review, isLiked, initialComments }: ReviewC
         </div>
       )}
 
-      {/* Actions */}
-      <div className="flex items-center gap-5 pt-1 border-t border-gray-50">
-        <LikeButton
-          targetType="REVIEW"
-          targetId={review.id}
-          initialLiked={isLiked}
-          initialCount={review.likeCount}
-        />
+      {/* Actions: like + comment toggle on one row, thread full-width below */}
+      <div className="pt-1 border-t border-gray-50">
+        <div className="flex items-center gap-5">
+          <LikeButton
+            targetType="REVIEW"
+            targetId={review.id}
+            initialLiked={isLiked}
+            initialCount={review.likeCount}
+          />
+          <button
+            type="button"
+            onClick={() => setCommentExpanded((v) => !v)}
+            className={`flex items-center gap-1.5 transition-colors ${
+              commentExpanded ? "text-[#0d3c54]" : "text-gray-400 hover:text-[#0d3c54]"
+            }`}
+            aria-label={`${commentCount} ${commentCount === 1 ? "comment" : "comments"}`}
+            aria-expanded={commentExpanded}
+          >
+            <MessageCircle size={16} strokeWidth={commentExpanded ? 2 : 1.5} />
+            <span className="text-xs font-medium">{commentCount}</span>
+          </button>
+        </div>
         <CommentSection
           targetType="REVIEW"
           targetId={review.id}
           initialComments={initialComments}
           initialCount={review.commentCount}
+          expanded={commentExpanded}
+          viewerId={viewerId}
+          onCommentAdded={() => setCommentCount((n) => n + 1)}
+          onCommentDeleted={() => setCommentCount((n) => Math.max(0, n - 1))}
         />
       </div>
     </article>
