@@ -11,6 +11,7 @@ import RecipeCard from "@/components/recipe-card";
 import RickFeedAffordance from "@/components/rick-feed-affordance";
 import EmptyState from "@/components/empty-state";
 import VerificationBannerServer from "@/components/verification-banner-server";
+import FeedLoader from "@/components/feed-loader";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -24,11 +25,14 @@ export default async function HomePage() {
   if (!currentUser?.hasSeenRickOnboarding) redirect("/welcome");
 
   // ── Fetch posts and recipes only (reviews demoted from feed) ──────────────
+  // take: 31 (one more than the 30-item page) so merged.length > 30 reliably
+  // signals hasMore for FeedLoader. Sort by (createdAt desc, id desc) matches
+  // the compound cursor used by /api/feed for consistent pagination boundaries.
   const [rawPosts, rawRecipes] = await Promise.all([
     prisma.post.findMany({
       where: { status: "APPROVED" },
-      orderBy: { createdAt: "desc" },
-      take: 20,
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: 31,
       include: {
         user: { select: { handle: true, displayName: true, avatarUrl: true } },
         taggedWhiskey: { select: { id: true, name: true, brand: true } },
@@ -36,8 +40,8 @@ export default async function HomePage() {
     }),
     prisma.recipe.findMany({
       where: { status: "APPROVED", isPublished: true },
-      orderBy: { createdAt: "desc" },
-      take: 20,
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: 31,
       include: {
         user: { select: { handle: true, displayName: true, avatarUrl: true } },
         taggedWhiskey: { select: { id: true, name: true, brand: true } },
@@ -50,12 +54,23 @@ export default async function HomePage() {
     | { kind: "post"; item: (typeof rawPosts)[number] }
     | { kind: "recipe"; item: (typeof rawRecipes)[number] };
 
-  const merged: FeedItem[] = [
+  const allMerged: FeedItem[] = [
     ...rawPosts.map((item) => ({ kind: "post" as const, item })),
     ...rawRecipes.map((item) => ({ kind: "recipe" as const, item })),
-  ]
-    .sort((a, b) => b.item.createdAt.getTime() - a.item.createdAt.getTime())
-    .slice(0, 30);
+  ].sort((a, b) => {
+    const diff = b.item.createdAt.getTime() - a.item.createdAt.getTime();
+    if (diff !== 0) return diff;
+    return b.item.id > a.item.id ? 1 : -1; // id desc tiebreaker, matches /api/feed
+  });
+
+  const feedHasMore = allMerged.length > 30;
+  const merged = allMerged.slice(0, 30);
+
+  // Compute compound cursor from the last SSR item for FeedLoader.
+  // Null when fewer than 30 items exist — FeedLoader renders nothing in that case.
+  const lastSsrItem = merged.length === 30 ? merged[29] : null;
+  const initialCursorDate = lastSsrItem?.item.createdAt.toISOString() ?? null;
+  const initialCursorId = lastSsrItem?.item.id ?? null;
 
   const postIds = merged.filter((f) => f.kind === "post").map((f) => f.item.id);
   const recipeIds = merged.filter((f) => f.kind === "recipe").map((f) => f.item.id);
@@ -176,6 +191,16 @@ export default async function HomePage() {
             })
           )}
         </section>
+
+        {/* ── Infinite scroll: pages beyond the initial SSR batch ──────── */}
+        <div className="px-4 pb-4 flex flex-col gap-3">
+          <FeedLoader
+            initialCursorDate={initialCursorDate}
+            initialCursorId={initialCursorId}
+            viewerId={session.user.id}
+            initialHasMore={feedHasMore}
+          />
+        </div>
       </main>
 
       <BottomNav />
