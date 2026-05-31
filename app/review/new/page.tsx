@@ -53,7 +53,6 @@ function NewReviewForm() {
     e.preventDefault();
     setError("");
     if (!rating) { setError("Pick a star rating before you post."); return; }
-    if (body.trim().length < 10) { setError("Write at least 10 characters. Plain language is fine."); return; }
 
     setSubmitting(true);
     const fd = new FormData();
@@ -132,7 +131,7 @@ function NewReviewForm() {
           {/* Review body */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor="body" className="text-sm font-bold text-[#0d3c54]">
-              Your review
+              Your review <span className="font-normal text-gray-400">(optional)</span>
             </label>
             <textarea
               id="body"
