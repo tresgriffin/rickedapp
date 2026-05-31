@@ -2,8 +2,8 @@ import { notFound, redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { authOptions } from "@/lib/auth";
+import BackButton from "@/components/back-button";
 import { prisma } from "@/lib/db";
 import { timeAgo } from "@/lib/format";
 import AppBar from "@/components/app-bar";
@@ -93,7 +93,6 @@ export default async function RecipePage({
   const isRecipeOwner = !recipe.isAiGenerated && recipe.userId === session.user.id;
   // canDelete: any recipe the user published (including AI-generated) is deletable by them.
   const canDelete = recipe.userId === session.user.id;
-  const backHref = recipe.user.handle ? `/profile/${recipe.user.handle}` : "/profile";
   const ratingStats = (ratingStatsMap as Map<string, import("@/lib/recipe-rating-stats").RecipeRatingStats>).get(id) ?? {
     avgStars: null,
     wouldMakeAgainPct: null,
@@ -109,19 +108,13 @@ export default async function RecipePage({
         {/* Header */}
         <div className="bg-white border-b border-gray-100 px-4 pt-5 pb-5 flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <Link
-              href={backHref}
-              className="flex items-center gap-1 text-sm text-[#551904] font-bold w-fit"
-            >
-              <ChevronLeft size={16} />
-              {recipe.user.displayName ?? recipe.user.handle ?? "Profile"}
-            </Link>
+            <BackButton fallback="/home" />
             {canDelete && (
               <OwnerActionMenu
                 type="recipe"
                 id={recipe.id}
                 editHref={`/recipe/${recipe.id}/edit`}
-                afterDeleteHref={backHref}
+                afterDeleteHref="/home"
               />
             )}
           </div>

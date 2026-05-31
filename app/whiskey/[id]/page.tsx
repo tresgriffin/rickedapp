@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import { authOptions } from "@/lib/auth";
+import BackButton from "@/components/back-button";
 import { prisma } from "@/lib/db";
 import { computeAvgRating } from "@/lib/format";
 import AppBar from "@/components/app-bar";
@@ -133,7 +134,9 @@ export default async function WhiskeyPage({
 
       <main className="flex-1 pb-nav">
         {/* Hero section */}
-        <div className="bg-white border-b border-gray-100 px-4 pt-6 pb-5 flex gap-5">
+        <div className="bg-white border-b border-gray-100 px-4 pt-5 pb-5 flex flex-col gap-3">
+          <BackButton fallback="/search" />
+          <div className="flex gap-5">
           {/* Bottle image */}
           <div className="w-24 h-36 flex-shrink-0 bg-[#fffbfa] border border-gray-100 rounded-2xl flex items-center justify-center overflow-hidden">
             <Image
@@ -189,6 +192,7 @@ export default async function WhiskeyPage({
               )}
             </div>
           </div>
+          </div>{/* end flex gap-5 image+info row */}
         </div>
 
         {/* Description */}
