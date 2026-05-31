@@ -20,6 +20,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   IRISH: "Irish Whiskey",
   JAPANESE: "Japanese Whisky",
   OTHER: "Whiskey",
+  ZERO_PROOF: "Zero-Proof",
 };
 
 export default async function WhiskeyPage({
@@ -171,7 +172,7 @@ export default async function WhiskeyPage({
 
             {/* Quick specs */}
             <div className="flex flex-wrap gap-x-4 gap-y-1">
-              {whiskey.proof && (
+              {whiskey.proof != null && (
                 <span className="text-xs text-gray-500">
                   <span className="font-bold text-[#0d3c54]">{whiskey.proof}</span> proof
                 </span>

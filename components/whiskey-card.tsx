@@ -24,6 +24,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   IRISH: "Irish",
   JAPANESE: "Japanese",
   OTHER: "Other",
+  ZERO_PROOF: "Zero-Proof",
 };
 
 export default function WhiskeyCard({ whiskey }: WhiskeyCardProps) {
@@ -52,7 +53,7 @@ export default function WhiskeyCard({ whiskey }: WhiskeyCardProps) {
           <span className="text-[10px] font-bold uppercase tracking-wide text-[#551904] bg-[#551904]/8 rounded-full px-2 py-0.5">
             {CATEGORY_LABELS[whiskey.category] ?? whiskey.category}
           </span>
-          {whiskey.proof && (
+          {whiskey.proof != null && (
             <span className="text-[10px] text-gray-400">{whiskey.proof} proof</span>
           )}
           {whiskey.ageYears && (
