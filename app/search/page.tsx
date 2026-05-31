@@ -9,6 +9,7 @@ import WhiskeyCard from "@/components/whiskey-card";
 import Avatar from "@/components/avatar";
 import StarRating from "@/components/star-rating";
 import EmptyState from "@/components/empty-state";
+import LoadingDots from "@/components/loading-dots";
 
 const CATEGORIES = [
   { id: "", label: "All" },
@@ -61,40 +62,66 @@ export default function SearchPage() {
   const [users, setUsers] = useState<UserResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inFlightRef = useRef(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  // Stable ref so the intersection observer callback always reads current state
+  // without needing to be recreated on every render.
+  const scrollStateRef = useRef({ hasMore: false, loadingMore: false, loading: false, query: "", category: "", page: 1 });
+  scrollStateRef.current = { hasMore, loadingMore, loading, query, category, page };
 
-  const fetchAll = useCallback(
-    async (q: string, cat: string) => {
-      setLoading(true);
-      try {
-        const whiskeyParams = new URLSearchParams({ pageSize: "20" });
-        if (q) whiskeyParams.set("q", q);
-        if (cat) whiskeyParams.set("category", cat);
+  const fetchMore = useCallback(async (q: string, cat: string, nextPage: number) => {
+    if (inFlightRef.current) return;
+    inFlightRef.current = true;
+    setLoadingMore(true);
+    try {
+      const params = new URLSearchParams({ pageSize: "20", page: String(nextPage) });
+      if (q) params.set("q", q);
+      if (cat) params.set("category", cat);
+      const res = await fetch(`/api/whiskeys?${params}`);
+      const json = await res.json();
+      setWhiskeys((prev) => [...prev, ...(json.data ?? [])]);
+      setHasMore(json.meta ? nextPage < json.meta.pageCount : false);
+      setPage(nextPage);
+    } finally {
+      setLoadingMore(false);
+      inFlightRef.current = false;
+    }
+  }, []);
 
-        const fetches: Promise<Response>[] = [
-          fetch(`/api/whiskeys?${whiskeyParams}`),
-        ];
+  const fetchAll = useCallback(async (q: string, cat: string) => {
+    setLoading(true);
+    setPage(1);
+    setHasMore(false);
+    try {
+      const whiskeyParams = new URLSearchParams({ pageSize: "20", page: "1" });
+      if (q) whiskeyParams.set("q", q);
+      if (cat) whiskeyParams.set("category", cat);
 
-        if (q) {
-          fetches.push(fetch(`/api/recipes?q=${encodeURIComponent(q)}&pageSize=5`));
-          fetches.push(fetch(`/api/users?q=${encodeURIComponent(q)}&pageSize=5`));
-        }
-
-        const responses = await Promise.all(fetches);
-        const jsons = await Promise.all(responses.map((r) => r.json()));
-
-        setWhiskeys(jsons[0]?.data ?? []);
-        setRecipes(q ? (jsons[1]?.data ?? []) : []);
-        setUsers(q ? (jsons[2]?.data ?? []) : []);
-        setHasSearched(true);
-      } finally {
-        setLoading(false);
+      const fetches: Promise<Response>[] = [fetch(`/api/whiskeys?${whiskeyParams}`)];
+      if (q) {
+        fetches.push(fetch(`/api/recipes?q=${encodeURIComponent(q)}&pageSize=5`));
+        fetches.push(fetch(`/api/users?q=${encodeURIComponent(q)}&pageSize=5`));
       }
-    },
-    []
-  );
 
-  // Debounced fetch — delay 0 on first mount, 300ms after
+      const responses = await Promise.all(fetches);
+      const jsons = await Promise.all(responses.map((r) => r.json()));
+
+      setWhiskeys(jsons[0]?.data ?? []);
+      setHasMore(jsons[0]?.meta ? 1 < jsons[0].meta.pageCount : false);
+      setRecipes(q ? (jsons[1]?.data ?? []) : []);
+      setUsers(q ? (jsons[2]?.data ?? []) : []);
+      setHasSearched(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Debounced fetch — fires immediately on first mount, 300ms debounce thereafter
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     const delay = hasSearched ? 300 : 0;
@@ -106,7 +133,29 @@ export default function SearchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, category, fetchAll]);
 
-  const isEmpty = !loading && hasSearched && whiskeys.length === 0 && recipes.length === 0 && users.length === 0;
+  // Intersection observer — created once, reads current state from ref to avoid
+  // re-creating on every render while still seeing up-to-date values.
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0].isIntersecting) return;
+        const { hasMore, loadingMore, loading, query, category, page } = scrollStateRef.current;
+        if (hasMore && !loadingMore && !loading) {
+          fetchMore(query, category, page + 1);
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [fetchMore]);
+
+  const isEmpty =
+    !loading && hasSearched && whiskeys.length === 0 && recipes.length === 0 && users.length === 0;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fffbfa]">
@@ -132,7 +181,7 @@ export default function SearchPage() {
       )}
 
       <main className="flex-1 pb-36">
-        {/* ── Search bar + category chips ───────────────────────────────── */}
+        {/* ── Sticky search bar + category chips ───────────────────────────────── */}
         <div className="sticky top-[52px] z-10 bg-[#fffbfa] px-4 pt-3 pb-2 border-b border-gray-100">
           <div className="relative">
             <Search
@@ -239,6 +288,14 @@ export default function SearchPage() {
             </section>
           )}
 
+          {/* ── Infinite scroll sentinel + load-more indicator ──────────── */}
+          <div ref={sentinelRef} />
+          {loadingMore && (
+            <div className="flex items-center justify-center gap-2 py-4 text-sm text-gray-400">
+              Loading <LoadingDots />
+            </div>
+          )}
+
           {/* ── People section ───────────────────────────────────────────── */}
           {!loading && users.length > 0 && (
             <section className="flex flex-col gap-3">
@@ -266,7 +323,6 @@ export default function SearchPage() {
               ))}
             </section>
           )}
-
         </div>
       </main>
 
