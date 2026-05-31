@@ -8,14 +8,16 @@ import Avatar from "@/components/avatar";
 import StarRating from "@/components/star-rating";
 import LikeButton from "@/components/like-button";
 import CommentSection from "@/components/comment-section";
+import OwnerActionMenu from "@/components/owner-action-menu";
 import { timeAgo } from "@/lib/format";
 import type { CommentWithUser } from "@/lib/actions/comment";
 
 interface ReviewCardProps {
   review: {
     id: string;
+    userId: string;
     rating: number;
-    body: string;
+    body: string | null;
     mediaUrl?: string | null;
     createdAt: Date;
     user: {
@@ -64,6 +66,13 @@ export default function ReviewCard({ review, isLiked, initialComments, viewerId 
           </p>
         </div>
         <StarRating rating={review.rating} size="sm" />
+        {viewerId && review.userId === viewerId && (
+          <OwnerActionMenu
+            type="review"
+            id={review.id}
+            editHref={`/review/${review.id}/edit`}
+          />
+        )}
       </div>
 
       {/* Optional whiskey link (shown on profile and feed, not on brand page) */}
@@ -77,8 +86,8 @@ export default function ReviewCard({ review, isLiked, initialComments, viewerId 
         </Link>
       )}
 
-      {/* Body */}
-      <p className="text-sm text-black leading-relaxed">{review.body}</p>
+      {/* Body — optional since schema allows null */}
+      {review.body && <p className="text-sm text-black leading-relaxed">{review.body}</p>}
 
       {/* Review photo */}
       {review.mediaUrl && (

@@ -178,7 +178,7 @@ model Review {
   userId     String
   whiskeyId  String
   rating     Int              // 1–5
-  body       String           @db.Text
+  body       String?          @db.Text
   mediaUrl   String?
   status     ModerationStatus @default(APPROVED)
   // Reserved for future expert/critic review phase — do not surface in MVP UI
@@ -188,6 +188,7 @@ model Review {
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   whiskey Whiskey @relation(fields: [whiskeyId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, whiskeyId])
   @@index([whiskeyId])
   @@index([userId])
   @@index([status, createdAt])

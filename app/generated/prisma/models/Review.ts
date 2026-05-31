@@ -208,7 +208,7 @@ export type ReviewGroupByOutputType = {
   userId: string
   whiskeyId: string
   rating: number
-  body: string
+  body: string | null
   mediaUrl: string | null
   status: $Enums.ModerationStatus
   isExpert: boolean
@@ -243,7 +243,7 @@ export type ReviewWhereInput = {
   userId?: Prisma.StringFilter<"Review"> | string
   whiskeyId?: Prisma.StringFilter<"Review"> | string
   rating?: Prisma.IntFilter<"Review"> | number
-  body?: Prisma.StringFilter<"Review"> | string
+  body?: Prisma.StringNullableFilter<"Review"> | string | null
   mediaUrl?: Prisma.StringNullableFilter<"Review"> | string | null
   status?: Prisma.EnumModerationStatusFilter<"Review"> | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFilter<"Review"> | boolean
@@ -257,7 +257,7 @@ export type ReviewOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   whiskeyId?: Prisma.SortOrder
   rating?: Prisma.SortOrder
-  body?: Prisma.SortOrder
+  body?: Prisma.SortOrderInput | Prisma.SortOrder
   mediaUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   isExpert?: Prisma.SortOrder
@@ -268,27 +268,28 @@ export type ReviewOrderByWithRelationInput = {
 
 export type ReviewWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  userId_whiskeyId?: Prisma.ReviewUserIdWhiskeyIdCompoundUniqueInput
   AND?: Prisma.ReviewWhereInput | Prisma.ReviewWhereInput[]
   OR?: Prisma.ReviewWhereInput[]
   NOT?: Prisma.ReviewWhereInput | Prisma.ReviewWhereInput[]
   userId?: Prisma.StringFilter<"Review"> | string
   whiskeyId?: Prisma.StringFilter<"Review"> | string
   rating?: Prisma.IntFilter<"Review"> | number
-  body?: Prisma.StringFilter<"Review"> | string
+  body?: Prisma.StringNullableFilter<"Review"> | string | null
   mediaUrl?: Prisma.StringNullableFilter<"Review"> | string | null
   status?: Prisma.EnumModerationStatusFilter<"Review"> | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFilter<"Review"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Review"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   whiskey?: Prisma.XOR<Prisma.WhiskeyScalarRelationFilter, Prisma.WhiskeyWhereInput>
-}, "id">
+}, "id" | "userId_whiskeyId">
 
 export type ReviewOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   whiskeyId?: Prisma.SortOrder
   rating?: Prisma.SortOrder
-  body?: Prisma.SortOrder
+  body?: Prisma.SortOrderInput | Prisma.SortOrder
   mediaUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   isExpert?: Prisma.SortOrder
@@ -308,7 +309,7 @@ export type ReviewScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"Review"> | string
   whiskeyId?: Prisma.StringWithAggregatesFilter<"Review"> | string
   rating?: Prisma.IntWithAggregatesFilter<"Review"> | number
-  body?: Prisma.StringWithAggregatesFilter<"Review"> | string
+  body?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
   mediaUrl?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
   status?: Prisma.EnumModerationStatusWithAggregatesFilter<"Review"> | $Enums.ModerationStatus
   isExpert?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
@@ -318,7 +319,7 @@ export type ReviewScalarWhereWithAggregatesInput = {
 export type ReviewCreateInput = {
   id?: string
   rating: number
-  body: string
+  body?: string | null
   mediaUrl?: string | null
   status?: $Enums.ModerationStatus
   isExpert?: boolean
@@ -332,7 +333,7 @@ export type ReviewUncheckedCreateInput = {
   userId: string
   whiskeyId: string
   rating: number
-  body: string
+  body?: string | null
   mediaUrl?: string | null
   status?: $Enums.ModerationStatus
   isExpert?: boolean
@@ -342,7 +343,7 @@ export type ReviewUncheckedCreateInput = {
 export type ReviewUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
-  body?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumModerationStatusFieldUpdateOperationsInput | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -356,7 +357,7 @@ export type ReviewUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   whiskeyId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
-  body?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumModerationStatusFieldUpdateOperationsInput | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -368,7 +369,7 @@ export type ReviewCreateManyInput = {
   userId: string
   whiskeyId: string
   rating: number
-  body: string
+  body?: string | null
   mediaUrl?: string | null
   status?: $Enums.ModerationStatus
   isExpert?: boolean
@@ -378,7 +379,7 @@ export type ReviewCreateManyInput = {
 export type ReviewUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
-  body?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumModerationStatusFieldUpdateOperationsInput | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -390,7 +391,7 @@ export type ReviewUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   whiskeyId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
-  body?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumModerationStatusFieldUpdateOperationsInput | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -405,6 +406,11 @@ export type ReviewListRelationFilter = {
 
 export type ReviewOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ReviewUserIdWhiskeyIdCompoundUniqueInput = {
+  userId: string
+  whiskeyId: string
 }
 
 export type ReviewCountOrderByAggregateInput = {
@@ -542,7 +548,7 @@ export type EnumModerationStatusFieldUpdateOperationsInput = {
 export type ReviewCreateWithoutUserInput = {
   id?: string
   rating: number
-  body: string
+  body?: string | null
   mediaUrl?: string | null
   status?: $Enums.ModerationStatus
   isExpert?: boolean
@@ -554,7 +560,7 @@ export type ReviewUncheckedCreateWithoutUserInput = {
   id?: string
   whiskeyId: string
   rating: number
-  body: string
+  body?: string | null
   mediaUrl?: string | null
   status?: $Enums.ModerationStatus
   isExpert?: boolean
@@ -595,7 +601,7 @@ export type ReviewScalarWhereInput = {
   userId?: Prisma.StringFilter<"Review"> | string
   whiskeyId?: Prisma.StringFilter<"Review"> | string
   rating?: Prisma.IntFilter<"Review"> | number
-  body?: Prisma.StringFilter<"Review"> | string
+  body?: Prisma.StringNullableFilter<"Review"> | string | null
   mediaUrl?: Prisma.StringNullableFilter<"Review"> | string | null
   status?: Prisma.EnumModerationStatusFilter<"Review"> | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFilter<"Review"> | boolean
@@ -605,7 +611,7 @@ export type ReviewScalarWhereInput = {
 export type ReviewCreateWithoutWhiskeyInput = {
   id?: string
   rating: number
-  body: string
+  body?: string | null
   mediaUrl?: string | null
   status?: $Enums.ModerationStatus
   isExpert?: boolean
@@ -617,7 +623,7 @@ export type ReviewUncheckedCreateWithoutWhiskeyInput = {
   id?: string
   userId: string
   rating: number
-  body: string
+  body?: string | null
   mediaUrl?: string | null
   status?: $Enums.ModerationStatus
   isExpert?: boolean
@@ -654,7 +660,7 @@ export type ReviewCreateManyUserInput = {
   id?: string
   whiskeyId: string
   rating: number
-  body: string
+  body?: string | null
   mediaUrl?: string | null
   status?: $Enums.ModerationStatus
   isExpert?: boolean
@@ -664,7 +670,7 @@ export type ReviewCreateManyUserInput = {
 export type ReviewUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
-  body?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumModerationStatusFieldUpdateOperationsInput | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -676,7 +682,7 @@ export type ReviewUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   whiskeyId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
-  body?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumModerationStatusFieldUpdateOperationsInput | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -687,7 +693,7 @@ export type ReviewUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   whiskeyId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
-  body?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumModerationStatusFieldUpdateOperationsInput | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -698,7 +704,7 @@ export type ReviewCreateManyWhiskeyInput = {
   id?: string
   userId: string
   rating: number
-  body: string
+  body?: string | null
   mediaUrl?: string | null
   status?: $Enums.ModerationStatus
   isExpert?: boolean
@@ -708,7 +714,7 @@ export type ReviewCreateManyWhiskeyInput = {
 export type ReviewUpdateWithoutWhiskeyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
-  body?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumModerationStatusFieldUpdateOperationsInput | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -720,7 +726,7 @@ export type ReviewUncheckedUpdateWithoutWhiskeyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
-  body?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumModerationStatusFieldUpdateOperationsInput | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -731,7 +737,7 @@ export type ReviewUncheckedUpdateManyWithoutWhiskeyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
-  body?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumModerationStatusFieldUpdateOperationsInput | $Enums.ModerationStatus
   isExpert?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -819,7 +825,7 @@ export type $ReviewPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     userId: string
     whiskeyId: string
     rating: number
-    body: string
+    body: string | null
     mediaUrl: string | null
     status: $Enums.ModerationStatus
     isExpert: boolean

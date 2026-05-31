@@ -3,7 +3,7 @@
 import LoadingDots from "@/components/loading-dots";
 
 interface DeleteConfirmModalProps {
-  type: "recipe" | "post" | "conversation";
+  type: "recipe" | "post" | "conversation" | "review";
   onConfirm: () => void;
   onCancel: () => void;
   deleting: boolean;
@@ -21,6 +21,7 @@ export default function DeleteConfirmModal({
     recipe:       { heading: "Delete this recipe?",       body: "All reviews will also be removed. This can't be undone." },
     post:         { heading: "Delete this post?",         body: "This can't be undone." },
     conversation: { heading: "Delete this conversation?", body: "This can't be undone." },
+    review:       { heading: "Delete this review?",       body: "This can't be undone." },
   };
   const { heading, body } = labels[type];
 

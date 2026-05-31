@@ -223,6 +223,7 @@ export default async function WhiskeyPage({
           whiskeyName={whiskey.name}
           reviews={reviewsWithSocial}
           posts={postsWithSocial}
+          viewerId={session.user.id}
         />
       </main>
 

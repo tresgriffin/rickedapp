@@ -13,8 +13,9 @@ import type { CommentWithUser } from "@/lib/actions/comment";
 
 interface Review {
   id: string;
+  userId: string;
   rating: number;
-  body: string;
+  body: string | null;
   mediaUrl: string | null;
   createdAt: Date;
   user: { handle: string | null; displayName: string | null; avatarUrl: string | null };
@@ -57,6 +58,7 @@ interface WhiskeyPageTabsProps {
   whiskeyName: string;
   reviews: Review[];
   posts: Post[];
+  viewerId?: string;
 }
 
 const TABS = [
@@ -72,6 +74,7 @@ export default function WhiskeyPageTabs({
   whiskeyName,
   reviews,
   posts,
+  viewerId,
 }: WhiskeyPageTabsProps) {
   const [activeTab, setActiveTab] = useState("recipes");
   const [recipes, setRecipes] = useState<RecipeResult[]>([]);
@@ -200,6 +203,7 @@ export default function WhiskeyPageTabs({
                 review={r}
                 isLiked={r.isLiked}
                 initialComments={r.initialComments}
+                viewerId={viewerId}
               />
             ))
           ))}

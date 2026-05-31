@@ -16,8 +16,9 @@ import type { CommentWithUser } from "@/lib/actions/comment";
 
 interface Review {
   id: string;
+  userId: string;
   rating: number;
-  body: string;
+  body: string | null;
   mediaUrl: string | null;
   createdAt: Date;
   user: { handle: string | null; displayName: string | null; avatarUrl: string | null };
@@ -231,6 +232,7 @@ export default function ProfileView({ user, isOwnProfile, isFollowing, hideRevie
                     review={item.data}
                     isLiked={item.data.isLiked}
                     initialComments={item.data.initialComments}
+                    viewerId={viewerId}
                   />
                 ) : (
                   <RecipeReviewCard key={`r-${item.id}`} review={item.data} />

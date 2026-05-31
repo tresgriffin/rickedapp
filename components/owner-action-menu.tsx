@@ -6,9 +6,10 @@ import Link from "next/link";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import DeleteConfirmModal from "@/components/delete-confirm-modal";
 import { deleteRecipe, deletePost, deleteConversation } from "@/lib/actions/delete";
+import { deleteReview } from "@/lib/actions/review";
 
 interface OwnerActionMenuProps {
-  type: "recipe" | "post" | "conversation";
+  type: "recipe" | "post" | "conversation" | "review";
   id: string;
   editHref?: string;       // navigate here for edit (no confirm modal)
   afterDeleteHref?: string; // navigate here after delete; if omitted, refresh
@@ -28,7 +29,9 @@ export default function OwnerActionMenu({ type, id, editHref, afterDeleteHref }:
       ? await deleteRecipe(id)
       : type === "post"
         ? await deletePost(id)
-        : await deleteConversation(id);
+        : type === "review"
+          ? await deleteReview(id)
+          : await deleteConversation(id);
     setDeleting(false);
     if ("error" in result) {
       setError(result.error);
