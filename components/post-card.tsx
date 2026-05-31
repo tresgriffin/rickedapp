@@ -1,5 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { MessageCircle } from "lucide-react";
 import Avatar from "@/components/avatar";
 import LikeButton from "@/components/like-button";
 import CommentSection from "@/components/comment-section";
@@ -26,14 +30,18 @@ interface PostCardProps {
   isLiked: boolean;
   initialComments: CommentWithUser[];
   viewerId?: string;
-  returnHref?: string; // return destination for post edit (e.g. "/home" or "/profile/handle")
+  returnHref?: string;
 }
 
 export default function PostCard({ post, isLiked, initialComments, viewerId, returnHref }: PostCardProps) {
+  const [commentExpanded, setCommentExpanded] = useState(false);
+  const [commentCount, setCommentCount] = useState(post.commentCount);
+
   const canDelete = !!viewerId && post.userId === viewerId;
   const editHref = canDelete
     ? `/post/${post.id}/edit?return=${encodeURIComponent(returnHref ?? "/home")}`
     : undefined;
+
   return (
     <article className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3">
       {/* Header */}
@@ -91,20 +99,37 @@ export default function PostCard({ post, isLiked, initialComments, viewerId, ret
         </Link>
       )}
 
-      {/* Actions */}
-      <div className="flex items-center gap-5 pt-1 border-t border-gray-50">
-        <LikeButton
-          targetType="POST"
-          targetId={post.id}
-          initialLiked={isLiked}
-          initialCount={post.likeCount}
-        />
+      {/* Actions: like + comment toggle on one row, thread full-width below */}
+      <div className="pt-1 border-t border-gray-50">
+        <div className="flex items-center gap-5">
+          <LikeButton
+            targetType="POST"
+            targetId={post.id}
+            initialLiked={isLiked}
+            initialCount={post.likeCount}
+          />
+          <button
+            type="button"
+            onClick={() => setCommentExpanded((v) => !v)}
+            className={`flex items-center gap-1.5 transition-colors ${
+              commentExpanded ? "text-[#0d3c54]" : "text-gray-400 hover:text-[#0d3c54]"
+            }`}
+            aria-label={`${commentCount} ${commentCount === 1 ? "comment" : "comments"}`}
+            aria-expanded={commentExpanded}
+          >
+            <MessageCircle size={16} strokeWidth={commentExpanded ? 2 : 1.5} />
+            <span className="text-xs font-medium">{commentCount}</span>
+          </button>
+        </div>
         <CommentSection
           targetType="POST"
           targetId={post.id}
           initialComments={initialComments}
           initialCount={post.commentCount}
+          expanded={commentExpanded}
           viewerId={viewerId}
+          onCommentAdded={() => setCommentCount((n) => n + 1)}
+          onCommentDeleted={() => setCommentCount((n) => Math.max(0, n - 1))}
         />
       </div>
     </article>

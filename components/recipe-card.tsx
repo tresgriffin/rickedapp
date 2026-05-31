@@ -1,5 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { MessageCircle } from "lucide-react";
 import Avatar from "@/components/avatar";
 import LikeButton from "@/components/like-button";
 import CommentSection from "@/components/comment-section";
@@ -33,6 +37,9 @@ interface RecipeCardProps {
 }
 
 export default function RecipeCard({ recipe, isLiked, initialComments, ratingStats, hideWhiskeyChip, viewerId }: RecipeCardProps) {
+  const [commentExpanded, setCommentExpanded] = useState(false);
+  const [commentCount, setCommentCount] = useState(recipe.commentCount);
+
   const ingredientCount = Array.isArray(recipe.ingredients)
     ? recipe.ingredients.length
     : 0;
@@ -121,20 +128,37 @@ export default function RecipeCard({ recipe, isLiked, initialComments, ratingSta
           </div>
         )}
 
-        {/* Actions */}
-        <div className="flex items-center gap-5 pt-1 border-t border-gray-50">
-          <LikeButton
-            targetType="RECIPE"
-            targetId={recipe.id}
-            initialLiked={isLiked}
-            initialCount={recipe.likeCount}
-          />
+        {/* Actions: like + comment toggle on one row, thread full-width below */}
+        <div className="pt-1 border-t border-gray-50">
+          <div className="flex items-center gap-5">
+            <LikeButton
+              targetType="RECIPE"
+              targetId={recipe.id}
+              initialLiked={isLiked}
+              initialCount={recipe.likeCount}
+            />
+            <button
+              type="button"
+              onClick={() => setCommentExpanded((v) => !v)}
+              className={`flex items-center gap-1.5 transition-colors ${
+                commentExpanded ? "text-[#0d3c54]" : "text-gray-400 hover:text-[#0d3c54]"
+              }`}
+              aria-label={`${commentCount} ${commentCount === 1 ? "comment" : "comments"}`}
+              aria-expanded={commentExpanded}
+            >
+              <MessageCircle size={16} strokeWidth={commentExpanded ? 2 : 1.5} />
+              <span className="text-xs font-medium">{commentCount}</span>
+            </button>
+          </div>
           <CommentSection
             targetType="RECIPE"
             targetId={recipe.id}
             initialComments={initialComments}
             initialCount={recipe.commentCount}
+            expanded={commentExpanded}
             viewerId={viewerId}
+            onCommentAdded={() => setCommentCount((n) => n + 1)}
+            onCommentDeleted={() => setCommentCount((n) => Math.max(0, n - 1))}
           />
         </div>
       </div>
