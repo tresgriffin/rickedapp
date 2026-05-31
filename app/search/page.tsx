@@ -54,6 +54,18 @@ interface UserResult {
   _count: { recipes: number; followers: number };
 }
 
+// sessionStorage cache for the default catalog browse (no query, no filter).
+// Preserves loaded batches and scroll position across back-navigation so the
+// user lands on real content rather than triggering the scroll-before-render race.
+const CATALOG_CACHE_KEY = "ricked-catalog-scroll";
+
+interface CatalogCache {
+  whiskeys: WhiskeyResult[];
+  page: number;
+  hasMore: boolean;
+  scrollY: number;
+}
+
 export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
@@ -69,10 +81,20 @@ export default function SearchPage() {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inFlightRef = useRef(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  // Stable ref so the intersection observer callback always reads current state
-  // without needing to be recreated on every render.
+  // Stable ref so the intersection observer always reads current state
   const scrollStateRef = useRef({ hasMore: false, loadingMore: false, loading: false, query: "", category: "", page: 1 });
   scrollStateRef.current = { hasMore, loadingMore, loading, query, category, page };
+
+  // Latest state snapshot for the unmount save — avoids stale closure in the empty-dep effect.
+  const latestStateRef = useRef({ whiskeys: [] as WhiskeyResult[], page: 1, hasMore: false, query: "", category: "" });
+  latestStateRef.current = { whiskeys, page, hasMore, query, category };
+
+  // Set true by the cache-restore effect so the fetchAll that's already been
+  // scheduled via setTimeout can bail out when it fires.
+  const skipNextFetchRef = useRef(false);
+
+  // Scroll Y to restore after cached items have painted.
+  const pendingScrollRef = useRef<number | null>(null);
 
   const fetchMore = useCallback(async (q: string, cat: string, nextPage: number) => {
     if (inFlightRef.current) return;
@@ -94,6 +116,12 @@ export default function SearchPage() {
   }, []);
 
   const fetchAll = useCallback(async (q: string, cat: string) => {
+    // Cache-restore effect sets this flag before this timeout fires so we don't
+    // overwrite restored state with a fresh page-1 fetch.
+    if (skipNextFetchRef.current) {
+      skipNextFetchRef.current = false;
+      return;
+    }
     setLoading(true);
     setPage(1);
     setHasMore(false);
@@ -121,7 +149,9 @@ export default function SearchPage() {
     }
   }, []);
 
-  // Debounced fetch — fires immediately on first mount, 300ms debounce thereafter
+  // ── Effect 1: debounced fetch on query/category change ───────────────────
+  // Defined first so React runs it before the cache-restore effect on initial
+  // mount — this schedules the setTimeout before skipNextFetchRef is set.
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     const delay = hasSearched ? 300 : 0;
@@ -133,8 +163,64 @@ export default function SearchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, category, fetchAll]);
 
-  // Intersection observer — created once, reads current state from ref to avoid
-  // re-creating on every render while still seeing up-to-date values.
+  // ── Effect 2: restore catalog state from sessionStorage on mount ─────────
+  // Runs after Effect 1 on initial mount. Sets skipNextFetchRef before the
+  // setTimeout from Effect 1 fires (timeouts run in a later JS task).
+  // Only restores when the user is on the default browse (no query/filter) —
+  // search/filter results are never cached.
+  useEffect(() => {
+    if (query !== "" || category !== "") return;
+    try {
+      const raw = sessionStorage.getItem(CATALOG_CACHE_KEY);
+      if (!raw) return;
+      const cached: CatalogCache = JSON.parse(raw);
+      if (cached.whiskeys.length > 0) {
+        setWhiskeys(cached.whiskeys);
+        setPage(cached.page);
+        setHasMore(cached.hasMore);
+        setHasSearched(true);
+        skipNextFetchRef.current = true;
+        pendingScrollRef.current = cached.scrollY;
+      }
+    } catch { /* ignore parse/storage errors */ }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Effect 3: restore scroll position after cached items have painted ────
+  useEffect(() => {
+    if (pendingScrollRef.current !== null && whiskeys.length > 0) {
+      const y = pendingScrollRef.current;
+      pendingScrollRef.current = null;
+      // Double rAF ensures the browser has painted before scrolling.
+      requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, y)));
+    }
+  }, [whiskeys.length]);
+
+  // ── Effect 4: save catalog state to sessionStorage on unmount ────────────
+  // Empty deps = cleanup runs only on unmount. Reads from latestStateRef so
+  // it always has current values despite the empty dep array.
+  // Only saves for the default browse — searches/filters are not worth caching.
+  useEffect(() => {
+    return () => {
+      const { whiskeys, page, hasMore, query, category } = latestStateRef.current;
+      if (whiskeys.length > 0 && query === "" && category === "") {
+        const cache: CatalogCache = { whiskeys, page, hasMore, scrollY: window.scrollY };
+        try {
+          sessionStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify(cache));
+        } catch { /* quota exceeded or private browsing — fail silently */ }
+      }
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Effect 5: invalidate cache when user starts a search/filter ──────────
+  // The cached default-browse results are stale once the context changes.
+  useEffect(() => {
+    if (query !== "" || category !== "") {
+      sessionStorage.removeItem(CATALOG_CACHE_KEY);
+    }
+  }, [query, category]);
+
+  // ── Effect 6: intersection observer for infinite scroll ──────────────────
+  // Created once; reads current state from scrollStateRef to avoid re-creation.
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
