@@ -17,6 +17,7 @@ enum BourbonCategory {
   IRISH
   JAPANESE
   OTHER
+  ZERO_PROOF
 }
 
 enum ModerationStatus {
