@@ -5,12 +5,12 @@
 //   nested reply threads per comment and wire to a `replyToComment` action.
 //   Keep the structure flat for now — CommentSection renders a single level only.
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { MessageCircle, Send } from "lucide-react";
+import { MessageCircle, Send, X } from "lucide-react";
 import Avatar from "@/components/avatar";
 import LoadingDots from "@/components/loading-dots";
-import { addComment, type CommentWithUser } from "@/lib/actions/comment";
+import { addComment, deleteComment, type CommentWithUser } from "@/lib/actions/comment";
 import { timeAgo } from "@/lib/format";
 import type { LikeTargetType } from "@/app/generated/prisma/client";
 
@@ -19,8 +19,7 @@ interface CommentSectionProps {
   targetId: string;
   initialComments: CommentWithUser[];
   initialCount: number;
-  // PHASE 6: onDeleteComment?: (commentId: string) => Promise<void>
-  //   Wire this once comment deletion is implemented as a server action.
+  viewerId?: string;
 }
 
 export default function CommentSection({
@@ -28,6 +27,7 @@ export default function CommentSection({
   targetId,
   initialComments,
   initialCount,
+  viewerId,
 }: CommentSectionProps) {
   const [expanded, setExpanded] = useState(false);
   const [comments, setComments] = useState<CommentWithUser[]>(initialComments);
@@ -38,6 +38,15 @@ export default function CommentSection({
   const [loadError, setLoadError] = useState("");
   const [hasMore, setHasMore] = useState(initialCount > initialComments.length);
   const [error, setError] = useState("");
+  // Tap-to-confirm delete: first tap arms, second tap executes, auto-clears after 3s
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const pendingDeleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (pendingDeleteTimerRef.current) clearTimeout(pendingDeleteTimerRef.current);
+    };
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -73,6 +82,26 @@ export default function CommentSection({
       setLoadError("Couldn't load comments. Tap to try again.");
     } finally {
       setLoadingMore(false);
+    }
+  }
+
+  function handleDeleteTap(commentId: string) {
+    if (pendingDeleteId === commentId) {
+      // Second tap — execute
+      if (pendingDeleteTimerRef.current) clearTimeout(pendingDeleteTimerRef.current);
+      setPendingDeleteId(null);
+      void (async () => {
+        const result = await deleteComment({ commentId });
+        if ("ok" in result) {
+          setComments((prev) => prev.filter((c) => c.id !== commentId));
+          setCount((n) => Math.max(0, n - 1));
+        }
+      })();
+    } else {
+      // First tap — arm confirmation, auto-clear after 3s
+      if (pendingDeleteTimerRef.current) clearTimeout(pendingDeleteTimerRef.current);
+      setPendingDeleteId(commentId);
+      pendingDeleteTimerRef.current = setTimeout(() => setPendingDeleteId(null), 3000);
     }
   }
 
@@ -123,6 +152,20 @@ export default function CommentSection({
                 </div>
                 <p className="text-sm text-black leading-relaxed mt-0.5">{c.body}</p>
               </div>
+              {viewerId && c.userId === viewerId && (
+                <button
+                  type="button"
+                  onClick={() => handleDeleteTap(c.id)}
+                  className={`flex-shrink-0 self-start mt-0.5 text-[10px] font-bold transition-colors ${
+                    pendingDeleteId === c.id
+                      ? "text-red-500"
+                      : "text-gray-300 hover:text-red-400"
+                  }`}
+                  aria-label={pendingDeleteId === c.id ? "Confirm delete" : "Delete comment"}
+                >
+                  {pendingDeleteId === c.id ? "Delete?" : <X size={11} />}
+                </button>
+              )}
             </div>
           ))}
 

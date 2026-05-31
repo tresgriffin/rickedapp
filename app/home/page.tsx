@@ -186,21 +186,19 @@ export default async function HomePage() {
                     initialComments as Parameters<typeof RecipeCard>[0]["initialComments"]
                   }
                   ratingStats={ratingStats}
+                  viewerId={session.user.id}
                 />
               );
             })
           )}
-        </section>
-
-        {/* ── Infinite scroll: pages beyond the initial SSR batch ──────── */}
-        <div className="px-4 pb-4 flex flex-col gap-3">
+          {/* FeedLoader lives inside the section so gap-3 applies at the SSR/API seam */}
           <FeedLoader
             initialCursorDate={initialCursorDate}
             initialCursorId={initialCursorId}
             viewerId={session.user.id}
             initialHasMore={feedHasMore}
           />
-        </div>
+        </section>
       </main>
 
       <BottomNav />

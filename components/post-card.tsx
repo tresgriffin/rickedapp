@@ -104,6 +104,7 @@ export default function PostCard({ post, isLiked, initialComments, viewerId, ret
           targetId={post.id}
           initialComments={initialComments}
           initialCount={post.commentCount}
+          viewerId={viewerId}
         />
       </div>
     </article>

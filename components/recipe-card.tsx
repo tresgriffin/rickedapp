@@ -29,9 +29,10 @@ interface RecipeCardProps {
   ratingStats?: RecipeRatingStats | null;
   /** When true, omits the tagged whiskey chip (e.g. on the brand page where context is already clear). */
   hideWhiskeyChip?: boolean;
+  viewerId?: string;
 }
 
-export default function RecipeCard({ recipe, isLiked, initialComments, ratingStats, hideWhiskeyChip }: RecipeCardProps) {
+export default function RecipeCard({ recipe, isLiked, initialComments, ratingStats, hideWhiskeyChip, viewerId }: RecipeCardProps) {
   const ingredientCount = Array.isArray(recipe.ingredients)
     ? recipe.ingredients.length
     : 0;
@@ -133,6 +134,7 @@ export default function RecipeCard({ recipe, isLiked, initialComments, ratingSta
             targetId={recipe.id}
             initialComments={initialComments}
             initialCount={recipe.commentCount}
+            viewerId={viewerId}
           />
         </div>
       </div>

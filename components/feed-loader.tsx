@@ -147,6 +147,7 @@ export default function FeedLoader({
                   entry.initialComments as Parameters<typeof RecipeCard>[0]["initialComments"]
                 }
                 ratingStats={entry.ratingStats}
+                viewerId={viewerId}
               />
             );
           })}

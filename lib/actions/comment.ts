@@ -12,6 +12,7 @@ export interface CommentWithUser {
   id: string;
   body: string;
   createdAt: Date;
+  userId: string;
   user: {
     handle: string | null;
     displayName: string | null;
@@ -48,4 +49,24 @@ export async function addComment({
   });
 
   return { comment };
+}
+
+export async function deleteComment({
+  commentId,
+}: {
+  commentId: string;
+}): Promise<{ ok: true } | { error: string }> {
+  const session = await getServerSession(authOptions);
+  if (!session) return { error: "Not signed in." };
+
+  const comment = await prisma.comment.findUnique({
+    where: { id: commentId },
+    select: { userId: true },
+  });
+
+  if (!comment) return { error: "Comment not found." };
+  if (comment.userId !== session.user.id) return { error: "Not authorized." };
+
+  await prisma.comment.delete({ where: { id: commentId } });
+  return { ok: true };
 }
