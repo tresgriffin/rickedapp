@@ -52,7 +52,7 @@ export default function FollowButton({
       >
         {following ? "Following" : "Follow"}
       </button>
-      {verificationBlocked && <VerificationNudge />}
+      {verificationBlocked && <VerificationNudge toast />}
       {error && <span className="text-[10px] text-red-500">{error}</span>}
     </div>
   );

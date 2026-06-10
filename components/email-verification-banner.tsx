@@ -39,7 +39,7 @@ export default function EmailVerificationBanner() {
     setResending(false);
 
     if (res.ok) {
-      setResentConfirm("Check your inbox — email sent.");
+      setResentConfirm("Check your inbox. Email sent.");
       startCooldown();
     } else {
       const data = await res.json().catch(() => ({}));
