@@ -300,8 +300,8 @@ export default function RickChat({
 
       if (!res.ok) {
         const msg = data?.error === "ai_error"
-          ? "Rick had a moment. Try again."
-          : "Something went wrong. Try again.";
+          ? "Rick had a moment — give it another go."
+          : "Something hiccuped on my end. Give me a sec and try again.";
         setMessages((prev) => [...prev, { role: "ASSISTANT", content: msg }]);
         return;
       }
