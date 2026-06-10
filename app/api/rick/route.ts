@@ -15,6 +15,64 @@ const MODEL = process.env.RICK_MODEL ?? "claude-sonnet-4-6";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+/**
+ * Three-tier parse fallback for Rick's JSON responses.
+ *
+ * Tier 1 (caller): clean JSON.parse() — normal path.
+ * Tier 2 (this function): the response contains one or more valid {message, recipe}
+ *   blocks embedded in non-JSON text (e.g. multiple concatenated objects from a
+ *   multi-recipe request). Scans for all {"message": occurrences, extracts each
+ *   block by brace-counting while respecting string contents, and returns the last
+ *   block that parses cleanly — preferring blocks that carry a non-null recipe.
+ * Tier 3 (caller): nothing extractable → self-deprecating error the user can retry.
+ */
+function extractLastValidBlock(
+  raw: string
+): { message: string; recipe: object | null } | null {
+  const candidates: Array<{ message: string; recipe: object | null }> = [];
+
+  // Match every { that is immediately followed (after optional whitespace) by "message":
+  const blockStart = /\{(?=\s*"message"\s*:)/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = blockStart.exec(raw)) !== null) {
+    const start = match.index;
+    let depth = 0;
+    let inString = false;
+    let escape = false;
+
+    for (let i = start; i < raw.length; i++) {
+      const ch = raw[i];
+      if (escape) { escape = false; continue; }
+      if (ch === "\\" && inString) { escape = true; continue; }
+      if (ch === '"') { inString = !inString; continue; }
+      if (inString) continue;
+      if (ch === "{") { depth++; }
+      else if (ch === "}") {
+        depth--;
+        if (depth === 0) {
+          try {
+            const obj = JSON.parse(raw.slice(start, i + 1));
+            if (obj && typeof obj.message === "string") {
+              candidates.push({ message: obj.message, recipe: obj.recipe ?? null });
+            }
+          } catch { /* not a clean JSON object, skip */ }
+          break;
+        }
+      }
+    }
+  }
+
+  if (candidates.length === 0) return null;
+
+  // Prefer the last candidate that carries a non-null recipe (most informative);
+  // fall back to the last candidate overall.
+  const withRecipe = candidates.filter((c) => c.recipe !== null);
+  return withRecipe.length > 0
+    ? withRecipe[withRecipe.length - 1]
+    : candidates[candidates.length - 1];
+}
+
 // Normalize a string for fuzzy title matching: lowercase, strip punctuation, collapse spaces
 function normalizeForMatch(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim();
@@ -186,13 +244,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "ai_error" }, { status: 502 });
   }
 
-  // Parse Rick's JSON response
+  // Parse Rick's JSON response — three-tier fallback:
+  // Tier 1: clean parse → normal render
+  // Tier 2: malformed output (e.g. multiple concatenated objects) → extract the last
+  //         valid {message, recipe} block so good content isn't lost
+  // Tier 3: nothing recoverable → self-deprecating error the user can retry
   let parsed: { message: string; recipe: object | null };
   try {
     parsed = JSON.parse(rickResponseText);
   } catch {
-    // Fallback: treat entire response as a message with no recipe
-    parsed = { message: rickResponseText, recipe: null };
+    const recovered = extractLastValidBlock(rickResponseText);
+    parsed = recovered ?? {
+      message: "I got a bit tangled up there — mind trying that again?",
+      recipe: null,
+    };
   }
 
   // Save user message + Rick's response to DB, update rate limit counter
