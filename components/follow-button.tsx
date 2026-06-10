@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toggleFollow } from "@/lib/actions/follow";
+import VerificationNudge from "@/components/verification-nudge";
 
 interface FollowButtonProps {
   targetUserId: string;
@@ -15,6 +16,7 @@ export default function FollowButton({
   const [following, setFollowing] = useState(initialFollowing);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
+  const [verificationBlocked, setVerificationBlocked] = useState(false);
 
   async function handleToggle() {
     if (pending) return;
@@ -27,11 +29,12 @@ export default function FollowButton({
 
     if ("error" in result) {
       setFollowing(!next);
-      const msg = result.error.toLowerCase().includes("verify")
-        ? "Verify your email to follow people. Check your inbox for the link."
-        : "Couldn't save. Try again.";
-      setError(msg);
-      setTimeout(() => setError(""), 3000);
+      if (result.error.toLowerCase().includes("verify")) {
+        setVerificationBlocked(true);
+      } else {
+        setError("Couldn't save. Try again.");
+        setTimeout(() => setError(""), 3000);
+      }
     }
   }
 
@@ -49,6 +52,7 @@ export default function FollowButton({
       >
         {following ? "Following" : "Follow"}
       </button>
+      {verificationBlocked && <VerificationNudge />}
       {error && <span className="text-[10px] text-red-500">{error}</span>}
     </div>
   );

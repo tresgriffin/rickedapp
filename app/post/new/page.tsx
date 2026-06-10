@@ -8,6 +8,7 @@ import AppBar from "@/components/app-bar";
 import LoadingDots from "@/components/loading-dots";
 import WhiskeyPicker from "@/components/whiskey-picker";
 import SuccessOverlay from "@/components/success-overlay";
+import VerificationNudge from "@/components/verification-nudge";
 import { createPost } from "@/lib/actions/post";
 
 interface WhiskeyResult {
@@ -23,6 +24,7 @@ export default function NewPostPage() {
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [verificationBlocked, setVerificationBlocked] = useState(false);
   const [success, setSuccess] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -40,7 +42,11 @@ export default function NewPostPage() {
     try {
       const result = await createPost(fd);
       if ("error" in result) {
-        setError(result.error);
+        if (result.error.toLowerCase().includes("verify")) {
+          setVerificationBlocked(true);
+        } else {
+          setError(result.error);
+        }
       } else {
         setSuccess(true);
       }
@@ -132,6 +138,11 @@ export default function NewPostPage() {
             />
           </div>
 
+          {verificationBlocked && (
+            <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
+              <VerificationNudge />
+            </div>
+          )}
           {error && (
             <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
               {error}

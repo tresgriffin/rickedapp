@@ -88,6 +88,7 @@ export default function SignupPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <p className="text-xs text-gray-500">All fields are required.</p>
             <div className="flex flex-col gap-1.5">
               <label htmlFor="name" className="text-sm font-bold text-[#0d3c54]">
                 Name
@@ -118,6 +119,7 @@ export default function SignupPage() {
                 placeholder="you@example.com"
                 className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d3c54] transition"
               />
+              <p className="text-xs text-gray-400">We'll send a link to confirm this address.</p>
             </div>
 
             <div className="flex flex-col gap-1.5">

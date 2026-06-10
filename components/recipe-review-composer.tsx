@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import StarSelector from "@/components/star-selector";
 import LoadingDots from "@/components/loading-dots";
+import VerificationNudge from "@/components/verification-nudge";
 import { upsertRecipeReview, deleteRecipeReview } from "@/lib/actions/recipe-review";
 
 interface RecipeReviewComposerProps {
@@ -28,9 +29,7 @@ export default function RecipeReviewComposer({
   if (!isVerified) {
     return (
       <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
-        <p className="text-sm text-amber-800">
-          <span className="font-bold">Verify your email</span> to leave a review.
-        </p>
+        <VerificationNudge />
       </div>
     );
   }

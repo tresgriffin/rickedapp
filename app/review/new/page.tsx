@@ -8,6 +8,7 @@ import StarSelector from "@/components/star-selector";
 import LoadingDots from "@/components/loading-dots";
 import SuccessOverlay from "@/components/success-overlay";
 import AppBar from "@/components/app-bar";
+import VerificationNudge from "@/components/verification-nudge";
 import { createReview } from "@/lib/actions/review";
 
 interface WhiskeySummary {
@@ -37,6 +38,7 @@ function NewReviewForm() {
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [verificationBlocked, setVerificationBlocked] = useState(false);
   const [success, setSuccess] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -65,7 +67,11 @@ function NewReviewForm() {
     setSubmitting(false);
 
     if ("error" in result) {
-      setError(result.error);
+      if (result.error.toLowerCase().includes("verify")) {
+        setVerificationBlocked(true);
+      } else {
+        setError(result.error);
+      }
     } else {
       setSuccess(true);
     }
@@ -181,7 +187,12 @@ function NewReviewForm() {
             />
           </div>
 
-          {/* Error */}
+          {/* Error / verification nudge */}
+          {verificationBlocked && (
+            <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
+              <VerificationNudge />
+            </div>
+          )}
           {error && (
             <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
               {error}
