@@ -64,6 +64,12 @@ function LoginForm() {
     setLoading(false);
 
     if (result?.error) {
+      // Rate-limited: show a distinct message so the user knows they're
+      // throttled, not that their password is wrong.
+      if (result.error === "RateLimited") {
+        setError("Too many attempts. Give it a few minutes and try again.");
+        return;
+      }
       // Auto-check whether the failure is an unverified-email issue
       try {
         const res = await fetch(`/api/auth/check-unverified?email=${encodeURIComponent(email)}`);
