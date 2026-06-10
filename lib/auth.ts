@@ -1,7 +1,8 @@
 import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+// GoogleProvider removed for beta — callback route was live but untested.
+// Re-add post-beta when the Google sign-in flow is built and tested end-to-end.
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 
@@ -11,10 +12,7 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
+    // TODO: Add GoogleProvider (Phase 8b) when Google sign-in is built and tested
     // TODO: Add FacebookProvider when FACEBOOK_CLIENT_ID/SECRET are configured
     // TODO: Add AppleProvider when APPLE_CLIENT_ID/SECRET are configured
     CredentialsProvider({
