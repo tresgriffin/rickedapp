@@ -59,11 +59,11 @@ export default function RootLayout({
     >
       <head>
         {/* Manual injection bypasses Next.js metadata API to guarantee rel→media→href attribute order, which iOS startup image parsing requires */}
-        <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/ricked-assets/splash/splash-1125x2436.png" />
-        <link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/ricked-assets/splash/splash-1170x2532.png" />
-        <link rel="apple-touch-startup-image" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/ricked-assets/splash/splash-1179x2556.png" />
-        <link rel="apple-touch-startup-image" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/ricked-assets/splash/splash-1284x2778.png" />
-        <link rel="apple-touch-startup-image" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/ricked-assets/splash/splash-1290x2796.png" />
+        <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="/ricked-assets/splash/splash-1125x2436.png" />
+        <link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="/ricked-assets/splash/splash-1170x2532.png" />
+        <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" href="/ricked-assets/splash/splash-1179x2556.png" />
+        <link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" href="/ricked-assets/splash/splash-1284x2778.png" />
+        <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" href="/ricked-assets/splash/splash-1290x2796.png" />
       </head>
       <body className="min-h-full flex flex-col bg-[#fffbfa]">
         <Providers>{children}</Providers>
