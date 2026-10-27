@@ -44,3 +44,8 @@ next-env.d.ts
 
 # Local image uploads (dev only — swap to S3/Cloudinary in production)
 /public/uploads
+
+# Claude Code local
+.claude/settings.local.json
+.claude/worktrees/
+.claude/
